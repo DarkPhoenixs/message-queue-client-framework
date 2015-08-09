@@ -4,4 +4,4 @@
   
 ## Documentation
 
-API documentation is available at [http://hexdocs.pm/phoenix](http://hexdocs.pm/phoenix)
+API documentation is available at [https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/doc/index.html](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/doc/index.html)
