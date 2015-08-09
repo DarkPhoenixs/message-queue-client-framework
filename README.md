@@ -2,7 +2,7 @@ Message Queue Client Framework
 ==============================
 
   消息队列客户端框架（Apache Kafka &amp; Apache ActiveMQ）
-  [<li>Document</li>]
+  [Document]
   <li>[Producer]</li>
   <li>[Consumer]</li>
   <li>[Listener]</li>
