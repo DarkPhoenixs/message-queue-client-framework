@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<description>Receiver Configuration</description>
+
+	<!-- Kafka Message Decoder -->
+	<bean id="decoder" class="org.darkphoenixs.kafka.codec.MessageDecoderImpl" />
+
+	<!-- Kafka Message Consumer -->
+	<bean id="messageConsumer" class="org.darkphoenixs.kafka.consumer.MessageConsumer">
+	</bean>
+
+	<!-- Kafka Message Listener -->
+	<bean id="messageListener" class="org.darkphoenixs.kafka.listener.MessageConsumerListener">
+		<property name="consumer" ref="messageConsumer" />
+	</bean>
+
+	<!-- Kafka Consumer Factory <bean id="messageConsumerFactory" class="org.darkphoenixs.mq.common.MessageConsumerFactory" 
+		destroy-method="destroy"> <property name="consumers"> <array> <ref bean="messageConsumer" 
+		/> </array> </property> </bean> -->
+
+	<!-- Kafka Message Factory Listener <bean id="messageListener" class="org.darkphoenixs.kafka.listener.MessageFactoryConsumerListener"> 
+		<property name="consumerFactory" ref="messageConsumerFactory" /> </bean> -->
+
+	<!-- Kafka Message Adapter -->
+	<bean id="messageAdapter" class="org.darkphoenixs.kafka.core.KafkaMessageAdapter">
+		<property name="decoder" ref="decoder" />
+		<property name="messageListener" ref="messageListener" />
+		<property name="destination" value="QUEUE.TEST" />
+	</bean>
+
+	<!-- Kafka Pool Connection -->
+	<bean id="messageReceiverPool" class="org.darkphoenixs.kafka.pool.KafkaMessageReceiverPool"
+		init-method="init" destroy-method="destroy">
+		<property name="messageAdapter" ref="messageAdapter" />
+		<property name="config" value="consumer.properties" />
+		<property name="poolSize" value="10" />
+	</bean>
+
+</beans>

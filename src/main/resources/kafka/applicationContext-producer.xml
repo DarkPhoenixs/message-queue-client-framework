@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<description>Sender Configuration</description>
+
+	<!-- Kafka Message Encoder -->
+	<bean id="encoder" class="org.darkphoenixs.kafka.codec.MessageEncoderImpl" />
+
+	<!-- Kafka Pool Connection -->
+	<bean id="messageSenderPool" class="org.darkphoenixs.kafka.pool.KafkaMessageSenderPool"
+		init-method="init" destroy-method="destroy">
+		<property name="poolSize" value="10" />
+		<property name="config" value="producer.properties" />
+	</bean>
+
+	<!-- Kafka Message Template -->
+	<bean id="messageTemplate" class="org.darkphoenixs.kafka.core.KafkaMessageTemplate">
+		<property name="messageSenderPool" ref="messageSenderPool" />
+		<property name="encoder" ref="encoder" />
+	</bean>
+
+	<!-- Kafka Message Producer -->
+	<bean id="messageProducer" class="org.darkphoenixs.kafka.producer.MessageProducer">
+		<property name="messageTemplate" ref="messageTemplate" />
+		<property name="destination" value="QUEUE.TEST" />
+	</bean>
+
+	<!-- Kafka Message Producer Factory <bean id="messageProducerFactory" class="org.darkphoenixs.mq.common.MessageProducerFactory" 
+		destroy-method="destroy"> <property name="producers"> <array> <ref bean="messageProducer" 
+		/> </array> </property> </bean> -->
+</beans>

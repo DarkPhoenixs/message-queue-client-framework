@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<description>Receiver Configuration</description>
+
+	<!-- Pool Connection Factory -->
+	<bean id="receiveConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		destroy-method="stop">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="maxConnections" value="100" />
+		<property name="maximumActiveSessionPerConnection" value="200" />
+	</bean>
+
+	<!-- Task Executor -->
+	<bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="100" />
+		<property name="maxPoolSize" value="150" />
+		<property name="keepAliveSeconds" value="60" />
+	</bean>
+
+	<!-- Queue Destination -->
+	<bean id="recevieDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="${mq.receiveDestinationName}" />
+	</bean>
+
+	<!-- Message Consumer -->
+	<bean id="messageConsumer" class="org.darkphoenixs.activemq.consumer.MessageConsumer">
+	</bean>
+
+	<!-- Message Consumer Factory <bean id="messageConsumerFactory" class="org.darkphoenixs.mq.common.MessageConsumerFactory" 
+		destroy-method="destroy"> <property name="consumers"> <list> <ref bean="messageConsumer" 
+		/> </list> </property> </bean> -->
+	<!-- Consumer Factory Listener <bean id="consumerListener" class="org.darkphoenixs.activemq.listener.MessageFactoryConsumerListener"> 
+		<property name="consumerFactory" ref="messageConsumerFactory" /> </bean> -->
+
+	<!-- Consumer Listener -->
+	<bean id="consumerListener"
+		class="org.darkphoenixs.activemq.listener.MessageConsumerListener">
+		<property name="consumer" ref="messageConsumer" />
+	</bean>
+
+	<!-- Listener Adapter -->
+	<bean id="messageListener"
+		class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+		<property name="delegate" ref="consumerListener" />
+		<property name="messageConverter" ref="messageConverter" />
+		<property name="defaultListenerMethod" value="onMessage" />
+	</bean>
+
+	<!-- Listener Container -->
+	<bean id="messageContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="receiveConnectionFactory" />
+		<property name="destination" ref="recevieDestination" />
+		<property name="messageListener" ref="messageListener" />
+		<property name="taskExecutor" ref="taskExecutor" />
+		<property name="sessionTransacted" value="false" />
+		<property name="sessionAcknowledgeModeName" value="DUPS_OK_ACKNOWLEDGE" />
+		<property name="concurrentConsumers" value="10" />
+	</bean>
+</beans>
