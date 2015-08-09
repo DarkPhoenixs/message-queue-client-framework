@@ -19,7 +19,10 @@ API documentation is available at
 ## Producer
 
 ![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/producer.jpg)
-`<hello world>`
+
+`
+hello world
+`
 
 ## Consumer
 
