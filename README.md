@@ -21,10 +21,6 @@ API documentation is available at
 
 ![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/producer.jpg)
 
-```config
-hello world
-```
-
 ## Consumer
 
 ![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/consumer.jpg)
@@ -36,3 +32,14 @@ hello world
 ## Factory
 
 ![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/factory.jpg)
+
+```xml
+<!-- Message Producer Factory -->
+<bean id="messageProducerFactory" class="org.darkphoenixs.mq.common.MessageProducerFactory" destroy-method="destroy">
+    <property name="producers"> 
+        <array> 
+            <ref bean="messageProducer" /> 
+        </array> 
+    </property> 
+</bean> 
+```
