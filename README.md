@@ -19,19 +19,19 @@ API documentation is available at
 
 ## Producer
 
-![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/producer.jpg)
+![image](https://raw.githubusercontent.com/DarkPhoenixs/message-queue-client-framework/master/uml/producer.jpg)
 
 ## Consumer
 
-![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/consumer.jpg)
+![image](https://raw.githubusercontent.com/DarkPhoenixs/message-queue-client-framework/master/uml/consumer.jpg)
 
 ## Listener
 
-![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/listener.jpg)
+![image](https://raw.githubusercontent.com/DarkPhoenixs/message-queue-client-framework/master/uml/listener.jpg)
 
 ## Factory
 
-![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/factory.jpg)
+![image](https://raw.githubusercontent.com/DarkPhoenixs/message-queue-client-framework/master/uml/factory.jpg)
 
 Factory config with spring
 ```xml
