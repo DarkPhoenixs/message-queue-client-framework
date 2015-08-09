@@ -8,12 +8,10 @@ Message Queue Client Framework
   * [Consumer](#consumer)
   * [Listener](#listener)
   * [Factory](#factory)
-  
-#### <i class="icon-file"></i> Create a document
 
 ## Release
 
-[messagequeue-framework-1.0.jar](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/release/messagequeue-framework-1.0.jar?raw=true)
+(2015-06-01)[messagequeue-framework-1.0.jar](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/release/messagequeue-framework-1.0.jar?raw=true)
 
 ## Documentation
 
