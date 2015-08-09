@@ -4,4 +4,16 @@
   
 ## Producer
 
-![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/producer.jpg)  
+![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/producer.jpg)
+
+## Consumer
+
+![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/consumer.jpg)
+
+## Listener
+
+![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/listener.jpg)
+
+## Factory
+
+![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/factory.jpg)
