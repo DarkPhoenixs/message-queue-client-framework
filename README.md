@@ -6,7 +6,7 @@ Message Queue Client Framework
   * [Producer](#Producer)
   * [Consumer](#Consumer)
   * [Listener](#Listener)
-  * [Factory](##Factory)
+  * [Factory](#Factory)
   
 ## Documentation
 
@@ -24,6 +24,6 @@ API documentation is available at
 
 ![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/listener.jpg)
 
-## Factory
+##Factory
 
 ![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/factory.jpg)
