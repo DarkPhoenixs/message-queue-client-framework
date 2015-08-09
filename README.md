@@ -33,6 +33,7 @@ API documentation is available at
 
 ![image](https://github.com/DarkPhoenixs/messagequeue-framework/blob/master/uml/factory.jpg)
 
+Factory config with spring
 ```xml
 <!-- Message Producer Factory -->
 <bean id="messageProducerFactory" class="org.darkphoenixs.mq.common.MessageProducerFactory" 
@@ -43,4 +44,14 @@ API documentation is available at
         </array> 
     </property> 
 </bean> 
+
+<!-- Message Consumer Factory  -->
+<bean id="messageConsumerFactory" class="org.darkphoenixs.mq.common.MessageConsumerFactory" 
+  destroy-method="destroy">
+    <property name="consumers"> 
+        <array> 
+            <ref bean="messageConsumer" /> 
+        </array>
+    </property> 
+</bean>
 ```
