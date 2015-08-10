@@ -30,12 +30,6 @@
 	<bean id="messageConsumer" class="org.darkphoenixs.activemq.consumer.MessageConsumer">
 	</bean>
 
-	<!-- Message Consumer Factory <bean id="messageConsumerFactory" class="org.darkphoenixs.mq.common.MessageConsumerFactory" 
-		destroy-method="destroy"> <property name="consumers"> <list> <ref bean="messageConsumer" 
-		/> </list> </property> </bean> -->
-	<!-- Consumer Factory Listener <bean id="consumerListener" class="org.darkphoenixs.activemq.listener.MessageFactoryConsumerListener"> 
-		<property name="consumerFactory" ref="messageConsumerFactory" /> </bean> -->
-
 	<!-- Consumer Listener -->
 	<bean id="consumerListener"
 		class="org.darkphoenixs.activemq.listener.MessageConsumerListener">

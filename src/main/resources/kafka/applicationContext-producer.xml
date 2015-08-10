@@ -27,7 +27,4 @@
 		<property name="destination" value="QUEUE.TEST" />
 	</bean>
 
-	<!-- Kafka Message Producer Factory <bean id="messageProducerFactory" class="org.darkphoenixs.mq.common.MessageProducerFactory" 
-		destroy-method="destroy"> <property name="producers"> <array> <ref bean="messageProducer" 
-		/> </array> </property> </bean> -->
 </beans>

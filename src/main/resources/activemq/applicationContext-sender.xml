@@ -32,8 +32,5 @@
 		<property name="jmsTemplate" ref="queueJmsTemplate" />
 		<property name="destination" ref="sendDestination" />
 	</bean>
-
-	<!-- Message Producer Factory <bean id="messageProducerFactory" class="org.darkphoenixs.mq.common.MessageProducerFactory" 
-		destroy-method="destroy"> <property name="producers"> <array> <ref bean="messageProducer" 
-		/> </array> </property> </bean> -->
+	
 </beans>

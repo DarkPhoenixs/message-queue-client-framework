@@ -17,13 +17,6 @@
 		<property name="consumer" ref="messageConsumer" />
 	</bean>
 
-	<!-- Kafka Consumer Factory <bean id="messageConsumerFactory" class="org.darkphoenixs.mq.common.MessageConsumerFactory" 
-		destroy-method="destroy"> <property name="consumers"> <array> <ref bean="messageConsumer" 
-		/> </array> </property> </bean> -->
-
-	<!-- Kafka Message Factory Listener <bean id="messageListener" class="org.darkphoenixs.kafka.listener.MessageFactoryConsumerListener"> 
-		<property name="consumerFactory" ref="messageConsumerFactory" /> </bean> -->
-
 	<!-- Kafka Message Adapter -->
 	<bean id="messageAdapter" class="org.darkphoenixs.kafka.core.KafkaMessageAdapter">
 		<property name="decoder" ref="decoder" />
