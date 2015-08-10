@@ -41,7 +41,7 @@
 <h2>
 <a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
 
-<p>API documentation is available at <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/doc/index.html">https://github.com/darkphoenixs/message-queue-client-framework/doc/index.html</a></p>
+<p>API documentation is available at <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/doc/index.html">messagequeue-framework-1.0 api</a></p>
 
 <h2>
 <a id="producer" class="anchor" href="#producer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Producer</h2>
@@ -67,7 +67,7 @@
 
 <div class="highlight highlight-xml"><pre><span class="pl-c">&lt;!-- Message Producer Factory --&gt;</span>
 &lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>messageProducerFactory<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.darkphoenixs.mq.common.MessageProducerFactory<span class="pl-pds">"</span></span> 
-  <span class="pl-e">destroy-method</span>=<span class="pl-s"><span class="pl-pds">"</span>destroy<span class="pl-pds">"</span></span>&gt;
+    <span class="pl-e">init-method</span>=<span class="pl-s"><span class="pl-pds">"</span>init<span class="pl-pds">"</span></span> <span class="pl-e">destroy-method</span>=<span class="pl-s"><span class="pl-pds">"</span>destroy<span class="pl-pds">"</span></span>&gt;
     &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>producers<span class="pl-pds">"</span></span>&gt; 
         &lt;<span class="pl-ent">array</span>&gt; 
             &lt;<span class="pl-ent">ref</span> <span class="pl-e">bean</span>=<span class="pl-s"><span class="pl-pds">"</span>messageProducer<span class="pl-pds">"</span></span> /&gt; 
@@ -77,7 +77,7 @@
 
 <span class="pl-c">&lt;!-- Message Consumer Factory  --&gt;</span>
 &lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>messageConsumerFactory<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.darkphoenixs.mq.common.MessageConsumerFactory<span class="pl-pds">"</span></span> 
-  <span class="pl-e">destroy-method</span>=<span class="pl-s"><span class="pl-pds">"</span>destroy<span class="pl-pds">"</span></span>&gt;
+    <span class="pl-e">init-method</span>=<span class="pl-s"><span class="pl-pds">"</span>init<span class="pl-pds">"</span></span> <span class="pl-e">destroy-method</span>=<span class="pl-s"><span class="pl-pds">"</span>destroy<span class="pl-pds">"</span></span>&gt;
     &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>consumers<span class="pl-pds">"</span></span>&gt; 
         &lt;<span class="pl-ent">array</span>&gt; 
             &lt;<span class="pl-ent">ref</span> <span class="pl-e">bean</span>=<span class="pl-s"><span class="pl-pds">"</span>messageConsumer<span class="pl-pds">"</span></span> /&gt; 
