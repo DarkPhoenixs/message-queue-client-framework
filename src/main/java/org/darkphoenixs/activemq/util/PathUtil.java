@@ -6,7 +6,7 @@ import java.io.File;
  * <p>Title: PathUtil</p>
  * <p>Description: 路径工具类</p>
  *
- * @since MessageQueueClient
+ * @since 2015-06-01
  * @author Victor.Zxy
  * @version 1.0
  */

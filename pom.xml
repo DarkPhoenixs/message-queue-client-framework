@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>MessageQueueClientFramework</name>
-	<url>https://github.com/DarkPhoenixs/messagequeue-framework</url>
+	<url>http://darkphoenixs.github.io/message-queue-client-framework/</url>
 
 	<developers>
 		<developer>

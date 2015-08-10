@@ -4,7 +4,7 @@ package org.darkphoenixs.activemq.util;
  * <p>Title: ByteUtil</p>
  * <p>Description: 字节数组工具类</p>
  *
- * @since MessageQueueClient
+ * @since 2015-06-01
  * @author Victor.Zxy
  * @version 1.0
  */
