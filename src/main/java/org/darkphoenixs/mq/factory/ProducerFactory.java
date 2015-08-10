@@ -45,9 +45,18 @@ public interface ProducerFactory {
 	public <T> Producer<T> getProducer(String producerKey) throws MQException;
 
 	/**
+	 * <p>Title: init</p>
+	 * <p>Description: 初始化工厂</p>
+	 *
+	 * @throws MQException MQ异常
+	 */
+	public void init() throws MQException;
+	
+	/**
 	 * <p>Title: destroy</p>
 	 * <p>Description: 销毁工厂</p>
-	 *
+	 * 
+	 * @throws MQException MQ异常
 	 */
-	public void destroy();
+	public void destroy() throws MQException;
 }

@@ -7,8 +7,7 @@
  */
 package org.darkphoenixs.mq.common;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
@@ -23,7 +22,6 @@ import org.darkphoenixs.mq.factory.ConsumerFactory;
  * @see ConsumerFactory
  * @version 1.0
  */
-
 public class MessageConsumerFactory implements ConsumerFactory {
 
 	/** instance */
@@ -31,6 +29,9 @@ public class MessageConsumerFactory implements ConsumerFactory {
 
 	/** consumers */
 	private Consumer<?>[] consumers;
+
+	/** consumerCache */
+	private ConcurrentHashMap<String, Consumer<?>> consumerCache = new ConcurrentHashMap<>();
 
 	/**
 	 * @return the consumers
@@ -64,51 +65,55 @@ public class MessageConsumerFactory implements ConsumerFactory {
 	}
 
 	@Override
-	public synchronized <T> void addConsumer(Consumer<T> consumer) throws MQException {
+	public <T> void addConsumer(Consumer<T> consumer) throws MQException {
 
-		if (consumers == null)
-
-			consumers = new Consumer<?>[0];
-
-		List<Consumer<?>> consumerList = Arrays.asList(consumers);
-
-		consumerList.add(consumer);
-
-		setConsumers((Consumer<?>[]) consumerList.toArray());
+		consumerCache.put(consumer.getConsumerKey(), consumer);
 
 		logger.debug("Add Consumer : " + consumer.getConsumerKey());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized <T> Consumer<T> getConsumer(String consumerKey) throws MQException {
+	public <T> Consumer<T> getConsumer(String consumerKey) throws MQException {
+		
+		if (consumerCache.containsKey(consumerKey)) {
+			
+			logger.debug("Get Consumer : " + consumerKey);
+			
+			return (Consumer<T>) consumerCache.get(consumerKey);
+			
+		} else {
+			
+			logger.warn("Unknown ConsumerKey : " + consumerKey);
 
-		if (null != consumerKey && !"".equals(consumerKey))
-
-			for (int i = 0; i < consumers.length; i++) {
-
-				if (consumers[i].getConsumerKey().equals(consumerKey)
-						|| consumers[i].getConsumerKey().endsWith(consumerKey)
-						|| consumerKey.endsWith(consumers[i].getConsumerKey())) {
-
-					logger.debug("Get Consumer : " + consumerKey);
-
-					return (Consumer<T>) consumers[i];
-				}
-			}
-
-		logger.warn("Unknown consumerKey : " + consumerKey);
-		return null;
+			return null;
+		}
 	}
 
 	@Override
-	public synchronized void destroy() {
+	public void init() throws MQException {
+
+		if (consumers != null)
+
+			for (int i = 0; i < consumers.length; i++)
+
+				consumerCache.put(consumers[i].getConsumerKey(), consumers[i]);
+
+		logger.debug("Initialized!");
+
+	}
+
+	@Override
+	public void destroy() throws MQException {
 
 		if (consumers != null)
 			consumers = null;
 
 		if (instance != null)
 			instance = null;
+
+		if (consumerCache != null)
+			consumerCache.clear();
 
 		logger.debug("Destroyed!");
 	}

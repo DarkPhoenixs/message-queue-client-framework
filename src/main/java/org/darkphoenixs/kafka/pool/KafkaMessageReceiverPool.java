@@ -352,16 +352,17 @@ public class KafkaMessageReceiverPool<K, V> {
 		if (consumer != null)
 			consumer.shutdown();
 
-		if (pool != null)
+		if (pool != null) {
 			pool.shutdown();
 
-		try {
-			if (!pool.awaitTermination(KafkaConstants.INIT_TIMEOUT_MIN,
-					TimeUnit.MINUTES)) {
-				logger.warn("Timed out waiting for consumer threads to shut down, exiting uncleanly");
+			try {
+				if (!pool.awaitTermination(KafkaConstants.INIT_TIMEOUT_MIN,
+						TimeUnit.MINUTES)) {
+					logger.warn("Timed out waiting for consumer threads to shut down, exiting uncleanly");
+				}
+			} catch (InterruptedException e) {
+				logger.error("Interrupted during shutdown, exiting uncleanly");
 			}
-		} catch (InterruptedException e) {
-			logger.error("Interrupted during shutdown, exiting uncleanly");
 		}
 	}
 

@@ -7,8 +7,7 @@
  */
 package org.darkphoenixs.mq.common;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.factory.ProducerFactory;
@@ -30,6 +29,9 @@ public class MessageProducerFactory implements ProducerFactory {
 
 	/** producers */
 	private Producer<?>[] producers;
+
+	/** producerCache */
+	private ConcurrentHashMap<String, Producer<?>> producerCache = new ConcurrentHashMap<>();
 
 	/**
 	 * @return the producers
@@ -63,17 +65,9 @@ public class MessageProducerFactory implements ProducerFactory {
 	}
 
 	@Override
-	public synchronized <T> void addProducer(Producer<T> producer) throws MQException {
+	public <T> void addProducer(Producer<T> producer) throws MQException {
 
-		if (producers == null)
-
-			producers = new Producer[0];
-
-		List<Producer<?>> producerList = Arrays.asList(producers);
-
-		producerList.add(producer);
-
-		setProducers((Producer<?>[]) producerList.toArray());
+		producerCache.put(producer.getProducerKey(), producer);
 
 		logger.debug("Add Producer : " + producer.getProducerKey());
 
@@ -81,28 +75,35 @@ public class MessageProducerFactory implements ProducerFactory {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized <T> Producer<T> getProducer(String producerKey) throws MQException {
+	public <T> Producer<T> getProducer(String producerKey) throws MQException {
 
-		if (null != producerKey && !"".equals(producerKey))
+		if (producerCache.containsKey(producerKey)) {
 
-			for (int i = 0; i < producers.length; i++) {
+			logger.debug("Get Producer : " + producerKey);
 
-				if (producers[i].getProducerKey().equals(producerKey)
-						|| producers[i].getProducerKey().endsWith(producerKey)
-						|| producerKey.endsWith(producers[i].getProducerKey())) {
+			return (Producer<T>) producerCache.get(producerKey);
 
-					logger.debug("Get Producer : " + producerKey);
-					
-					return (Producer<T>) producers[i];
-				}
-			}
+		} else {
 
-		logger.warn("Unknown producerKey : " + producerKey);
-		return null;
+			logger.warn("Unknown ProducerKey : " + producerKey);
+
+			return null;
+		}
 	}
 
 	@Override
-	public synchronized void destroy() {
+	public void init() throws MQException {
+
+		if (producers != null)
+
+			for (int i = 0; i < producers.length; i++)
+
+				producerCache.put(producers[i].getProducerKey(), producers[i]);
+
+	}
+
+	@Override
+	public void destroy() throws MQException {
 
 		if (producers != null)
 			producers = null;
@@ -110,7 +111,9 @@ public class MessageProducerFactory implements ProducerFactory {
 		if (instance != null)
 			instance = null;
 
+		if (producerCache != null)
+			producerCache.clear();
+
 		logger.debug("Destroyed!");
 	}
-
 }
