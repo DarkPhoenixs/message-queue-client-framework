@@ -37,7 +37,7 @@ Factory config with spring
 ```xml
 <!-- Message Producer Factory -->
 <bean id="messageProducerFactory" class="org.darkphoenixs.mq.common.MessageProducerFactory" 
-  destroy-method="destroy">
+  	init-method="init" destroy-method="destroy">
     <property name="producers"> 
         <array> 
             <ref bean="messageProducer" /> 
@@ -47,7 +47,7 @@ Factory config with spring
 
 <!-- Message Consumer Factory  -->
 <bean id="messageConsumerFactory" class="org.darkphoenixs.mq.common.MessageConsumerFactory" 
-  destroy-method="destroy">
+  	init-method="init" destroy-method="destroy">
     <property name="consumers"> 
         <array> 
             <ref bean="messageConsumer" /> 
