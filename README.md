@@ -33,7 +33,7 @@ API documentation is available at [messagequeue-framework-1.0 api] (http://htmlp
 
 ![image](https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/factory.png)
 
-Factory config with spring
+Factory config with Spring
 ```xml
 <!-- Message Producer Factory -->
 <bean id="messageProducerFactory" class="org.darkphoenixs.mq.common.MessageProducerFactory" 
