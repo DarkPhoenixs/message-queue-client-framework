@@ -22,10 +22,10 @@ API documentation is available at [messagequeue-framework-1.0 api] (http://htmlp
 
 ActiveMQ config with Spring
 
-[applicationContext-message.xm](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-message.xml)
-[applicationContext-sender.xm](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-sender.xml)
-[applicationContext-receiver.xml](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-receiver.xml)
-[mq.properties](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/mq.properties)
+**[applicationContext-message.xm](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-message.xml)
+**[applicationContext-sender.xm](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-sender.xml)
+**[applicationContext-receiver.xml](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-receiver.xml)
+**[mq.properties](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/mq.properties)
 
 Kafka config with Spring
 
