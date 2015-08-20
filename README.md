@@ -27,7 +27,12 @@ API documentation is available at [messagequeue-framework-1.0 api] (http://htmlp
  - [applicationContext-receiver.xml](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-receiver.xml)
  - [mq.properties](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/mq.properties)
 
-Kafka config with Spring
+ **Kafka config with Spring**
+ 
+ - [applicationContext-producer.xml](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/main/resources/kafka/applicationContext-producer.xml)
+ - [applicationContext-consumer.xml](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/main/resources/kafka/applicationContext-consumer.xml)
+ - [producer.properties](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/main/resources/kafka/producer.properties)
+ - [consumer.properties](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/main/resources/kafka/consumer.properties)
 
 ## Producer
 
