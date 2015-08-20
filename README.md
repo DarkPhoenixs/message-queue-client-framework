@@ -30,6 +30,8 @@ ActiveMQ config with Spring
 
 > [mq.properties](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/mq.properties)
 
+***
+
 Kafka config with Spring
 
 ## Producer
