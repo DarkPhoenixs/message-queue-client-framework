@@ -22,7 +22,7 @@ API documentation is available at [messagequeue-framework-1.0 api] (http://htmlp
 
 ActiveMQ config with Spring
 
->> [applicationContext-message.xm](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-message.xml)
+> > [applicationContext-message.xm](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-message.xml)
 
 > [applicationContext-sender.xm](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/main/resources/activemq/applicationContext-sender.xml)
 
