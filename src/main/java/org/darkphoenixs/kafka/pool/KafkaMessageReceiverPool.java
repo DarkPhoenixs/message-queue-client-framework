@@ -344,19 +344,22 @@ public class KafkaMessageReceiverPool<K, V> {
 
 				V value = messageAndMetadata.message();
 
-				int partition = messageAndMetadata.partition();
-
-				String topic = messageAndMetadata.topic();
-
-				long offset = messageAndMetadata.offset();
-
-				int productArity = messageAndMetadata.productArity();
-
-				String productPrefix = messageAndMetadata.productPrefix();
-
 				try {
+					
 					this.adapter.messageAdapter(key, value);
+					
 				} catch (MQException e) {
+					
+					int partition = messageAndMetadata.partition();
+
+					String topic = messageAndMetadata.topic();
+
+					long offset = messageAndMetadata.offset();
+
+					int productArity = messageAndMetadata.productArity();
+
+					String productPrefix = messageAndMetadata.productPrefix();
+					
 					logger.error("ReceiverThread-" + threadNumber
 							+ " productArity: " + productArity
 							+ " productPrefix: " + productPrefix + " topic: "
