@@ -65,7 +65,9 @@ public class KafkaMessageReceiverPool<K, V> {
 	private int poolSize;
 	/** config */
 	private Resource config;
-
+	/** autoCommit */
+	private Boolean autoCommit = true;
+	
 	/** keyDecoder */
 	private Class<?> keyDecoderClass = DefaultDecoder.class;
 	/** valDecoder */
@@ -85,7 +87,7 @@ public class KafkaMessageReceiverPool<K, V> {
 	 *            the zookeeperStr to set
 	 */
 	public void setZookeeperStr(String zookeeperStr) {
-		props.put(KafkaConstants.ZOOKEEPER_LIST, zookeeperStr);
+		props.setProperty(KafkaConstants.ZOOKEEPER_LIST, zookeeperStr);
 	}
 
 	/**
@@ -93,9 +95,19 @@ public class KafkaMessageReceiverPool<K, V> {
 	 *            the clientId to set
 	 */
 	public void setClientId(String clientId) {
-		props.put(KafkaConstants.CLIENT_ID, clientId);
+		props.setProperty(KafkaConstants.CLIENT_ID, clientId);
 	}
 
+	/**
+	 * @param autoCommit
+	 *            the autoCommit to set
+	 */
+	public void setAutoCommit(boolean autoCommit) {
+		this.autoCommit = autoCommit;
+		props.setProperty(KafkaConstants.AUTO_COMMIT_ENABLE,
+				String.valueOf(autoCommit));
+	}
+	
 	/**
 	 * @param config
 	 *            the config to set
@@ -123,6 +135,13 @@ public class KafkaMessageReceiverPool<K, V> {
 		return props.getProperty(KafkaConstants.ZOOKEEPER_LIST);
 	}
 
+	/**
+	 * @return the autoCommit
+	 */
+	public Boolean getAutoCommit() {
+		return autoCommit;
+	}
+	
 	/**
 	 * @return the props
 	 */
@@ -327,13 +346,27 @@ public class KafkaMessageReceiverPool<K, V> {
 
 				int partition = messageAndMetadata.partition();
 
+				String topic = messageAndMetadata.topic();
+
+				long offset = messageAndMetadata.offset();
+
+				int productArity = messageAndMetadata.productArity();
+
+				String productPrefix = messageAndMetadata.productPrefix();
+
 				try {
 					this.adapter.messageAdapter(key, value);
 				} catch (MQException e) {
 					logger.error("ReceiverThread-" + threadNumber
-							+ " partition: " + partition + " Exception: "
-							+ e.getMessage());
+							+ " productArity: " + productArity
+							+ " productPrefix: " + productPrefix + " topic: "
+							+ topic + " offset: " + offset + " partition: "
+							+ partition + " Exception: " + e.getMessage());
 				}
+
+				/* commitOffsets */
+				if (!getAutoCommit())
+					consumer.commitOffsets();
 			}
 
 			logger.info("ReceiverThread-" + threadNumber + " clientId: "

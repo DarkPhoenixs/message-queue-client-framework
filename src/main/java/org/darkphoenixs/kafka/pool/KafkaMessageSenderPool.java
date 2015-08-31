@@ -105,7 +105,7 @@ public class KafkaMessageSenderPool<K, V> {
 	 * @param clientId the clientId to set
 	 */
 	public void setClientId(String clientId) {
-		props.put(KafkaConstants.CLIENT_ID, clientId);
+		props.setProperty(KafkaConstants.CLIENT_ID, clientId);
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class KafkaMessageSenderPool<K, V> {
 	 *            the brokerStr to set
 	 */
 	public void setBrokerStr(String brokerStr) {
-		props.put(KafkaConstants.BROKER_LIST, brokerStr);
+		props.setProperty(KafkaConstants.BROKER_LIST, brokerStr);
 	}
 
 	/**
