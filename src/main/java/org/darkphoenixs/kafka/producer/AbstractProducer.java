@@ -10,6 +10,8 @@ package org.darkphoenixs.kafka.producer;
 import org.darkphoenixs.kafka.core.KafkaMessageTemplate;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.producer.Producer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Title: AbstractProducer</p>
@@ -22,6 +24,9 @@ import org.darkphoenixs.mq.producer.Producer;
  */
 public abstract class AbstractProducer<T> implements Producer<T>  {
 
+	/** logger */
+	protected Logger logger;
+	
 	/** protocolId */
 	private String protocolId;
 	
@@ -31,6 +36,13 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	/** topic */
 	private String destination;
 
+	/**
+	 * <p>Title: AbstractProducer</p>
+	 */
+	public AbstractProducer() {
+		logger = LoggerFactory.getLogger(getClass());
+	}
+	
 	/**
 	 * @return the messageTemplate
 	 */

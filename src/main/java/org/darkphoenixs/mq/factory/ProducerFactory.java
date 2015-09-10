@@ -9,8 +9,6 @@ package org.darkphoenixs.mq.factory;
 
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.producer.Producer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>Title: ProducerFactory</p>
@@ -21,9 +19,6 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  */
 public interface ProducerFactory {
-
-	/** 日志对象 */
-	public static final Logger logger = LoggerFactory.getLogger(ProducerFactory.class);
 	
 	/**
 	 * <p>Title: addProducer</p>

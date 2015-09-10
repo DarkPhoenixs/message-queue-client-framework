@@ -12,6 +12,8 @@ import java.util.concurrent.ExecutorService;
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.listener.MessageListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Title: MessageConsumerListener</p>
@@ -23,6 +25,9 @@ import org.darkphoenixs.mq.listener.MessageListener;
  * @version 1.0
  */
 public class MessageConsumerListener<T> implements MessageListener<T> {
+
+	/** logger */
+	protected Logger logger = LoggerFactory.getLogger(MessageConsumerListener.class);
 
 	/** messageConsumer */
 	private Consumer<T> consumer;

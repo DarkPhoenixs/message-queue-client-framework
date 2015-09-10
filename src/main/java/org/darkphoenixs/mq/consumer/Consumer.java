@@ -8,8 +8,6 @@
 package org.darkphoenixs.mq.consumer;
 
 import org.darkphoenixs.mq.exception.MQException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>Title: Consumer</p>
@@ -20,9 +18,6 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  */
 public interface Consumer<T> {
-
-	/** 日志对象 */
-	public static final Logger logger = LoggerFactory.getLogger(Consumer.class);
 	
 	/**
 	 * <p>Title: receive</p>

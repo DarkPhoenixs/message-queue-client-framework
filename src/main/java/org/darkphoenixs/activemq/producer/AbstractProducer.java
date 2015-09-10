@@ -13,6 +13,8 @@ import javax.jms.Topic;
 
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.producer.Producer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 /**
@@ -26,6 +28,9 @@ import org.springframework.jms.core.JmsTemplate;
  */
 public abstract class AbstractProducer<T> implements Producer<T> {
 
+	/** logger */
+	protected Logger logger;
+	
 	/** protocolId */
 	private String protocolId;
 	
@@ -34,6 +39,13 @@ public abstract class AbstractProducer<T> implements Producer<T> {
 
 	/** destination */
 	private Destination destination;
+	
+	/**
+	 * <p>Title: AbstractProducer</p>
+	 */
+	public AbstractProducer() {
+		logger = LoggerFactory.getLogger(getClass());
+	}
 	
 	/**
 	 * @return the protocolId

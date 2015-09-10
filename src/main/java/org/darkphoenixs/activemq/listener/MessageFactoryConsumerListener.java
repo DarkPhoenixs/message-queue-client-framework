@@ -14,6 +14,8 @@ import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.factory.ConsumerFactory;
 import org.darkphoenixs.mq.listener.MessageListener;
 import org.darkphoenixs.mq.message.AbstractMessageBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Title: MessageFactoryConsumerListener</p>
@@ -26,6 +28,9 @@ import org.darkphoenixs.mq.message.AbstractMessageBean;
  */
 public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
 
+	/** logger */
+	protected Logger logger = LoggerFactory.getLogger(MessageFactoryConsumerListener.class);
+	
 	/** consumerFactory */
 	private ConsumerFactory consumerFactory;
 

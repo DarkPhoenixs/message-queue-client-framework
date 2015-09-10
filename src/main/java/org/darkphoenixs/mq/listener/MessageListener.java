@@ -8,8 +8,6 @@
 package org.darkphoenixs.mq.listener;
 
 import org.darkphoenixs.mq.exception.MQException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>Title: MessageListener</p>
@@ -20,9 +18,6 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  */
 public interface MessageListener<T> {
-
-	/** 日志对象 */
-	public static final Logger logger = LoggerFactory.getLogger(MessageListener.class);
 	
 	/**
 	 * <p>Title: onMessage</p>

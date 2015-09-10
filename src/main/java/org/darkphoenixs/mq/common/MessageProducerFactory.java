@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.factory.ProducerFactory;
 import org.darkphoenixs.mq.producer.Producer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Title: MessageProducerFactory</p>
@@ -23,6 +25,9 @@ import org.darkphoenixs.mq.producer.Producer;
  * @version 1.0
  */
 public class MessageProducerFactory implements ProducerFactory {
+
+	/** logger */
+	protected Logger logger = LoggerFactory.getLogger(MessageProducerFactory.class);
 
 	/** instance */
 	private static MessageProducerFactory instance;
