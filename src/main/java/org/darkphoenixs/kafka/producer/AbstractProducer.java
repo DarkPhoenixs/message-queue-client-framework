@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractProducer<T> implements Producer<T>  {
 
 	/** logger */
-	protected Logger logger;
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/** protocolId */
 	private String protocolId;
@@ -35,13 +35,6 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	
 	/** topic */
 	private String destination;
-
-	/**
-	 * <p>Title: AbstractProducer</p>
-	 */
-	public AbstractProducer() {
-		logger = LoggerFactory.getLogger(getClass());
-	}
 	
 	/**
 	 * @return the messageTemplate

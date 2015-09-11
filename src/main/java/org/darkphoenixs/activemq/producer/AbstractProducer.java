@@ -29,7 +29,7 @@ import org.springframework.jms.core.JmsTemplate;
 public abstract class AbstractProducer<T> implements Producer<T> {
 
 	/** logger */
-	protected Logger logger;
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/** protocolId */
 	private String protocolId;
@@ -39,13 +39,6 @@ public abstract class AbstractProducer<T> implements Producer<T> {
 
 	/** destination */
 	private Destination destination;
-	
-	/**
-	 * <p>Title: AbstractProducer</p>
-	 */
-	public AbstractProducer() {
-		logger = LoggerFactory.getLogger(getClass());
-	}
 	
 	/**
 	 * @return the protocolId

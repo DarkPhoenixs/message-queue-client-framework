@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractConsumer<T> implements Consumer<T> {
 
 	/** logger */
-	protected Logger logger;
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/** protocolId */
 	private String protocolId;
@@ -37,13 +37,6 @@ public abstract class AbstractConsumer<T> implements Consumer<T> {
 	/** funcName */
 	private String funcName;
 
-	/**
-	 * <p>Title: AbstractConsumer</p>
-	 */
-	public AbstractConsumer() {
-		logger = LoggerFactory.getLogger(getClass());
-	}
-	
 	/**
 	 * @return the protocolId
 	 */
