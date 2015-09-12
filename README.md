@@ -12,7 +12,8 @@ Message Queue Client Framework
 
 ## Release
 
-[messagequeue-framework v1.1](https://github.com/darkphoenixs/message-queue-client-framework/releases/tag/v1.1) (2015-09-12) 
+[messagequeue-framework v1.1](https://github.com/darkphoenixs/message-queue-client-framework/releases/tag/v1.1) (2015-09-12)
+
 [messagequeue-framework v1.0](https://github.com/darkphoenixs/message-queue-client-framework/releases/tag/v1.0) (2015-06-01) 
 
 ## Documentation
