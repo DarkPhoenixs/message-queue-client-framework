@@ -8,6 +8,11 @@
 	<!-- Kafka Message Encoder -->
 	<bean id="encoder" class="org.darkphoenixs.kafka.codec.MessageEncoderImpl" />
 
+	<!-- Kafka Message Queue -->
+	<bean id="destination" class="com.faw_qm.dp.dpe.kafka.core.KafkaDestination">
+		<constructor-arg value="QUEUE.TEST" />
+	</bean>
+	
 	<!-- Kafka Pool Connection -->
 	<bean id="messageSenderPool" class="org.darkphoenixs.kafka.pool.KafkaMessageSenderPool"
 		init-method="init" destroy-method="destroy">
@@ -24,7 +29,7 @@
 	<!-- Kafka Message Producer -->
 	<bean id="messageProducer" class="org.darkphoenixs.kafka.producer.MessageProducer">
 		<property name="messageTemplate" ref="messageTemplate" />
-		<property name="destination" value="QUEUE.TEST" />
+		<property name="destination" ref="destination" />
 	</bean>
 
 </beans>

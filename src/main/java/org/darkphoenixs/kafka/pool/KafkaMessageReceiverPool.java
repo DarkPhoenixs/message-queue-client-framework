@@ -266,7 +266,7 @@ public class KafkaMessageReceiverPool<K, V> {
 	 */
 	public synchronized void init() {
 
-		String topic = messageAdapter.getDestination();
+		String topic = messageAdapter.getDestination().getDestinationName();
 
 		int defaultSize = getPartitionNum(topic);
 

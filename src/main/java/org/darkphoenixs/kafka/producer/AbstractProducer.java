@@ -7,6 +7,7 @@
  */
 package org.darkphoenixs.kafka.producer;
 
+import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageTemplate;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.producer.Producer;
@@ -33,8 +34,8 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	/** messageTemplate */
 	private KafkaMessageTemplate<T> messageTemplate;
 	
-	/** topic */
-	private String destination;
+	/** destination */
+	private KafkaDestination destination;
 	
 	/**
 	 * @return the messageTemplate
@@ -53,14 +54,14 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	/**
 	 * @return the destination
 	 */
-	public String getDestination() {
+	public KafkaDestination getDestination() {
 		return destination;
 	}
 
 	/**
 	 * @param destination the destination to set
 	 */
-	public void setDestination(String destination) {
+	public void setDestination(KafkaDestination destination) {
 		this.destination = destination;
 	}
 
@@ -99,7 +100,7 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	@Override
 	public String getProducerKey() throws MQException {
 
-		return destination;
+		return destination.getDestinationName();
 	}
 	
 	/**

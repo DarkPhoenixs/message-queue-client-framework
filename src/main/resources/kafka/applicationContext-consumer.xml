@@ -8,6 +8,11 @@
 	<!-- Kafka Message Decoder -->
 	<bean id="decoder" class="org.darkphoenixs.kafka.codec.MessageDecoderImpl" />
 
+	<!-- Kafka Message Queue -->
+	<bean id="destination" class="com.faw_qm.dp.dpe.kafka.core.KafkaDestination">
+		<constructor-arg value="QUEUE.TEST" />
+	</bean>
+	
 	<!-- Kafka Message Consumer -->
 	<bean id="messageConsumer" class="org.darkphoenixs.kafka.consumer.MessageConsumer">
 	</bean>
@@ -21,7 +26,7 @@
 	<bean id="messageAdapter" class="org.darkphoenixs.kafka.core.KafkaMessageAdapter">
 		<property name="decoder" ref="decoder" />
 		<property name="messageListener" ref="messageListener" />
-		<property name="destination" value="QUEUE.TEST" />
+		<property name="destination" ref="destination" />
 	</bean>
 
 	<!-- Kafka Pool Connection -->

@@ -99,14 +99,14 @@ public class KafkaMessageTemplate<T> {
 	 * <p>Title: send</p>
 	 * <p>Description: 发送消息</p>
 	 *
-	 * @param topic 队列名称
+	 * @param destination 队列
 	 * @param message 消息
 	 */
-	public void send(String topic, byte[] message) throws MQException {
+	public void send(KafkaDestination destination, byte[] message) throws MQException {
 		
 		KafkaMessageSender<byte[], byte[]> sender = messageSenderPool.getSender(KafkaConstants.WAIT_TIME_MS);
 
-		sender.send(topic, message);
+		sender.send(destination.getDestinationName(), message);
 
 		sender.close();
 	}
@@ -115,33 +115,33 @@ public class KafkaMessageTemplate<T> {
 	 * <p>Title: convertAndSend</p>
 	 * <p>Description: 转换并发送消息</p>
 	 *
-	 * @param topic 队列名称
+	 * @param destination 队列
 	 * @param message 消息
 	 * @throws MQException 
 	 */
-	public void convertAndSend(String topic, T message) throws MQException {
+	public void convertAndSend(KafkaDestination destination, T message) throws MQException {
 		
 		byte[] encoded = encoder.encode(message);
 		
-		this.send(topic, encoded);
+		this.send(destination, encoded);
 	}
 	
 	/**
 	 * <p>Title: receive</p>
 	 * <p>Description: 接收消息</p>
 	 *
-	 * @param topic 队列名称
+	 * @param destination 队列
 	 * @param partition 分区编号
 	 * @param beginOffset 起始位置
 	 * @param readOffset 读取条数
 	 * @return 消息列表
 	 * @throws MQException
 	 */
-	public List<byte[]> receive(String topic, int partition, long beginOffset, long readOffset) throws MQException {
+	public List<byte[]> receive(KafkaDestination destination, int partition, long beginOffset, long readOffset) throws MQException {
 		
 		KafkaMessageReceiver<byte[], byte[]> receiver = messageReceiverPool.getReceiver();
 		
-		List<byte[]> messages = receiver.receive(topic, partition, beginOffset, readOffset);
+		List<byte[]> messages = receiver.receive(destination.getDestinationName(), partition, beginOffset, readOffset);
 		
 		receiver.close();
 		
@@ -152,16 +152,16 @@ public class KafkaMessageTemplate<T> {
 	 * <p>Title: receiveAndConvert</p>
 	 * <p>Description: 接收并转换消息</p>
 	 *
-	 * @param topic 队列名称
+	 * @param destination 队列
 	 * @param partition 分区编号
 	 * @param beginOffset 起始位置
 	 * @param readOffset 读取条数
 	 * @return 消息列表
 	 * @throws MQException
 	 */
-	public List<T> receiveAndConvert(String topic, int partition, long beginOffset, long readOffset) throws MQException {
+	public List<T> receiveAndConvert(KafkaDestination destination, int partition, long beginOffset, long readOffset) throws MQException {
 		
-		List<byte[]> decoded = this.receive(topic, partition, beginOffset, readOffset);
+		List<byte[]> decoded = this.receive(destination, partition, beginOffset, readOffset);
 		
 		return decoder.batchDecode(decoded);
 	}

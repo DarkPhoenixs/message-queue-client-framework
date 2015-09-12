@@ -28,7 +28,7 @@ public class KafkaMessageAdapter<T> {
 	private MessageListener<T> messageListener;
 
 	/** destination */
-	private String destination;
+	private KafkaDestination destination;
 	
 	/**
 	 * @return the decoder
@@ -57,21 +57,21 @@ public class KafkaMessageAdapter<T> {
 	public void setMessageListener(MessageListener<T> messageListener) {
 		this.messageListener = messageListener;
 	}
-
+	
 	/**
 	 * @return the destination
 	 */
-	public String getDestination() {
+	public KafkaDestination getDestination() {
 		return destination;
 	}
 
 	/**
 	 * @param destination the destination to set
 	 */
-	public void setDestination(String destination) {
+	public void setDestination(KafkaDestination destination) {
 		this.destination = destination;
 	}
-	
+
 	/**
 	 * <p>Title: messageAdapter</p>
 	 * <p>Description: 消息适配方法</p>
