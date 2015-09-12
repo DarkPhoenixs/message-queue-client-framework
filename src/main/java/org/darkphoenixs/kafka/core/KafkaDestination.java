@@ -31,7 +31,7 @@ public class KafkaDestination {
 	 * <p>Title: KafkaDestination</p>
 	 * <p>Description: KafkaDestination</p>
 	 *
-	 * @param destination destination
+	 * @param destinationName destinationName
 	 */
 	public KafkaDestination(String destinationName) {
 		this.destinationName = destinationName;
