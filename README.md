@@ -12,11 +12,12 @@ Message Queue Client Framework
 
 ## Release
 
+[messagequeue-framework v1.1](https://github.com/darkphoenixs/message-queue-client-framework/releases/tag/v1.1) (2015-09-12) 
 [messagequeue-framework v1.0](https://github.com/darkphoenixs/message-queue-client-framework/releases/tag/v1.0) (2015-06-01) 
 
 ## Documentation
 
-API documentation is available at [messagequeue-framework-1.0 api] (http://htmlpreview.github.io/?https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/doc/index.html)
+API documentation is available at [messagequeue-framework-1.1 api] (http://htmlpreview.github.io/?https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/doc/index.html)
 
 ## Configuration
 
