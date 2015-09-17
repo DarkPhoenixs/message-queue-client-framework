@@ -183,30 +183,6 @@ public class KafkaMessageSenderPool<K, V> {
 	}
 
 	/**
-	 * Init Task Call Back.
-	 */
-	class InitTask implements Callable<Boolean> {
-		CountDownLatch count;
-		KafkaMessageSenderPool<K, V> pool;
-
-		public InitTask(CountDownLatch count, KafkaMessageSenderPool<K, V> pool) {
-			this.count = count;
-			this.pool = pool;
-		}
-
-		@Override
-		public Boolean call() throws Exception {
-			KafkaMessageSender<K, V> sender = new KafkaMessageSenderImpl<K, V>(
-					props, pool);
-			if (sender != null) {
-				queue.offer(sender);
-				count.countDown();
-			}
-			return true;
-		}
-	}
-
-	/**
 	 * Get a sender from the pool within the given timeout
 	 * 
 	 * @param waitTimeMillis
@@ -266,20 +242,9 @@ public class KafkaMessageSenderPool<K, V> {
 		try {
 			List<Callable<Boolean>> taskList = new ArrayList<>();
 			int size = queue.size();
-			final CountDownLatch count = new CountDownLatch(queue.size());
+			final CountDownLatch count = new CountDownLatch(size);
 			for (int i = 0; i < size; i++) {
-				taskList.add(new Callable<Boolean>() {
-
-					@Override
-					public Boolean call() throws Exception {
-						KafkaMessageSender<K, V> sender = queue.poll();
-						if (sender != null) {
-							sender.shutDown();
-							count.countDown();
-						}
-						return true;
-					}
-				});
+				taskList.add(new DestroyTask(count));
 			}
 
 			pool.invokeAll(taskList);
@@ -291,5 +256,53 @@ public class KafkaMessageSenderPool<K, V> {
 		} finally {
 			closingLock.writeLock().unlock();
 		}
+	}
+
+	/**
+	 * Init Task Call Back.
+	 */
+	class InitTask implements Callable<Boolean> {
+		
+		CountDownLatch count;
+		KafkaMessageSenderPool<K, V> pool;
+
+		public InitTask(CountDownLatch count, KafkaMessageSenderPool<K, V> pool) {
+			this.count = count;
+			this.pool = pool;
+		}
+
+		@Override
+		public Boolean call() throws Exception {
+			KafkaMessageSender<K, V> sender = new KafkaMessageSenderImpl<K, V>(
+					props, pool);
+			if (sender != null) {
+				queue.offer(sender);
+				count.countDown();
+			}
+			return true;
+		}
+	}
+	
+	/**
+	 * Destroy Task Call Back.
+	 */
+	class DestroyTask implements Callable<Boolean> {
+		
+		CountDownLatch count;
+
+		public DestroyTask(CountDownLatch count) {
+			this.count = count;
+		}
+		
+		@Override
+		public Boolean call() throws Exception {
+			KafkaMessageSender<K, V> sender = queue.poll();
+			if (sender != null) {
+				sender.shutDown();
+				count.countDown();
+			}
+			return true;
+		}
+		
 	}
 }
