@@ -18,7 +18,7 @@ Message Queue Client Framework
 
 ## Documentation
 
-API documentation is available at [messagequeue-framework-1.1 api] (http://htmlpreview.github.io/?https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/doc/index.html)
+API documentation is available at [messagequeue-framework-1.1 api] (http://htmlpreview.github.io/?https://raw.githubusercontent.com/DarkPhoenixs/message-queue-client-framework/v1.1/doc/index.html)
 
 ## Configuration
 
