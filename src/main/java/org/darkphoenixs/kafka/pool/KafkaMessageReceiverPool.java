@@ -40,7 +40,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 /**
  * <p>Title: KafkaMessageReceiverPool</p>
- * <p>Description: Kafka消息发送线程池</p>
+ * <p>Description: Kafka消息接受线程池</p>
  *
  * @since 2015-06-01
  * @author Victor.Zxy
@@ -392,8 +392,8 @@ public class KafkaMessageReceiverPool<K, V> {
 			pool.shutdown();
 
 			try {
-				if (!pool.awaitTermination(KafkaConstants.INIT_TIMEOUT_MIN,
-						TimeUnit.MINUTES)) {
+				if (!pool.awaitTermination(KafkaConstants.INIT_TIMEOUT_MS,
+						TimeUnit.MILLISECONDS)) {
 					logger.warn("Timed out waiting for consumer threads to shut down, exiting uncleanly");
 				}
 			} catch (InterruptedException e) {
