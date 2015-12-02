@@ -22,7 +22,7 @@ import org.darkphoenixs.mq.message.AbstractMessageBean;
  * @see MessageListener
  * @version 1.0
  */
-public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
+public class MessageFactoryConsumerListener implements MessageListener<AbstractMessageBean> {
 
 	/** consumerFactory */
 	private ConsumerFactory consumerFactory;
@@ -43,28 +43,24 @@ public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
 	}
 
 	@Override
-	public void onMessage(T message) throws MQException {
+	public void onMessage(AbstractMessageBean message) throws MQException {
 
-		if (consumerFactory != null) {
-
-			if (message instanceof AbstractMessageBean) {
-
-				final AbstractMessageBean messageBean = (AbstractMessageBean) message;
-
-				final Consumer<AbstractMessageBean> consumer = consumerFactory
-						.getConsumer(messageBean.getMessageType());
-
-				if (consumer != null) {
-
-					consumer.receive(messageBean);
-				} else
-					throw new MQException("Consumer is null !");
-			} else
-				throw new MQException(
-						"Message is not instanceof AbstractMessageBean ! Message is "
-								+ message);
-		} else
+		if (consumerFactory == null)	
 			throw new MQException("ConsumerFactory is null !");
-	}
 
+		if (message == null)	
+			throw new MQException("Message is null !");
+		
+		String messageType = message.getMessageType();
+		
+		if (messageType == null)	
+			throw new MQException("Message Type is null !");
+		
+		Consumer<AbstractMessageBean> consumer = consumerFactory.getConsumer(messageType);
+		
+		if (consumer == null)
+			throw new MQException("Consumer is null !");
+		
+		consumer.receive(message);
+	}
 }

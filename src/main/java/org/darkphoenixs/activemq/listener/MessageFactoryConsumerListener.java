@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * @see MessageListener
  * @version 1.0
  */
-public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
+public class MessageFactoryConsumerListener implements MessageListener<AbstractMessageBean> {
 
 	/** logger */
 	protected Logger logger = LoggerFactory.getLogger(MessageFactoryConsumerListener.class);
@@ -68,42 +68,40 @@ public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
 	}
 
 	@Override
-	public void onMessage(final T message) throws MQException {
+	public void onMessage(final AbstractMessageBean message) throws MQException {
 
-		if (consumerFactory != null) {
-
-			if (message instanceof AbstractMessageBean) {
-
-				final AbstractMessageBean messageBean = (AbstractMessageBean) message;
-
-				final Consumer<AbstractMessageBean> consumer = consumerFactory
-						.getConsumer(messageBean.getMessageType());
-
-				if (consumer != null) {
-
-					if (threadPool != null) {
-
-						threadPool.execute(new Runnable() {
-
-							@Override
-							public void run() {
-
-								try {
-									consumer.receive(messageBean);
-								} catch (MQException e) {
-									logger.error(e.getMessage());
-								}
-							}
-						});
-					} else
-						consumer.receive(messageBean);
-				} else
-					throw new MQException("Consumer is null !");
-			} else
-				throw new MQException(
-						"Message is not instanceof AbstractMessageBean ! Message is "
-								+ message);
-		} else
+		if (consumerFactory == null)	
 			throw new MQException("ConsumerFactory is null !");
+
+		if (message == null)	
+			throw new MQException("Message is null !");
+		
+		final String messageType = message.getMessageType();
+		
+		if (messageType == null)	
+			throw new MQException("Message Type is null !");
+		
+		final Consumer<AbstractMessageBean> consumer = consumerFactory.getConsumer(messageType);
+		
+		if (consumer == null)
+			throw new MQException("Consumer is null !");
+			
+		if (threadPool == null)
+
+			consumer.receive(message);
+		
+		else
+			threadPool.execute(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						consumer.receive(message);
+					} catch (MQException e) {
+						logger.error(e.getMessage());
+					}
+				}
+			});
 	}
 }
