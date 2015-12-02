@@ -28,6 +28,7 @@ public interface KafkaConstants {
 
 	int DEFAULT_REFRESH_FRE_SEC = 60;
 	int INIT_TIMEOUT_MIN = 2; // 2min
+	int INIT_TIMEOUT_MS = 5000; // 5000ms
 
 	int ZOOKEEPER_SESSION_TIMEOUT = 100; // in ms
 	int INTERVAL_IN_MS = 100;
