@@ -9,7 +9,7 @@ package org.darkphoenixs.mq.message;
 
 import java.io.Serializable;
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * <p>Title: AbstractMessageBean</p>
@@ -116,6 +116,6 @@ public abstract class AbstractMessageBean implements Serializable {
 	@Override
 	public String toString() {
 
-		return JSONObject.fromObject(this).toString();
+		return JSONObject.toJSONString(this);
 	}
 }
