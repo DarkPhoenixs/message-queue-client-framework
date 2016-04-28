@@ -31,5 +31,8 @@ public class SenderTest {
 			producer.send(message);
 
 		}
+		
+		Thread.sleep(Integer.MAX_VALUE);
+
 	}
 }

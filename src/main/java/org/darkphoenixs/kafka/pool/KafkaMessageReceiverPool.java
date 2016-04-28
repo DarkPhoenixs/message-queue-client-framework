@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import kafka.consumer.ConsumerConfig;
@@ -48,6 +49,8 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
  */
 public class KafkaMessageReceiverPool<K, V> {
 
+	private static final String tagger = "KafkaMessageReceiverPool";
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(KafkaMessageReceiverPool.class);
 
@@ -73,13 +76,38 @@ public class KafkaMessageReceiverPool<K, V> {
 	/** valDecoder */
 	private Class<?> valDecoderClass = DefaultDecoder.class;
 
+	/** threadFactory */
+	private ThreadFactory threadFactory;
+	
+	/**
+	 * Init threadFactory.
+	 */
+	public KafkaMessageReceiverPool() {
+
+		this.threadFactory = new KafkaPoolThreadFactory(tagger);
+	}
+	
+	/**
+	 * @return the threadFactory
+	 */
+	public ThreadFactory getThreadFactory() {
+		return threadFactory;
+	}
+
+	/**
+	 * @param threadFactory the threadFactory to set
+	 */
+	public void setThreadFactory(ThreadFactory threadFactory) {
+		this.threadFactory = threadFactory;
+	}
+	
 	/**
 	 * @param poolSize
 	 *            the poolSize to set
 	 */
 	public void setPoolSize(int poolSize) {
 		this.poolSize = poolSize;
-		this.pool = Executors.newFixedThreadPool(poolSize);
+		this.pool = Executors.newFixedThreadPool(poolSize, threadFactory);
 	}
 
 	/**

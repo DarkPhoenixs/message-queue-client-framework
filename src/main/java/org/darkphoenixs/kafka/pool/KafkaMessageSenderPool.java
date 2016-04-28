@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -41,6 +42,8 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
  */
 public class KafkaMessageSenderPool<K, V> {
 
+	private static final String tagger = "KafkaMessageSenderPool";
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(KafkaMessageSenderPool.class);
 
@@ -63,6 +66,31 @@ public class KafkaMessageSenderPool<K, V> {
 	/** config */
 	private Resource config;
 	
+	/** threadFactory */
+	private ThreadFactory threadFactory;
+	
+	/**
+	 * Init threadFactory.
+	 */
+	public KafkaMessageSenderPool() {
+
+		this.threadFactory = new KafkaPoolThreadFactory(tagger, true);
+	}
+	
+	/**
+	 * @return the threadFactory
+	 */
+	public ThreadFactory getThreadFactory() {
+		return threadFactory;
+	}
+
+	/**
+	 * @param threadFactory the threadFactory to set
+	 */
+	public void setThreadFactory(ThreadFactory threadFactory) {
+		this.threadFactory = threadFactory;
+	}
+
 	/**
 	 * @param poolSize
 	 *            the poolSize to set
@@ -73,7 +101,7 @@ public class KafkaMessageSenderPool<K, V> {
 		this.poolSize = poolSize;
 		this.freeSender = new Semaphore(poolSize);
 		this.queue = new LinkedBlockingQueue<>(poolSize);
-		this.pool = Executors.newFixedThreadPool(poolSize);
+		this.pool = Executors.newFixedThreadPool(poolSize, threadFactory);
 	}
 	
 	/**
