@@ -12,6 +12,6 @@ public class ReceiverTest {
 	@Test
 	public void test() throws Exception {
 
-		Thread.sleep(Integer.MAX_VALUE);
+		Thread.sleep(5000);
 	}
 }
