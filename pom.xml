@@ -213,6 +213,7 @@
 			<version>1.2.17</version>
 		</dependency>
 		<dependency>
+<<<<<<< HEAD
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.12</version>
@@ -221,6 +222,11 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>1.2.10</version>
+=======
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.7</version>
+>>>>>>> origin/master
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

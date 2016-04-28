@@ -16,7 +16,10 @@ import org.apache.curator.retry.RetryNTimes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import com.alibaba.fastjson.JSON;
+=======
+>>>>>>> origin/master
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -108,8 +111,15 @@ public class ZookeeperBrokers {
 			String topicBrokersPath = partitionPath();
 			byte[] hostPortData = _curator.getData().forPath(
 					topicBrokersPath + "/" + partition + "/state");
+<<<<<<< HEAD
 			JSONObject json = JSON.parseObject(new String(hostPortData, "UTF-8"));
 			Integer leader = json.getInteger("leader");
+=======
+			JSONObject json = JSONObject.parseObject(new String(hostPortData,
+					"UTF-8"));
+			
+			Integer leader = Integer.parseInt(json.get("leader").toString());
+>>>>>>> origin/master
 			return leader;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -126,9 +136,17 @@ public class ZookeeperBrokers {
 	 */
 	public String getBrokerHost(byte[] contents) {
 		try {
+<<<<<<< HEAD
 			JSONObject json = JSON.parseObject(new String(contents, "UTF-8"));
 			String host = json.getString("host");
 			Integer port = json.getInteger("port");
+=======
+			JSONObject json = JSONObject.parseObject(new String(contents,
+					"UTF-8"));
+
+			String host = json.get("host").toString();
+			Integer port = Integer.parseInt(json.get("port").toString());
+>>>>>>> origin/master
 			return host + ":" + port;
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
