@@ -10,13 +10,14 @@ package org.darkphoenixs.kafka.core;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import net.sf.json.JSONObject;
-
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryNTimes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * <p>Title: ZookeeperBrokers</p>
@@ -107,9 +108,8 @@ public class ZookeeperBrokers {
 			String topicBrokersPath = partitionPath();
 			byte[] hostPortData = _curator.getData().forPath(
 					topicBrokersPath + "/" + partition + "/state");
-			JSONObject json = JSONObject.fromObject(new String(hostPortData,
-					"UTF-8"));
-			Integer leader = Integer.parseInt(json.get("leader").toString());
+			JSONObject json = JSON.parseObject(new String(hostPortData, "UTF-8"));
+			Integer leader = json.getInteger("leader");
 			return leader;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -126,11 +126,9 @@ public class ZookeeperBrokers {
 	 */
 	public String getBrokerHost(byte[] contents) {
 		try {
-			JSONObject json = JSONObject.fromObject(new String(contents,
-					"UTF-8"));
-
-			String host = json.get("host").toString();
-			Integer port = Integer.parseInt(json.get("port").toString());
+			JSONObject json = JSON.parseObject(new String(contents, "UTF-8"));
+			String host = json.getString("host");
+			Integer port = json.getInteger("port");
 			return host + ":" + port;
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
