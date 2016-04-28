@@ -23,13 +23,21 @@
 		</developer>
 	</developers>
 
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/DarkPhoenixs/message-queue-client-framework/issues</url>
+	</issueManagement>
+
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
+
+	<inceptionYear>2015</inceptionYear>
 
 	<scm>
 		<connection>scm:git:https://github.com/DarkPhoenixs/message-queue-client-framework.git</connection>
