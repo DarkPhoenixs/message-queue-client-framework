@@ -100,7 +100,7 @@ public class KafkaMessageSenderPool<K, V> {
 			poolSize = defaultSize;
 		this.poolSize = poolSize;
 		this.freeSender = new Semaphore(poolSize);
-		this.queue = new LinkedBlockingQueue<>(poolSize);
+		this.queue = new LinkedBlockingQueue<KafkaMessageSender<K, V>>(poolSize);
 		this.pool = Executors.newFixedThreadPool(poolSize, threadFactory);
 	}
 	
@@ -196,7 +196,7 @@ public class KafkaMessageSenderPool<K, V> {
 		
 		logger.info("Message sender pool initializing. poolSize : " + poolSize + " config : " + props.toString());
 		
-		List<Callable<Boolean>> taskList = new ArrayList<>();
+		List<Callable<Boolean>> taskList = new ArrayList<Callable<Boolean>>();
 		final CountDownLatch count = new CountDownLatch(poolSize);
 		for (int i = 0; i < poolSize; i++) {
 			taskList.add(new InitTask(count, this));
@@ -268,7 +268,7 @@ public class KafkaMessageSenderPool<K, V> {
 		// lock the thread for closing
 		closingLock.writeLock().lock();
 		try {
-			List<Callable<Boolean>> taskList = new ArrayList<>();
+			List<Callable<Boolean>> taskList = new ArrayList<Callable<Boolean>>();
 			int size = queue.size();
 			final CountDownLatch count = new CountDownLatch(size);
 			for (int i = 0; i < size; i++) {

@@ -283,7 +283,7 @@ public class KafkaMessageReceiverPool<K, V> {
 	 */
 	public KafkaMessageReceiver<K, V> getReceiver() {
 
-		KafkaMessageReceiver<K, V> receiver = new KafkaMessageReceiverImpl<>(
+		KafkaMessageReceiver<K, V> receiver = new KafkaMessageReceiverImpl<K, V>(
 				props, this);
 
 		return receiver;

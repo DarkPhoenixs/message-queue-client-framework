@@ -36,7 +36,7 @@ public class MessageConsumerFactory implements ConsumerFactory {
 	private Consumer<?>[] consumers;
 
 	/** consumerCache */
-	private ConcurrentHashMap<String, Consumer<?>> consumerCache = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Consumer<?>> consumerCache = new ConcurrentHashMap<String, Consumer<?>>();
 
 	/**
 	 * @return the consumers
