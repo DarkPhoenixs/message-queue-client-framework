@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/DarkPhoenixs/message-queue-client-framework.svg?branch=master)](https://travis-ci.org/DarkPhoenixs/message-queue-client-framework)
 [![Codecov](https://codecov.io/gh/DarkPhoenixs/message-queue-client-framework/branch/master/graph/badge.svg)](https://codecov.io/gh/DarkPhoenixs/message-queue-client-framework)
+[![GitHub release](https://img.shields.io/github/release/DarkPhoenixs/message-queue-client-framework.svg)](https://github.com/DarkPhoenixs/message-queue-client-framework/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
   消息队列客户端框架（Apache Kafka &amp; Apache ActiveMQ）
