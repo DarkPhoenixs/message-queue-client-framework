@@ -6,7 +6,7 @@
 [![GitHub release](https://img.shields.io/github/release/DarkPhoenixs/message-queue-client-framework.svg)](https://github.com/DarkPhoenixs/message-queue-client-framework/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-  消息队列客户端框架（Apache Kafka &amp; Apache ActiveMQ）
+  A message queue client framework (Apache Kafka &amp; Apache ActiveMQ)
   * [Release](#release)
   * [Documentation](#documentation)
   * [Configuration](#configuration)
