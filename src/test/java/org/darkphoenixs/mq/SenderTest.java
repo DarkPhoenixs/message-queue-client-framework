@@ -15,7 +15,7 @@ public class SenderTest {
 	@Test
 	public void test() throws Exception {
 		
-		MessageEncoder<MessageBeanImpl>  messageEncoder = new MessageEncoderImpl();
+		MessageEncoder<MessageBeanImpl> messageEncoder = new MessageEncoderImpl();
 		
 		KafkaDestination kafkaDestination = new KafkaDestination("QUEUE.TEST");
 
