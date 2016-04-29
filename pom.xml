@@ -8,11 +8,11 @@
 	<packaging>jar</packaging>
 
 	<name>MessageQueueClientFramework</name>
-	<url>http://darkphoenixs.github.io/message-queue-client-framework/</url>
+	<url>http://darkphoenixs.org/message-queue-client-framework/</url>
 
 	<organization>
 		<name>Dark Phoenixs</name>
-		<url>https://darkphoenixs.github.io</url>
+		<url>http://darkphoenixs.org/</url>
 	</organization>
 
 	<developers>
@@ -42,7 +42,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/DarkPhoenixs/message-queue-client-framework.git</connection>
 		<developerConnection>scm:git:https://github.com/DarkPhoenixs/message-queue-client-framework.git</developerConnection>
-		<url>https://darkphoenixs.github.io/message-queue-client-framework/</url>
+		<url>http://darkphoenixs.org/message-queue-client-framework/</url>
 	</scm>
 
 	<build>
