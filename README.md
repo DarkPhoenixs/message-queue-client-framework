@@ -1,10 +1,10 @@
 #Message Queue Client Framework
 
-[![Organization](https://img.shields.io/badge/org-DarkPhoenixs-yellow.svg)](http://www.darkphoenixs.org)
+[![Organization](https://img.shields.io/badge/org-%20DarkPhoenixs-yellow.svg)](http://www.darkphoenixs.org)
 [![Build Status](https://travis-ci.org/DarkPhoenixs/message-queue-client-framework.svg?branch=master)](https://travis-ci.org/DarkPhoenixs/message-queue-client-framework)
 [![Codecov](https://codecov.io/gh/DarkPhoenixs/message-queue-client-framework/branch/master/graph/badge.svg)](https://codecov.io/gh/DarkPhoenixs/message-queue-client-framework)
 [![GitHub release](https://img.shields.io/github/release/DarkPhoenixs/message-queue-client-framework.svg)](https://github.com/DarkPhoenixs/message-queue-client-framework/releases)
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![License](https://img.shields.io/badge/license-%20Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
   A message queue client framework (Apache Kafka &amp; Apache ActiveMQ)
   * [Release](#release)
