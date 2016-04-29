@@ -1,8 +1,8 @@
 #Message Queue Client Framework
 
-[![Organization](https://img.shields.io/badge/Org-%20DarkPhoenixs%20-yellow.svg)](http://www.darkphoenixs.org)
-[![Codecov](https://codecov.io/gh/DarkPhoenixs/message-queue-client-framework/branch/master/graph/badge.svg)](https://codecov.io/gh/DarkPhoenixs/message-queue-client-framework)
+[![Organization](https://img.shields.io/badge/org-DarkPhoenixs-yellow.svg)](http://www.darkphoenixs.org)
 [![Build Status](https://travis-ci.org/DarkPhoenixs/message-queue-client-framework.svg?branch=master)](https://travis-ci.org/DarkPhoenixs/message-queue-client-framework)
+[![Codecov](https://codecov.io/gh/DarkPhoenixs/message-queue-client-framework/branch/master/graph/badge.svg)](https://codecov.io/gh/DarkPhoenixs/message-queue-client-framework)
 [![GitHub release](https://img.shields.io/github/release/DarkPhoenixs/message-queue-client-framework.svg)](https://github.com/DarkPhoenixs/message-queue-client-framework/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
