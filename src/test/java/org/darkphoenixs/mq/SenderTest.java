@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({ "/kafka/applicationContext-producer.xml" })
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration({ "/kafka/applicationContext-producer.xml" })
 public class SenderTest {
 
-	@Autowired
+//	@Autowired
 	private Producer<MessageBeanImpl> producer;
 
-	@Test
+//	@Test
 	public void test() throws Exception {
 
 		for (int i = 0; i < 10; i++) {
