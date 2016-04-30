@@ -59,8 +59,9 @@ public class KafkaMessageReceiverPoolTest {
 		pool.setAutoCommit(false);
 		
 		Assert.assertNull(pool.getConfig());
-		pool.setConfig(new DefaultResourceLoader().getResource("kafka/producer1.properties"));
-		
+		pool.setConfig(new DefaultResourceLoader().getResource("kafka/consumer1.properties"));
+		pool.setConfig(new DefaultResourceLoader().getResource("kafka/consumer.properties"));
+
 		Assert.assertSame(DefaultDecoder.class, pool.getKeyDecoderClass());
 		pool.setKeyDecoderClass(DefaultDecoder.class);
 		
@@ -82,6 +83,8 @@ public class KafkaMessageReceiverPoolTest {
 		thread.setDaemon(true);
 		
 		thread.start();
+		
+		Thread.sleep(5000);
 		
 		pool.destroy();
 	}
