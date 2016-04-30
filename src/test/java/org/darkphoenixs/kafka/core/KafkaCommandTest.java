@@ -6,91 +6,98 @@ import org.junit.Test;
 public class KafkaCommandTest {
 
 	@Test
-	public void test() throws Exception {
+	public void test1() throws Exception {
 
 		Assert.assertNotNull(new KafkaCommand());
 
-		Thread thread1 = new Thread(new Runnable() {
+		try {
+			KafkaCommand.createOptions("10.0.63.10:2181", "QUEUE.TEST1", 1, 1);
+		} catch (Exception e) {
 
-			@Override
-			public void run() {
-				KafkaCommand.createOptions("10.0.63.10:2181", "QUEUE.TEST1", 1,
-						1);
-			}
-		});
+			Assert.assertNotNull(e);
+		}
 
-		thread1.start();
+	}
 
-		Thread thread2 = new Thread(new Runnable() {
+	@Test
+	public void test2() throws Exception {
 
-			@Override
-			public void run() {
-				KafkaCommand.listOptions("10.0.63.10:2181");
-			}
-		});
+		try {
+			KafkaCommand.listOptions("10.0.63.10:2181");
 
-		thread2.start();
+		} catch (Exception e) {
 
-		Thread thread3 = new Thread(new Runnable() {
+			Assert.assertNotNull(e);
+		}
+	}
 
-			@Override
-			public void run() {
-				KafkaCommand.selectOptions("10.0.63.10:2181", "QUEUE.TEST1");
-			}
-		});
+	@Test
+	public void test3() throws Exception {
 
-		thread3.start();
+		try {
+			KafkaCommand.selectOptions("10.0.63.10:2181", "QUEUE.TEST1");
 
-		Thread thread4 = new Thread(new Runnable() {
+		} catch (Exception e) {
 
-			@Override
-			public void run() {
-				KafkaCommand.updateOptions("10.0.63.10:2181", "QUEUE.TEST1", 2);
-			}
-		});
+			Assert.assertNotNull(e);
+		}
+	}
 
-		thread4.start();
+	@Test
+	public void test4() throws Exception {
 
-		Thread thread5 = new Thread(new Runnable() {
+		try {
+			KafkaCommand.updateOptions("10.0.63.10:2181", "QUEUE.TEST1", 2);
 
-			@Override
-			public void run() {
-				KafkaCommand.updateOptions("10.0.63.10:2181", "QUEUE.TEST1",
-						"1=1", "2");
-			}
-		});
+		} catch (Exception e) {
 
-		thread5.start();
+			Assert.assertNotNull(e);
+		}
+	}
 
-		Thread thread6 = new Thread(new Runnable() {
+	@Test
+	public void test5() throws Exception {
 
-			@Override
-			public void run() {
-				KafkaCommand.updateOptions("10.0.63.10:2181", "QUEUE.TEST1", 2,
-						"1=1", "2");
-			}
-		});
+		try {
+			KafkaCommand.updateOptions("10.0.63.10:2181", "QUEUE.TEST1", "1=1",
+					"2");
+		} catch (Exception e) {
 
-		thread6.start();
+			Assert.assertNotNull(e);
+		}
+	}
 
-		Thread thread7 = new Thread(new Runnable() {
+	@Test
+	public void test6() throws Exception {
 
-			@Override
-			public void run() {
-				KafkaCommand.topicCommand("");
-			}
-		});
+		try {
+			KafkaCommand.updateOptions("10.0.63.10:2181", "QUEUE.TEST1", 2,
+					"1=1", "2");
+		} catch (Exception e) {
 
-		thread7.start();
-		
-		Thread thread8 = new Thread(new Runnable() {
+			Assert.assertNotNull(e);
+		}
+	}
 
-			@Override
-			public void run() {
-				KafkaCommand.deleteOptions("10.0.63.10:2181", "QUEUE.TEST1");
-			}
-		});
+	@Test
+	public void test7() throws Exception {
 
-		thread8.start();
+		try {
+			KafkaCommand.topicCommand("");
+		} catch (Exception e) {
+
+			Assert.assertNotNull(e);
+		}
+	}
+
+	@Test
+	public void test8() throws Exception {
+
+		try {
+			KafkaCommand.deleteOptions("10.0.63.10:2181", "QUEUE.TEST1");
+		} catch (Exception e) {
+
+			Assert.assertNotNull(e);
+		}
 	}
 }
