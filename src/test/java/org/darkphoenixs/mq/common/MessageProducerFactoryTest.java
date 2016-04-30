@@ -27,7 +27,8 @@ public class MessageProducerFactoryTest {
 		
 		Assert.assertEquals(producer1, factory.getProducer("ProducerKey1"));
 		Assert.assertEquals(producer2, factory.getProducer("ProducerKey2"));
-		
+		Assert.assertNull(factory.getProducer("ProducerKey3"));
+
 		factory.destroy();
 	}
 

@@ -33,6 +33,8 @@ public class MessageConsumerFactoryTest {
 		
 		Assert.assertEquals(consumer1, factory.getConsumer("ProtocolId1"));
 		Assert.assertEquals(consumer2, factory.getConsumer("ProtocolId2"));
+		Assert.assertNull(factory.getConsumer("ProtocolId3"));
+
 		
 		factory.destroy();
 
