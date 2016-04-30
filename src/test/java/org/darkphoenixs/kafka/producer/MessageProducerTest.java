@@ -27,11 +27,15 @@ public class MessageProducerTest {
 		Assert.assertEquals("TempQueue", producer.getProducerKey());
 
 		producer.send("test");
-		
+
 		KafkaMessageTemplateImpl2 messageTemplate2 = new KafkaMessageTemplateImpl2();
 		producer.setMessageTemplate(messageTemplate2);
-		
-		producer.send("err");
+
+		try {
+			producer.send("err");
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof MQException);
+		}
 
 	}
 
@@ -50,7 +54,7 @@ public class MessageProducerTest {
 		@Override
 		public void convertAndSend(KafkaDestination destination, String message)
 				throws MQException {
-			
+
 			throw new MQException("test");
 		}
 	}
