@@ -31,15 +31,16 @@ public class MessageConsumerListenerTest {
 		listener.setConsumer(consumer);
 
 		listener.onMessage("test");
-
-		MessageConsumerImpl consumerImpl = new MessageConsumerImpl();
-		listener.setConsumer(consumerImpl);
+		
 		Assert.assertNull(listener.getThreadPool());
-		listener.setThreadPool(Executors.newFixedThreadPool(3));
-
+		listener.setThreadPool(Executors.newCachedThreadPool());
 		listener.onMessage("test with thread pool");
 		
-		Thread.sleep(5000);
+		MessageConsumerImpl consumerImpl = new MessageConsumerImpl();
+		listener.setConsumer(consumerImpl);
+		listener.onMessage("test with exception");
+		
+		Thread.sleep(2000);
 	}
 
 	private class MessageConsumerImpl extends MessageConsumer<String> {
