@@ -1,8 +1,12 @@
 package org.darkphoenixs.kafka.pool;
 
 import java.util.Properties;
+import java.util.concurrent.LinkedBlockingQueue;
 
+import kafka.consumer.FetchedDataChunk;
+import kafka.consumer.KafkaStream;
 import kafka.serializer.DefaultDecoder;
+import kafka.utils.VerifiableProperties;
 
 import org.darkphoenixs.kafka.codec.MessageDecoderImpl;
 import org.darkphoenixs.kafka.consumer.MessageConsumer;
@@ -17,26 +21,9 @@ import org.springframework.core.io.DefaultResourceLoader;
 
 public class KafkaMessageReceiverPoolTest {
 
+
 	@Test
 	public void test() throws Exception {
-
-		MessageDecoder<MessageBeanImpl> messageDecoder = new MessageDecoderImpl();
-
-		KafkaDestination kafkaDestination = new KafkaDestination("QUEUE.TEST");
-
-		MessageConsumer<MessageBeanImpl> MessageConsumer = new MessageConsumer<MessageBeanImpl>();
-
-		MessageConsumerListener<MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<MessageBeanImpl>();
-
-		messageConsumerListener.setConsumer(MessageConsumer);
-
-		KafkaMessageAdapter<MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<MessageBeanImpl>();
-
-		messageAdapter.setDecoder(messageDecoder);
-
-		messageAdapter.setDestination(kafkaDestination);
-
-		messageAdapter.setMessageListener(messageConsumerListener);
 
 		final KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
@@ -71,23 +58,119 @@ public class KafkaMessageReceiverPoolTest {
 		pool.setValDecoderClass(DefaultDecoder.class);
 
 		Assert.assertNull(pool.getMessageAdapter());
-		pool.setMessageAdapter(messageAdapter);
+		pool.setMessageAdapter(getAdapter());
 
 		Assert.assertNotNull(pool.getReceiver());
 
-		Thread thread = new Thread(new Runnable() {
+		Thread thread1 = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				Thread thread1 = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						pool.getBrokerStr("QUEUE.TEST");
+					}
+				});
+
+				thread1.setDaemon(true);
+
+				thread1.start();
+			}
+		});
+
+		thread1.setDaemon(true);
+
+		thread1.start();
+
+		Thread thread2 = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				Thread thread2 = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						pool.getPartitionNum("QUEUE.TEST");
+					}
+				});
+
+				thread2.setDaemon(true);
+
+				thread2.start();
+			}
+		});
+
+		thread2.setDaemon(true);
+
+		thread2.start();
+
+		Thread thread3 = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				pool.init();
 			}
 		});
-		
-		thread.setDaemon(true);
 
-		thread.start();
+		thread3.setDaemon(true);
+
+		thread3.start();
 
 		pool.destroy();
+
 	}
 
+	@Test
+	public void test1() throws Exception {
+
+		KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
+
+		pool.setConfig(new DefaultResourceLoader()
+				.getResource("kafka/consumer.properties"));
+		pool.setMessageAdapter(getAdapter());
+
+		KafkaStream<byte[], byte[]> stream = new KafkaStream<byte[], byte[]>(
+				new LinkedBlockingQueue<FetchedDataChunk>(),
+				1000, new DefaultDecoder(
+						new VerifiableProperties(pool
+								.getProps())),
+				new DefaultDecoder(new VerifiableProperties(
+						pool.getProps())), "test");
+
+		KafkaMessageReceiverPool<byte[], byte[]>.ReceiverThread thread = pool.new ReceiverThread(
+				stream, pool.getMessageAdapter(), 1);
+
+		Thread thread4 = new Thread(thread);
+
+//		thread4.setDaemon(true);
+
+		thread4.start();
+		
+	}
+	
+	public KafkaMessageAdapter<MessageBeanImpl> getAdapter() {
+		
+		MessageDecoder<MessageBeanImpl> messageDecoder = new MessageDecoderImpl();
+
+		KafkaDestination kafkaDestination = new KafkaDestination("QUEUE.TEST");
+
+		MessageConsumer<MessageBeanImpl> MessageConsumer = new MessageConsumer<MessageBeanImpl>();
+
+		MessageConsumerListener<MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<MessageBeanImpl>();
+
+		messageConsumerListener.setConsumer(MessageConsumer);
+
+		KafkaMessageAdapter<MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<MessageBeanImpl>();
+
+		messageAdapter.setDecoder(messageDecoder);
+
+		messageAdapter.setDestination(kafkaDestination);
+
+		messageAdapter.setMessageListener(messageConsumerListener);
+		
+		return messageAdapter;
+	}
+	
 }
