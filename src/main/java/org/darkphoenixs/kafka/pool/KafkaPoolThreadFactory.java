@@ -1,9 +1,17 @@
-/**
- * <p>Title: KafkaPoolThreadFactory.java</p>
- * <p>Description: KafkaPoolThreadFactory</p>
- * <p>Package: org.darkphoenixs.kafka.pool</p>
- * <p>Company: www.github.com/DarkPhoenixs</p>
- * <p>Copyright: Dark Phoenixs (Open-Source Organization) 2016</p>
+/*
+ * Copyright 2014-2024 Dark Phoenixs (Open-Source Organization).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.darkphoenixs.kafka.pool;
 
@@ -17,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2016年4月28日
  * @author Victor.Zxy
  * @see ThreadFactory
- * @version 1.0
+ * @version 1.2.0
  */
 public class KafkaPoolThreadFactory implements ThreadFactory {
 
