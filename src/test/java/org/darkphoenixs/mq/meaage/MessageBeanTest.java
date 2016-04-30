@@ -11,18 +11,19 @@ public class MessageBeanTest {
 		
 		MessageBeanImpl messageBean = new MessageBeanImpl();
 		
+		long date = System.currentTimeMillis();
 		messageBean.setMessageNo("MessageNo");
 		messageBean.setMessageType("MessageType");
 		messageBean.setMessageAckNo("MessageAckNo");
-		messageBean.setMessageDate(System.currentTimeMillis());
-		messageBean.setMessageContent("MessageContent".getBytes());
-		
-		System.out.println(messageBean);
+		messageBean.setMessageDate(date);
+		messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
 		
 		Assert.assertEquals("MessageNo", messageBean.getMessageNo());
 		Assert.assertEquals("MessageType", messageBean.getMessageType());
 		Assert.assertEquals("MessageAckNo", messageBean.getMessageAckNo());
-		Assert.assertNotEquals(System.currentTimeMillis(), messageBean.getMessageDate());
-		Assert.assertArrayEquals("MessageContent".getBytes(), messageBean.getMessageContent());
+		Assert.assertEquals(date, messageBean.getMessageDate());
+		Assert.assertArrayEquals("MessageContent".getBytes("UTF-8"), messageBean.getMessageContent());
+
+		System.out.println(messageBean);
 	}
 }
