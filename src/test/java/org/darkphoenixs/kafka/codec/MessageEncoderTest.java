@@ -3,6 +3,7 @@ package org.darkphoenixs.kafka.codec;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,5 +50,11 @@ public class MessageEncoderTest {
 		List<MessageBeanImpl> list2 = decoder.batchDecode(bytesList);
 
 		Assert.assertEquals(list.size(), list2.size());
+		
+		try {
+			encoder.encode(null);
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof MQException);
+		}
 	}
 }
