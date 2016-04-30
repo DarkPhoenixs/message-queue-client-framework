@@ -1,14 +1,13 @@
 package org.darkphoenixs.activemq.producer;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-import javax.jms.JMSException;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTempQueue;
+import org.apache.activemq.command.ActiveMQTempTopic;
+import org.darkphoenixs.mq.exception.MQException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 
 public class MessageProducerTest {
@@ -26,25 +25,55 @@ public class MessageProducerTest {
 		producer.setDestination(destination);
 
 		Assert.assertNull(producer.getJmsTemplate());
-		JmsTemplate jmsTemplate = new JmsTemplate(new ConnectionFactory() {
-
-			@Override
-			public Connection createConnection(String userName, String password)
-					throws JMSException {
-				return new ActiveMQConnectionFactory().createConnection(
-						userName, password);
-			}
-
-			@Override
-			public Connection createConnection() throws JMSException {
-
-				return new ActiveMQConnectionFactory().createConnection();
-			}
-		});
+		JmsTemplate jmsTemplate = new JmsTemplateImpl();
 		producer.setJmsTemplate(jmsTemplate);
 
 		Assert.assertEquals("TempQueue", producer.getProducerKey());
 
-		System.out.println(producer.doSend("test"));
+		producer.send("test");
+		
+		Destination destination2 = new ActiveMQTempTopic("TempTopic");
+		producer.setDestination(destination2);
+		
+		JmsTemplate jmsTemplate2 = new JmsTemplateImpl2();
+		producer.setJmsTemplate(jmsTemplate2);
+		
+		Assert.assertEquals("TempTopic", producer.getProducerKey());
+
+		try {
+			producer.send("test");
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof MQException);
+		}
+
+		producer.setDestination(new Destination() {
+			@Override
+			public String toString() {
+				return "TempDestination";
+			}
+		});
+		
+		Assert.assertEquals("TempDestination", producer.getProducerKey());
+	}
+
+	private class JmsTemplateImpl extends JmsTemplate {
+
+		@Override
+		public void convertAndSend(Destination destination, Object message)
+				throws JmsException {
+			System.out.println(destination + ":" + message);
+		}
+	}
+
+	private class JmsTemplateImpl2 extends JmsTemplate {
+
+		@Override
+		public void convertAndSend(Destination destination, Object message)
+				throws JmsException {
+
+			throw new JmsException("Test") {
+
+				private static final long serialVersionUID = 1L;};
+		}
 	}
 }

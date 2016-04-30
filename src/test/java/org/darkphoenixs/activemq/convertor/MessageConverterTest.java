@@ -25,6 +25,7 @@ import org.apache.activemq.command.ActiveMQBytesMessage;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.jms.support.converter.MessageConversionException;
 
 public class MessageConverterTest {
 
@@ -66,6 +67,20 @@ public class MessageConverterTest {
 		Assert.assertEquals("type", message2.getStringProperty("MessageType"));
 		Assert.assertEquals(date, message2.getLongProperty("MessageDate"));
 		Assert.assertEquals(-1, message2.readBytes(new byte[1024]));
+		
+		try {
+			converter.fromMessage(null);
+		} catch (Exception e) {
+			
+			Assert.assertTrue(e instanceof MessageConversionException);
+		}
+		
+		try {
+			converter.toMessage(null, null);
+		} catch (Exception e) {
+			
+			Assert.assertTrue(e instanceof MessageConversionException);
+		}
 	}
 
 	private class SessionImpl implements Session {

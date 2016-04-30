@@ -8,6 +8,8 @@ public class ByteUtilTest {
 	@Test
 	public void test() throws Exception {
 		
+		Assert.assertNotNull(new ByteUtil());
+		
 		byte[] bytes1 = "test1".getBytes("UTF-8");
 		byte[] bytes2 = "test2".getBytes("UTF-8");
 		byte[] merge = ByteUtil.merge(bytes1, bytes2);
