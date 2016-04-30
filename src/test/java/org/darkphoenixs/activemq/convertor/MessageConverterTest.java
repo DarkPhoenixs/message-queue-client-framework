@@ -39,13 +39,13 @@ public class MessageConverterTest {
 		long date = System.currentTimeMillis();
 
 		message.setReadOnlyBody(false);
-		
+
 		message.setStringProperty("MessageNo", "123");
 		message.setStringProperty("MessageAckNo", "12345");
 		message.setStringProperty("MessageType", "type");
 		message.setLongProperty("MessageDate", date);
 		message.writeBytes("test".getBytes());
-
+		message.storeContent();
 		message.setReadOnlyBody(true);
 
 		MessageBeanImpl bean = (MessageBeanImpl) converter.fromMessage(message);
@@ -54,31 +54,30 @@ public class MessageConverterTest {
 		Assert.assertEquals("12345", bean.getMessageAckNo());
 		Assert.assertEquals("type", bean.getMessageType());
 		Assert.assertEquals(date, bean.getMessageDate());
-		Assert.assertArrayEquals("".getBytes(), bean.getMessageContent());
+		Assert.assertArrayEquals("test".getBytes(), bean.getMessageContent());
 
-		bean.setMessageContent("test".getBytes());
-
-		ActiveMQBytesMessage message2 = (ActiveMQBytesMessage) converter.toMessage(bean, new SessionImpl());
-	
+		ActiveMQBytesMessage message2 = (ActiveMQBytesMessage) converter
+				.toMessage(bean, new SessionImpl());
+		message2.storeContent();
 		message2.setReadOnlyBody(true);
-		
+
 		Assert.assertEquals("123", message2.getStringProperty("MessageNo"));
 		Assert.assertEquals("12345", message2.getStringProperty("MessageAckNo"));
 		Assert.assertEquals("type", message2.getStringProperty("MessageType"));
 		Assert.assertEquals(date, message2.getLongProperty("MessageDate"));
-		Assert.assertEquals(-1, message2.readBytes(new byte[1024]));
-		
+		Assert.assertEquals("test".length(), message2.readBytes(new byte[1024]));
+
 		try {
 			converter.fromMessage(null);
 		} catch (Exception e) {
-			
+
 			Assert.assertTrue(e instanceof MessageConversionException);
 		}
-		
+
 		try {
 			converter.toMessage(null, null);
 		} catch (Exception e) {
-			
+
 			Assert.assertTrue(e instanceof MessageConversionException);
 		}
 	}

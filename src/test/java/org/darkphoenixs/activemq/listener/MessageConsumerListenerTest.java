@@ -39,7 +39,7 @@ public class MessageConsumerListenerTest {
 
 		listener.onMessage("test with thread pool");
 		
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 	}
 
 	private class MessageConsumerImpl extends MessageConsumer<String> {
