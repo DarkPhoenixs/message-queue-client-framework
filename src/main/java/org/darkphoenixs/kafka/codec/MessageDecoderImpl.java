@@ -60,13 +60,10 @@ public class MessageDecoderImpl implements MessageDecoder<MessageBeanImpl> {
 			try {
 				if (ois != null)
 					ois.close();
-			} catch (Exception e) {
-				throw new MQException(e);
-			}
-
-			try {
+				
 				if (bis != null)
 					bis.close();
+			
 			} catch (Exception e) {
 				throw new MQException(e);
 			}

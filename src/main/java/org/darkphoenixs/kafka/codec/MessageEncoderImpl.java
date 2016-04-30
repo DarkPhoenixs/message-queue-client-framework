@@ -62,13 +62,10 @@ public class MessageEncoderImpl implements MessageEncoder<MessageBeanImpl> {
 			try {
 				if (oos != null)
 					oos.close();
-			} catch (Exception e) {
-				throw new MQException(e);
-			}
-
-			try {
+				
 				if (bos != null)
 					bos.close();
+				
 			} catch (Exception e) {
 				throw new MQException(e);
 			}
