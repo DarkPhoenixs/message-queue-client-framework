@@ -33,8 +33,6 @@ public class KafkaMessageSenderPoolTest {
 		Assert.assertNull(pool.getConfig());
 		pool.setConfig(new DefaultResourceLoader().getResource("kafka/producer1.properties"));
 		pool.setConfig(new DefaultResourceLoader().getResource("kafka/producer.properties"));
-		
-		pool.setPoolSize(0);
 
 		Thread thread = new Thread(new Runnable() {
 
@@ -59,6 +57,26 @@ public class KafkaMessageSenderPoolTest {
 		pool.returnSender(sender);
 		pool.returnSender(sender);
 
+		pool.destroy();
+	}
+	
+	@Test
+	public void test1() throws Exception {
+		
+		final KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
+
+		Thread thread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				pool.init();
+			}
+		});
+		
+		thread.setDaemon(true);
+
+		thread.start();
+		
 		pool.destroy();
 	}
 }

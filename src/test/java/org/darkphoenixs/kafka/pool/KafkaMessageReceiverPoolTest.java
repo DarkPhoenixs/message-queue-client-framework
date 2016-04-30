@@ -133,7 +133,7 @@ public class KafkaMessageReceiverPoolTest {
 		pool.setAutoCommit(false);
 
 		KafkaStream<byte[], byte[]> stream = new KafkaStream<byte[], byte[]>(
-				null,
+				new LinkedBlockingQueue<FetchedDataChunk>(),
 				1000, new DefaultDecoder(
 						new VerifiableProperties(pool
 								.getProps())),
@@ -148,6 +148,7 @@ public class KafkaMessageReceiverPoolTest {
 //		thread4.setDaemon(true);
 
 		thread4.start();
+		
 		
 	}
 	
