@@ -130,9 +130,10 @@ public class KafkaMessageReceiverPoolTest {
 		pool.setConfig(new DefaultResourceLoader()
 				.getResource("kafka/consumer.properties"));
 		pool.setMessageAdapter(getAdapter());
+		pool.setAutoCommit(false);
 
 		KafkaStream<byte[], byte[]> stream = new KafkaStream<byte[], byte[]>(
-				new LinkedBlockingQueue<FetchedDataChunk>(),
+				null,
 				1000, new DefaultDecoder(
 						new VerifiableProperties(pool
 								.getProps())),
