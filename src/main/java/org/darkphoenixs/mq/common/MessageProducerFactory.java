@@ -47,13 +47,6 @@ public class MessageProducerFactory implements ProducerFactory {
 	private ConcurrentHashMap<String, Producer<?>> producerCache = new ConcurrentHashMap<String, Producer<?>>();
 
 	/**
-	 * @return the producers
-	 */
-	public Producer<?>[] getProducers() {
-		return producers;
-	}
-
-	/**
 	 * @param producers
 	 *            the producers to set
 	 */
