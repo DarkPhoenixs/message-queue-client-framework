@@ -149,6 +149,26 @@ public class KafkaMessageReceiverPoolTest {
 
 		thread4.start();
 		
+	}
+	
+	@Test
+	public void test2() throws Exception {
+
+		KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
+
+		pool.setConfig(new DefaultResourceLoader()
+				.getResource("kafka/consumer.properties"));
+		pool.setMessageAdapter(getAdapter());
+		pool.setAutoCommit(false);
+
+		KafkaMessageReceiverPool<byte[], byte[]>.ReceiverThread thread = pool.new ReceiverThread(
+				null, pool.getMessageAdapter(), 1);
+
+		Thread thread4 = new Thread(thread);
+
+//		thread4.setDaemon(true);
+
+		thread4.start();
 		
 	}
 	
