@@ -1,7 +1,5 @@
 package org.darkphoenixs.kafka.pool;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Properties;
 
 import kafka.serializer.DefaultDecoder;
@@ -77,35 +75,19 @@ public class KafkaMessageReceiverPoolTest {
 
 		Assert.assertNotNull(pool.getReceiver());
 
-		ping02("10.0.63.11");
+		Thread thread = new Thread(new Runnable() {
 
-		// Thread thread = new Thread(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// pool.init();
-		// }
-		// });
-		// thread.setDaemon(true);
-		//
-		// thread.start();
-		//
-		// Thread.sleep(5000);
-		//
-		// pool.destroy();
+			@Override
+			public void run() {
+				pool.init();
+			}
+		});
+		
+		thread.setDaemon(true);
+
+		thread.start();
+
+		pool.destroy();
 	}
 
-	public static void ping02(String ipAddress) throws Exception {
-		String line = null;
-		try {
-			Process pro = Runtime.getRuntime().exec("ping " + ipAddress);
-			BufferedReader buf = new BufferedReader(new InputStreamReader(
-					pro.getInputStream()));
-
-			line = buf.readLine();
-			System.out.println(line);
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		}
-	}
 }

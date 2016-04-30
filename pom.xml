@@ -211,7 +211,7 @@
 
 	<properties>
 		<scala.version>2.10</scala.version>
-		<kafka.version>0.8.2.1</kafka.version>
+		<kafka.version>0.8.2.2</kafka.version>
 		<activemq.version>5.10.0</activemq.version>
 		<spring.version>4.0.0.RELEASE</spring.version>
 		<jdk.version>1.7</jdk.version>
