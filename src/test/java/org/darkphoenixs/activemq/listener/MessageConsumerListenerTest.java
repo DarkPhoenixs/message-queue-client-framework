@@ -3,6 +3,7 @@ package org.darkphoenixs.activemq.listener;
 import java.util.concurrent.Executors;
 
 import org.darkphoenixs.activemq.consumer.MessageConsumer;
+import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,15 +40,17 @@ public class MessageConsumerListenerTest {
 		MessageConsumerImpl consumerImpl = new MessageConsumerImpl();
 		listener.setConsumer(consumerImpl);
 		listener.onMessage("test with exception");
-		
-		Thread.sleep(2000);
 	}
 
-	private class MessageConsumerImpl extends MessageConsumer<String> {
+	private class MessageConsumerImpl implements Consumer<String> {
 
 		@Override
+		public String getConsumerKey() throws MQException {
+			return null;
+		}
+		
+		@Override
 		public void receive(String message) throws MQException {
-
 			throw new MQException("Test");
 		}
 	}
