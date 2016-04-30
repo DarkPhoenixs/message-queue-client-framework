@@ -2,6 +2,7 @@ package org.darkphoenixs.kafka.producer;
 
 import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageTemplate;
+import org.darkphoenixs.mq.exception.MQException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,11 +21,20 @@ public class MessageProducerTest {
 		producer.setDestination(destination);
 		
 		Assert.assertNull(producer.getMessageTemplate());
-		KafkaMessageTemplate<String> messageTemplate = new KafkaMessageTemplate<String>();
+		KafkaMessageTemplateImpl messageTemplate = new KafkaMessageTemplateImpl();
 		producer.setMessageTemplate(messageTemplate);
 		
 		Assert.assertEquals("TempQueue", producer.getProducerKey());
 		
-		System.out.println(producer.doSend("test"));
+		producer.send("test");
+	}
+	
+	private class KafkaMessageTemplateImpl extends KafkaMessageTemplate<String> {
+		
+		@Override
+		public void convertAndSend(KafkaDestination destination, String message)
+				throws MQException {
+			System.out.println(destination + ":" + message);
+		}
 	}
 }
