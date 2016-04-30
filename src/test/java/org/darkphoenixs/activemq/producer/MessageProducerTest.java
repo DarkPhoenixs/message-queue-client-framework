@@ -1,6 +1,9 @@
 package org.darkphoenixs.activemq.producer;
 
 import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.Topic;
 
 import org.apache.activemq.command.ActiveMQTempQueue;
 import org.apache.activemq.command.ActiveMQTempTopic;
@@ -31,13 +34,13 @@ public class MessageProducerTest {
 		Assert.assertEquals("TempQueue", producer.getProducerKey());
 
 		producer.send("test");
-		
+
 		Destination destination2 = new ActiveMQTempTopic("TempTopic");
 		producer.setDestination(destination2);
-		
+
 		JmsTemplate jmsTemplate2 = new JmsTemplateImpl2();
 		producer.setJmsTemplate(jmsTemplate2);
-		
+
 		Assert.assertEquals("TempTopic", producer.getProducerKey());
 
 		try {
@@ -52,8 +55,36 @@ public class MessageProducerTest {
 				return "TempDestination";
 			}
 		});
-		
+
 		Assert.assertEquals("TempDestination", producer.getProducerKey());
+
+		producer.setDestination(new Queue() {
+
+			@Override
+			public String getQueueName() throws JMSException {
+				throw new JMSException("test");
+			}
+		});
+
+		try {
+			producer.getProducerKey();
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof MQException);
+		}
+		
+		producer.setDestination(new Topic() {
+
+			@Override
+			public String getTopicName() throws JMSException {
+				throw new JMSException("test");
+			}
+		});
+
+		try {
+			producer.getProducerKey();
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof MQException);
+		}
 	}
 
 	private class JmsTemplateImpl extends JmsTemplate {
@@ -73,7 +104,8 @@ public class MessageProducerTest {
 
 			throw new JmsException("Test") {
 
-				private static final long serialVersionUID = 1L;};
+				private static final long serialVersionUID = 1L;
+			};
 		}
 	}
 }
