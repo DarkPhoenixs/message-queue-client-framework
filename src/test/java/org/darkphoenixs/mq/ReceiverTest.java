@@ -42,5 +42,6 @@ public class ReceiverTest {
 		
 		pool.setPoolSize(10);
 		
+		pool.init();
 	}
 }
