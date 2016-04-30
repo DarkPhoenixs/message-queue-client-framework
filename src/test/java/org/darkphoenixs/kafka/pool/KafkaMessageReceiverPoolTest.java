@@ -21,7 +21,6 @@ import org.springframework.core.io.DefaultResourceLoader;
 
 public class KafkaMessageReceiverPoolTest {
 
-
 	@Test
 	public void test() throws Exception {
 
@@ -133,24 +132,22 @@ public class KafkaMessageReceiverPoolTest {
 		pool.setAutoCommit(false);
 
 		KafkaStream<byte[], byte[]> stream = new KafkaStream<byte[], byte[]>(
-				new LinkedBlockingQueue<FetchedDataChunk>(),
-				1000, new DefaultDecoder(
-						new VerifiableProperties(pool
-								.getProps())),
-				new DefaultDecoder(new VerifiableProperties(
-						pool.getProps())), "test");
+				new LinkedBlockingQueue<FetchedDataChunk>(), 1000,
+				new DefaultDecoder(new VerifiableProperties(pool.getProps())),
+				new DefaultDecoder(new VerifiableProperties(pool.getProps())),
+				"test");
 
 		KafkaMessageReceiverPool<byte[], byte[]>.ReceiverThread thread = pool.new ReceiverThread(
 				stream, pool.getMessageAdapter(), 1);
 
 		Thread thread4 = new Thread(thread);
 
-//		thread4.setDaemon(true);
+		// thread4.setDaemon(true);
 
 		thread4.start();
-		
+
 	}
-	
+
 	@Test
 	public void test2() throws Exception {
 
@@ -166,14 +163,35 @@ public class KafkaMessageReceiverPoolTest {
 
 		Thread thread4 = new Thread(thread);
 
-//		thread4.setDaemon(true);
+		// thread4.setDaemon(true);
 
 		thread4.start();
-		
+
 	}
-	
-	public KafkaMessageAdapter<MessageBeanImpl> getAdapter() {
+
+	@Test
+	public void test3() throws Exception {
+
+		KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPoolImpl();
+
+		pool.setConfig(new DefaultResourceLoader()
+				.getResource("kafka/consumer.properties"));
+		pool.setMessageAdapter(getAdapter());
+		pool.setAutoCommit(false);
 		
+		try {
+			pool.init();
+		} catch (Exception e) {
+			Assert.assertNotNull(e);
+		}
+		
+		Assert.assertNotNull(pool.getReceiver());
+
+		pool.destroy();
+	}
+
+	private KafkaMessageAdapter<MessageBeanImpl> getAdapter() {
+
 		MessageDecoder<MessageBeanImpl> messageDecoder = new MessageDecoderImpl();
 
 		KafkaDestination kafkaDestination = new KafkaDestination("QUEUE.TEST");
@@ -191,8 +209,23 @@ public class KafkaMessageReceiverPoolTest {
 		messageAdapter.setDestination(kafkaDestination);
 
 		messageAdapter.setMessageListener(messageConsumerListener);
-		
+
 		return messageAdapter;
 	}
-	
+
+	private class KafkaMessageReceiverPoolImpl extends
+			KafkaMessageReceiverPool<byte[], byte[]> {
+
+		@Override
+		public String getBrokerStr(String topic) {
+
+			return "10.0.63.10:2181";
+		}
+
+		@Override
+		public int getPartitionNum(String topic) {
+
+			return 1;
+		}
+	}
 }

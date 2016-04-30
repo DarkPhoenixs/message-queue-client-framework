@@ -83,7 +83,7 @@ public class KafkaCommandTest {
 	public void test7() throws Exception {
 
 		try {
-			KafkaCommand.topicCommand("");
+			KafkaCommand.topicCommand("--list --zookeeper 10.0.63.10:2181");
 		} catch (Exception e) {
 
 			Assert.assertNotNull(e);
