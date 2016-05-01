@@ -1,5 +1,6 @@
 package org.darkphoenixs.kafka.pool;
 
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -10,6 +11,7 @@ import kafka.utils.VerifiableProperties;
 
 import org.darkphoenixs.kafka.codec.MessageDecoderImpl;
 import org.darkphoenixs.kafka.consumer.MessageConsumer;
+import org.darkphoenixs.kafka.core.KafkaConstants;
 import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.kafka.listener.MessageConsumerListener;
@@ -18,9 +20,24 @@ import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 public class KafkaMessageReceiverPoolTest {
 
+	static Properties props = new Properties();
+
+	static {
+		Resource resource = new DefaultResourceLoader()
+				.getResource("kafka/consumer.properties");
+
+		try {
+			PropertiesLoaderUtils.fillProperties(props, resource);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Test
 	public void test() throws Exception {
 
@@ -219,7 +236,7 @@ public class KafkaMessageReceiverPoolTest {
 		@Override
 		public String getBrokerStr(String topic) {
 
-			return "10.0.63.10:2181";
+			return props.getProperty(KafkaConstants.ZOOKEEPER_LIST);
 		}
 
 		@Override

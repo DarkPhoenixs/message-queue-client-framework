@@ -1,9 +1,28 @@
 package org.darkphoenixs.kafka.core;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 public class KafkaCommandTest {
+
+	static Properties props = new Properties();
+
+	static {
+		Resource resource = new DefaultResourceLoader()
+				.getResource("kafka/consumer.properties");
+
+		try {
+			PropertiesLoaderUtils.fillProperties(props, resource);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	public void test1() throws Exception {
@@ -11,7 +30,9 @@ public class KafkaCommandTest {
 		Assert.assertNotNull(new KafkaCommand());
 
 		try {
-			KafkaCommand.createOptions("10.0.63.10:2181", "QUEUE.TEST1", 1, 1);
+			KafkaCommand.createOptions(
+					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+					"QUEUE.TEST", 1, 1);
 		} catch (Exception e) {
 
 			Assert.assertNotNull(e);
@@ -23,7 +44,8 @@ public class KafkaCommandTest {
 	public void test2() throws Exception {
 
 		try {
-			KafkaCommand.listOptions("10.0.63.10:2181");
+			KafkaCommand.listOptions(props
+					.getProperty(KafkaConstants.ZOOKEEPER_LIST));
 
 		} catch (Exception e) {
 
@@ -35,7 +57,9 @@ public class KafkaCommandTest {
 	public void test3() throws Exception {
 
 		try {
-			KafkaCommand.selectOptions("10.0.63.10:2181", "QUEUE.TEST1");
+			KafkaCommand.selectOptions(
+					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+					"QUEUE.TEST");
 
 		} catch (Exception e) {
 
@@ -47,7 +71,9 @@ public class KafkaCommandTest {
 	public void test4() throws Exception {
 
 		try {
-			KafkaCommand.updateOptions("10.0.63.10:2181", "QUEUE.TEST1", 2);
+			KafkaCommand.updateOptions(
+					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+					"QUEUE.TEST", 2);
 
 		} catch (Exception e) {
 
@@ -59,8 +85,9 @@ public class KafkaCommandTest {
 	public void test5() throws Exception {
 
 		try {
-			KafkaCommand.updateOptions("10.0.63.10:2181", "QUEUE.TEST1", "1=1",
-					"2");
+			KafkaCommand.updateOptions(
+					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+					"QUEUE.TEST", "1=1", "2");
 		} catch (Exception e) {
 
 			Assert.assertNotNull(e);
@@ -71,8 +98,9 @@ public class KafkaCommandTest {
 	public void test6() throws Exception {
 
 		try {
-			KafkaCommand.updateOptions("10.0.63.10:2181", "QUEUE.TEST1", 2,
-					"1=1", "2");
+			KafkaCommand.updateOptions(
+					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+					"QUEUE.TEST", 1, "1=1", "2");
 		} catch (Exception e) {
 
 			Assert.assertNotNull(e);
@@ -83,7 +111,8 @@ public class KafkaCommandTest {
 	public void test7() throws Exception {
 
 		try {
-			KafkaCommand.topicCommand("--list --zookeeper 10.0.63.10:2181");
+			KafkaCommand.topicCommand("--list --zookeeper "
+					+ props.getProperty(KafkaConstants.ZOOKEEPER_LIST));
 		} catch (Exception e) {
 
 			Assert.assertNotNull(e);
@@ -94,7 +123,9 @@ public class KafkaCommandTest {
 	public void test8() throws Exception {
 
 		try {
-			KafkaCommand.deleteOptions("10.0.63.10:2181", "QUEUE.TEST1");
+			KafkaCommand.deleteOptions(
+					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+					"QUEUE.TEST");
 		} catch (Exception e) {
 
 			Assert.assertNotNull(e);
