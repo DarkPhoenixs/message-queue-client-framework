@@ -40,6 +40,7 @@ public class MessageConsumerListenerTest {
 		MessageConsumerListener<String> listener1 = new MessageConsumerListener<String>();
 		MessageConsumerImpl consumerImpl = new MessageConsumerImpl();
 		listener1.setConsumer(consumerImpl);
+		listener1.setThreadPool(Executors.newCachedThreadPool());
 		listener1.onMessage("test with exception");
 		
 		Thread.sleep(2000);

@@ -41,45 +41,51 @@ public class ZookeeperBrokersTest {
 				brokers.getBrokerHost("{\"host\":\"localhost\", \"jmx_port\":9999, \"port\":9092, \"version\":1 }"
 						.getBytes("UTF-8")));
 
+		try {
+			brokers.getBrokerHost("1".getBytes());
+		} catch (Exception e) {
+			Assert.assertNotNull(e);
+		}
+
 		Thread thread1 = new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				
+
 				brokers.getBrokerInfo();
 			}
 		});
-		
+
 		thread1.setDaemon(true);
-		
+
 		thread1.start();
-		
+
 		Thread thread2 = new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				
+
 				brokers.getNumPartitions();
 			}
 		});
-		
+
 		thread2.setDaemon(true);
-		
+
 		thread2.start();
-		
+
 		Thread thread3 = new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				
+
 				brokers.getLeaderFor(0);
 			}
 		});
-		
+
 		thread3.setDaemon(true);
-		
+
 		thread3.start();
-		
+
 		brokers.close();
 	}
 }

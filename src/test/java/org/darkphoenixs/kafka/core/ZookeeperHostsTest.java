@@ -46,6 +46,8 @@ public class ZookeeperHostsTest {
 				zooHosts1.getRefreshFreqSecs());
 
 		zooHosts1.setRefreshFreqSecs(0);
-
+		zooHosts1.setTopic("QUEUE.TEST");
+		zooHosts1.setBrokerZkPath(KafkaConstants.DEFAULT_ZK_ROOT);
+		zooHosts1.setBrokerZkStr(props.getProperty(KafkaConstants.ZOOKEEPER_LIST));
 	}
 }

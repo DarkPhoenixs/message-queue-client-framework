@@ -15,7 +15,6 @@
  */
 package org.darkphoenixs.kafka.core;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.curator.framework.CuratorFramework;
@@ -138,7 +137,7 @@ public class ZookeeperBrokers {
 			String host = json.getString("host");
 			Integer port = json.getInteger("port");
 			return host + ":" + port;
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
