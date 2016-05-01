@@ -37,6 +37,8 @@ public class MessageConsumerListenerTest {
 		listener.setThreadPool(Executors.newCachedThreadPool());
 		listener.onMessage("test with thread pool");
 		
+		Thread.sleep(5000);
+		
 		MessageConsumerImpl consumerImpl = new MessageConsumerImpl();
 		listener.setConsumer(consumerImpl);
 		listener.onMessage("test with exception");
