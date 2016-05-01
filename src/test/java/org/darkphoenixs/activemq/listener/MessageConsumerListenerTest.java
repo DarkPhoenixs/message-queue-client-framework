@@ -42,6 +42,9 @@ public class MessageConsumerListenerTest {
 		MessageConsumerImpl consumerImpl = new MessageConsumerImpl();
 		listener.setConsumer(consumerImpl);
 		listener.onMessage("test with exception");
+		
+		Thread.sleep(5000);
+
 	}
 
 	private class MessageConsumerImpl implements Consumer<String> {
