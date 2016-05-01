@@ -24,44 +24,8 @@ public class ReflectionToolTest {
 			Assert.assertTrue(e instanceof NoSuchMethodException);
 		}
 
-		try {
-			ReflectionTool.newInstance(TestVO.class);
-
-		} catch (Exception e) {
-			Assert.assertTrue(e instanceof NoSuchMethodException);
-		}
-
-		try {
-			ReflectionTool.newInstance(TestVO.class, "test");
-
-		} catch (Exception e) {
-			Assert.assertTrue(e instanceof NoSuchMethodException);
-		}
-
-		try {
-			ReflectionTool.newInstance(TestVO.class, "test", 0);
-
-		} catch (Exception e) {
-			Assert.assertTrue(e instanceof NoSuchMethodException);
-		}
-
 	}
 
-}
-
-class TestVO {
-
-	private TestVO() {
-	}
-
-	public TestVO(String test) {
-
-		new TestVO();
-	}
-
-	public TestVO(int test) {
-		new TestVO();
-	}
 }
 
 abstract class TestInter {

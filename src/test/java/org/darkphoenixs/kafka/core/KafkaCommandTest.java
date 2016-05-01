@@ -29,106 +29,188 @@ public class KafkaCommandTest {
 
 		Assert.assertNotNull(new KafkaCommand());
 
-		try {
-			KafkaCommand.createOptions(
-					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
-					"QUEUE.TEST", 1, 1);
-		} catch (Exception e) {
+		Thread thread = new Thread(new Runnable() {
 
-			Assert.assertNotNull(e);
-		}
+			@Override
+			public void run() {
+				try {
+					KafkaCommand.createOptions(
+							props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+							"QUEUE.TEST", 1, 1);
+				} catch (Exception e) {
+
+					Assert.assertNotNull(e);
+				}
+			}
+		});
+
+		thread.setDaemon(true);
+
+		thread.start();
 
 	}
 
 	@Test
 	public void test2() throws Exception {
 
-		try {
-			KafkaCommand.listOptions(props
-					.getProperty(KafkaConstants.ZOOKEEPER_LIST));
+		Thread thread = new Thread(new Runnable() {
 
-		} catch (Exception e) {
+			@Override
+			public void run() {
+				try {
+					KafkaCommand.listOptions(props
+							.getProperty(KafkaConstants.ZOOKEEPER_LIST));
 
-			Assert.assertNotNull(e);
-		}
+				} catch (Exception e) {
+
+					Assert.assertNotNull(e);
+				}
+			}
+		});
+
+		thread.setDaemon(true);
+
+		thread.start();
+
 	}
 
 	@Test
 	public void test3() throws Exception {
 
-		try {
-			KafkaCommand.selectOptions(
-					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
-					"QUEUE.TEST");
+		Thread thread = new Thread(new Runnable() {
 
-		} catch (Exception e) {
+			@Override
+			public void run() {
+				try {
+					KafkaCommand.selectOptions(
+							props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+							"QUEUE.TEST");
 
-			Assert.assertNotNull(e);
-		}
+				} catch (Exception e) {
+
+					Assert.assertNotNull(e);
+				}
+			}
+		});
+
+		thread.setDaemon(true);
+
+		thread.start();
+
 	}
 
 	@Test
 	public void test4() throws Exception {
 
-		try {
-			KafkaCommand.updateOptions(
-					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
-					"QUEUE.TEST", 2);
+		Thread thread = new Thread(new Runnable() {
 
-		} catch (Exception e) {
+			@Override
+			public void run() {
+				try {
+					KafkaCommand.updateOptions(
+							props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+							"QUEUE.TEST", 2);
 
-			Assert.assertNotNull(e);
-		}
+				} catch (Exception e) {
+
+					Assert.assertNotNull(e);
+				}
+			}
+		});
+
+		thread.setDaemon(true);
+
+		thread.start();
 	}
 
 	@Test
 	public void test5() throws Exception {
 
-		try {
-			KafkaCommand.updateOptions(
-					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
-					"QUEUE.TEST", "1=1", "2");
-		} catch (Exception e) {
+		Thread thread = new Thread(new Runnable() {
 
-			Assert.assertNotNull(e);
-		}
+			@Override
+			public void run() {
+				try {
+					KafkaCommand.updateOptions(
+							props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+							"QUEUE.TEST", "1=1", "2");
+				} catch (Exception e) {
+
+					Assert.assertNotNull(e);
+				}
+			}
+		});
+
+		thread.setDaemon(true);
+
+		thread.start();
 	}
 
 	@Test
 	public void test6() throws Exception {
 
-		try {
-			KafkaCommand.updateOptions(
-					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
-					"QUEUE.TEST", 1, "1=1", "2");
-		} catch (Exception e) {
+		Thread thread = new Thread(new Runnable() {
 
-			Assert.assertNotNull(e);
-		}
+			@Override
+			public void run() {
+				try {
+					KafkaCommand.updateOptions(
+							props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+							"QUEUE.TEST", 1, "1=1", "2");
+				} catch (Exception e) {
+
+					Assert.assertNotNull(e);
+				}
+			}
+		});
+
+		thread.setDaemon(true);
+
+		thread.start();
 	}
 
 	@Test
 	public void test7() throws Exception {
 
-		try {
-			KafkaCommand.topicCommand("--list --zookeeper "
-					+ props.getProperty(KafkaConstants.ZOOKEEPER_LIST));
-		} catch (Exception e) {
+		Thread thread = new Thread(new Runnable() {
 
-			Assert.assertNotNull(e);
-		}
+			@Override
+			public void run() {
+				try {
+					KafkaCommand.topicCommand("--list --zookeeper "
+							+ props.getProperty(KafkaConstants.ZOOKEEPER_LIST));
+				} catch (Exception e) {
+
+					Assert.assertNotNull(e);
+				}
+			}
+		});
+
+		thread.setDaemon(true);
+
+		thread.start();
 	}
 
 	@Test
 	public void test8() throws Exception {
 
-		try {
-			KafkaCommand.deleteOptions(
-					props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
-					"QUEUE.TEST");
-		} catch (Exception e) {
+		Thread thread = new Thread(new Runnable() {
 
-			Assert.assertNotNull(e);
-		}
+			@Override
+			public void run() {
+				try {
+					KafkaCommand.deleteOptions(
+							props.getProperty(KafkaConstants.ZOOKEEPER_LIST),
+							"QUEUE.TEST");
+				} catch (Exception e) {
+
+					Assert.assertNotNull(e);
+				}
+			}
+		});
+
+		thread.setDaemon(true);
+
+		thread.start();
 	}
 }
