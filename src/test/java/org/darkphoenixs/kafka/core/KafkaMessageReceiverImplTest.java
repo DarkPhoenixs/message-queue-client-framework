@@ -76,7 +76,25 @@ public class KafkaMessageReceiverImplTest {
 	}
 
 	@Test
-	public void test() throws Exception {
+	public void test0() throws Exception {
+		
+		Properties consumerProps = TestUtils.createConsumerProperties(
+				zkServer.connectString(), "group_1", "consumer_id", 1000);
+
+		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
+
+		recePool.setProps(consumerProps);
+		recePool.setPoolSize(10);
+		recePool.setClientId("test");
+
+		KafkaMessageReceiverImpl<byte[], byte[]> receiver = new KafkaMessageReceiverImpl<byte[], byte[]>(
+				consumerProps, recePool);
+		receiver.getEarliestOffset(topic, 0);
+		receiver.close();
+	}
+	
+	@Test
+	public void test1() throws Exception {
 
 		KafkaMessageSenderPool<byte[], byte[]> sendPool = new KafkaMessageSenderPool<byte[], byte[]>();
 
@@ -195,4 +213,5 @@ public class KafkaMessageReceiverImplTest {
 
 		KafkaMessageReceiver.logger.info("test");
 	}
+	
 }
