@@ -1,4 +1,4 @@
-package org.darkphoenixs.mq.meaage;
+package org.darkphoenixs.mq.message;
 
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
