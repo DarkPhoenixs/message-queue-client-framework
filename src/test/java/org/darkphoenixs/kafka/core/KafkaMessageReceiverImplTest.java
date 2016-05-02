@@ -79,7 +79,7 @@ public class KafkaMessageReceiverImplTest {
 	public void test0() throws Exception {
 		
 		Properties consumerProps = TestUtils.createConsumerProperties(
-				zkServer.connectString(), "group_1", "consumer_id", 1000);
+				zkServer.connectString(), "group_0", "consumer_0", 1000);
 
 		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
@@ -125,7 +125,7 @@ public class KafkaMessageReceiverImplTest {
 		sendPool.destroy();
 
 		Properties consumerProps = TestUtils.createConsumerProperties(
-				zkServer.connectString(), "group_1", "consumer_id", 1000);
+				zkServer.connectString(), "group_1", "consumer_1", 1000);
 
 		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
