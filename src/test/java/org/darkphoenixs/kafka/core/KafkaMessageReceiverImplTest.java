@@ -126,10 +126,6 @@ public class KafkaMessageReceiverImplTest {
 		Assert.assertNull(receiver.getConsumer());
 		receiver.setConsumer(receiver.getConsumer());
 		
-		receiver.getEarliestOffset(topic, -1);
-
-		receiver.getLatestOffset(topic, -1);
-		
 		receiver.getEarliestOffset(topic, 0);
 
 		receiver.getLatestOffset(topic, 0);
