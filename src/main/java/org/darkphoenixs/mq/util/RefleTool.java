@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.darkphoenixs.kafka.core;
+package org.darkphoenixs.mq.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 
 /**
- * <p>Title: ReflectionTool</p>
+ * <p>Title: RefleTool</p>
  * <p>Description: 反射工具类</p>
  *
  * @since 2015-06-01
  * @author Victor.Zxy
  * @version 1.0
  */
-public class ReflectionTool {
+public class RefleTool {
 
 	/**
 	 * <p>Title: newInstance</p>
@@ -55,5 +56,36 @@ public class ReflectionTool {
 		}
 		
 		return t;
+	}
+	
+	/**
+	 * <p>Title: getFieldValue</p>
+	 * <p>Description: 反射机制获取属性值</p>
+	 * 
+	 * @param obj
+	 * @param fieldName
+	 * @param fieldType
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T getFieldValue(Object obj, String fieldName, Class<T> fieldType) {
+		
+		Class<?> clasz = obj.getClass();
+
+		for (; clasz != Object.class; clasz = clasz.getSuperclass()) {
+			
+			try {
+				Field field = clasz.getDeclaredField(fieldName);
+				
+				field.setAccessible(true);
+				
+				return (T) field.get(obj);
+				
+			} catch (Exception e) {
+				
+			}
+		}
+		
+		return null;
 	}
 }

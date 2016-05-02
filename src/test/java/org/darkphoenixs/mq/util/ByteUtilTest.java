@@ -1,4 +1,4 @@
-package org.darkphoenixs.activemq.util;
+package org.darkphoenixs.mq.util;
 
 import org.junit.Assert;
 import org.junit.Test;

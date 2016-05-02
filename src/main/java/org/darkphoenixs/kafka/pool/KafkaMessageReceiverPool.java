@@ -38,10 +38,10 @@ import org.darkphoenixs.kafka.core.KafkaConstants;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.kafka.core.KafkaMessageReceiver;
 import org.darkphoenixs.kafka.core.KafkaMessageReceiverImpl;
-import org.darkphoenixs.kafka.core.ReflectionTool;
 import org.darkphoenixs.kafka.core.ZookeeperBrokers;
 import org.darkphoenixs.kafka.core.ZookeeperHosts;
 import org.darkphoenixs.mq.exception.MQException;
+import org.darkphoenixs.mq.util.RefleTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -323,11 +323,11 @@ public class KafkaMessageReceiverPool<K, V> {
 		VerifiableProperties verProps = new VerifiableProperties(props);
 
 		@SuppressWarnings("unchecked")
-		Decoder<K> keyDecoder = (Decoder<K>) ReflectionTool.newInstance(
+		Decoder<K> keyDecoder = (Decoder<K>) RefleTool.newInstance(
 				keyDecoderClass, verProps);
 
 		@SuppressWarnings("unchecked")
-		Decoder<V> valDecoder = (Decoder<V>) ReflectionTool.newInstance(
+		Decoder<V> valDecoder = (Decoder<V>) RefleTool.newInstance(
 				valDecoderClass, verProps);
 
 		Map<String, List<KafkaStream<K, V>>> consumerMap = consumer

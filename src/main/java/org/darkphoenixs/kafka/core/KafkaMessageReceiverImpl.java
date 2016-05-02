@@ -42,6 +42,7 @@ import kafka.utils.VerifiableProperties;
 
 import org.darkphoenixs.kafka.pool.KafkaMessageReceiverPool;
 import org.darkphoenixs.mq.exception.MQException;
+import org.darkphoenixs.mq.util.RefleTool;
 
 /**
  * <p>Title: KafkaMessageReceiverImpl</p>
@@ -176,7 +177,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
 			valload.get(vals);
 
 			@SuppressWarnings("unchecked")
-			Decoder<V> decoder = (Decoder<V>) ReflectionTool.newInstance(pool.getValDecoderClass(), props);
+			Decoder<V> decoder = (Decoder<V>) RefleTool.newInstance(pool.getValDecoderClass(), props);
 
 			V val = decoder.fromBytes(vals);
 
@@ -232,9 +233,9 @@ public class KafkaMessageReceiverImpl<K, V> implements
 			valload.get(vals);
 
 			@SuppressWarnings("unchecked")
-			Decoder<K> keyDecoder = (Decoder<K>) ReflectionTool.newInstance(pool.getKeyDecoderClass(), props);
+			Decoder<K> keyDecoder = (Decoder<K>) RefleTool.newInstance(pool.getKeyDecoderClass(), props);
 			@SuppressWarnings("unchecked")
-			Decoder<V> valDecoder = (Decoder<V>) ReflectionTool.newInstance(pool.getValDecoderClass(), props);
+			Decoder<V> valDecoder = (Decoder<V>) RefleTool.newInstance(pool.getValDecoderClass(), props);
 
 			K key = keyDecoder.fromBytes(keys);
 			V val = valDecoder.fromBytes(vals);

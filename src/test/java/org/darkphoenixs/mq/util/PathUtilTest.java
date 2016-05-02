@@ -1,4 +1,4 @@
-package org.darkphoenixs.activemq.util;
+package org.darkphoenixs.mq.util;
 
 import java.io.File;
 

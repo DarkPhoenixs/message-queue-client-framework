@@ -301,6 +301,12 @@
 			<version>1.2.10</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_${scala.version}</artifactId>
+			<version>${kafka.version}</version>
+			<classifier>test</classifier>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>

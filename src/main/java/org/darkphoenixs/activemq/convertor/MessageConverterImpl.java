@@ -20,8 +20,8 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
-import org.darkphoenixs.activemq.util.ByteUtil;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
+import org.darkphoenixs.mq.util.ByteUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.support.converter.MessageConversionException;
