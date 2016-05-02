@@ -35,9 +35,9 @@ public class RefleToolTest {
 		messageBean.setMessageDate(date);
 		messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
 		
-		String mt = RefleTool.getFieldValue(messageBean, "messageType", String.class);
+		Assert.assertEquals("MessageType", RefleTool.getFieldValue(messageBean, "messageType", String.class));
 		
-		System.out.println(mt);
+		Assert.assertNull(RefleTool.getFieldValue(messageBean, "messageType1", String.class));
 	}
 
 }
