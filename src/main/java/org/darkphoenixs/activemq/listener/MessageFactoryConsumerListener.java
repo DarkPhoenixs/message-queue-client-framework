@@ -21,7 +21,7 @@ import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.factory.ConsumerFactory;
 import org.darkphoenixs.mq.listener.MessageListener;
-import org.darkphoenixs.mq.message.AbstractMessageBean;
+import org.darkphoenixs.mq.util.RefleTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +34,34 @@ import org.slf4j.LoggerFactory;
  * @see MessageListener
  * @version 1.0
  */
-public class MessageFactoryConsumerListener implements MessageListener<AbstractMessageBean> {
+public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
 
 	/** logger */
 	protected Logger logger = LoggerFactory.getLogger(MessageFactoryConsumerListener.class);
+	
+	/** consumerKeyField */
+	private String consumerKeyField;
 	
 	/** consumerFactory */
 	private ConsumerFactory consumerFactory;
 
 	/** threadPool */
 	private ExecutorService threadPool;
+
+	/**
+	 * @return the consumerKeyField
+	 */
+	public String getConsumerKeyField() {
+		return consumerKeyField;
+	}
+
+	/**
+	 * @param consumerKeyField
+	 *            the consumerKeyField to set
+	 */
+	public void setConsumerKeyField(String consumerKeyField) {
+		this.consumerKeyField = consumerKeyField;
+	}
 
 	/**
 	 * @return the consumerFactory
@@ -76,20 +94,23 @@ public class MessageFactoryConsumerListener implements MessageListener<AbstractM
 	}
 
 	@Override
-	public void onMessage(final AbstractMessageBean message) throws MQException {
+	public void onMessage(final T message) throws MQException {
 
 		if (consumerFactory == null)	
 			throw new MQException("ConsumerFactory is null !");
 
+		if (consumerKeyField == null)	
+			throw new MQException("ConsumerKeyField is null !");
+		
 		if (message == null)	
 			throw new MQException("Message is null !");
 		
-		final String messageType = message.getMessageType();
+		final String consumerKey = RefleTool.getFieldValue(message, consumerKeyField, String.class);
 		
-		if (messageType == null)	
-			throw new MQException("Message Type is null !");
+		if (consumerKey == null)	
+			throw new MQException("Consumer Key is null !");
 		
-		final Consumer<AbstractMessageBean> consumer = consumerFactory.getConsumer(messageType);
+		final Consumer<T> consumer = consumerFactory.getConsumer(consumerKey);
 		
 		if (consumer == null)
 			throw new MQException("Consumer is null !");

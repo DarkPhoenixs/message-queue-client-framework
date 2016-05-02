@@ -13,7 +13,7 @@ public class MessageFactoryConsumerListenerTest {
 	@Test
 	public void test() throws Exception {
 
-		MessageFactoryConsumerListener factoryListener = new MessageFactoryConsumerListener();
+		MessageFactoryConsumerListener<MessageBeanImpl> factoryListener = new MessageFactoryConsumerListener<MessageBeanImpl>();
 
 		try {
 			factoryListener.onMessage(null);
@@ -33,7 +33,7 @@ public class MessageFactoryConsumerListenerTest {
 		consumerFactory.setConsumers(new Consumer[] { consumer1 });
 		consumerFactory.addConsumer(consumer2);
 		consumerFactory.init();
-		
+
 		Assert.assertNull(factoryListener.getConsumerFactory());
 		factoryListener.setConsumerFactory(consumerFactory);
 
@@ -42,7 +42,7 @@ public class MessageFactoryConsumerListenerTest {
 		} catch (Exception e) {
 			Assert.assertTrue(e instanceof MQException);
 		}
-		
+
 		MessageBeanImpl messageBean1 = new MessageBeanImpl();
 
 		messageBean1.setMessageNo("MessageNo1");
@@ -55,16 +55,25 @@ public class MessageFactoryConsumerListenerTest {
 			factoryListener.onMessage(messageBean1);
 		} catch (Exception e) {
 			Assert.assertTrue(e instanceof MQException);
-		}	
-		
-		messageBean1.setMessageType("ProtocolId3");
-		
+		}
+
+		Assert.assertNull(factoryListener.getConsumerKeyField());
+		factoryListener.setConsumerKeyField("messageType");
+
 		try {
 			factoryListener.onMessage(messageBean1);
 		} catch (Exception e) {
 			Assert.assertTrue(e instanceof MQException);
-		}	
+		}
 		
+		messageBean1.setMessageType("ProtocolId3");
+
+		try {
+			factoryListener.onMessage(messageBean1);
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof MQException);
+		}
+
 		MessageBeanImpl messageBean2 = new MessageBeanImpl();
 
 		messageBean2.setMessageNo("MessageNo2");
@@ -72,7 +81,7 @@ public class MessageFactoryConsumerListenerTest {
 		messageBean2.setMessageAckNo("MessageAckNo2");
 		messageBean2.setMessageDate(System.currentTimeMillis());
 		messageBean2.setMessageContent("MessageContent2".getBytes());
-		
+
 		factoryListener.onMessage(messageBean2);
 
 	}
