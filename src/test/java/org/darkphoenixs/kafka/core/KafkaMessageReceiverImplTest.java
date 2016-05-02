@@ -43,7 +43,8 @@ public class KafkaMessageReceiverImplTest {
 		// setup Broker
 		port = TestUtils.choosePort();
 		kafkaProps = TestUtils.createBrokerConfig(brokerId, port, true);
-		Properties kafkaProps2 = TestUtils.createBrokerConfig(1, TestUtils.choosePort(), true);
+		Properties kafkaProps2 = TestUtils.createBrokerConfig(1,
+				TestUtils.choosePort(), true);
 
 		KafkaConfig config = new KafkaConfig(kafkaProps);
 		KafkaConfig config2 = new KafkaConfig(kafkaProps2);
@@ -98,13 +99,13 @@ public class KafkaMessageReceiverImplTest {
 		sender.send(topic, "test".getBytes());
 
 		sender.sendWithKey(topic, "key".getBytes(), "value".getBytes());
-		
+
 		sender.close();
 
 		sender.shutDown();
 
 		sendPool.destroy();
-		
+
 		Properties consumerProps = TestUtils.createConsumerProperties(
 				zkServer.connectString(), "group_1", "consumer_id", 1000);
 
@@ -125,34 +126,73 @@ public class KafkaMessageReceiverImplTest {
 
 		Assert.assertNull(receiver.getConsumer());
 		receiver.setConsumer(receiver.getConsumer());
-		
+
 		receiver.getEarliestOffset(topic, -1);
 
 		receiver.getLatestOffset(topic, -1);
-		
+
 		receiver.getEarliestOffset(topic, 0);
 
 		receiver.getLatestOffset(topic, 0);
 
 		receiver.receive(topic, 0, 0, 1);
-		
+
 		receiver.receive(topic, 0, 0, 2);
-		
+
 		receiver.receive(topic, 0, 1, 2);
 
 		receiver.receive(topic, 1, 0, 2);
 
 		receiver.receiveWithKey(topic, 0, 1, 1);
-		
+
 		receiver.receiveWithKey(topic, 0, 1, 2);
-		
+
 		receiver.receiveWithKey(topic, 0, 2, 2);
-		
+
 		receiver.receiveWithKey(topic, 1, 1, 2);
 
+		try {
+			receiver.getEarliestOffset("test", 0);
+		} catch (Exception e) {
+		}
+
+		try {
+			receiver.getLatestOffset("test", 0);
+		} catch (Exception e) {
+		}
+
+		try {
+			receiver.getEarliestOffset(topic, 2);
+		} catch (Exception e) {
+		}
+
+		try {
+			receiver.getLatestOffset(topic, 2);
+		} catch (Exception e) {
+		}
+
+		try {
+			receiver.receive(topic, 2, 0, 1);
+		} catch (Exception e) {
+		}
+
+		try {
+			receiver.receive("test", 0, 0, 1);
+		} catch (Exception e) {
+		}
+
+		try {
+			receiver.receiveWithKey(topic, 2, 1, 1);
+		} catch (Exception e) {
+		}
+
+		try {
+			receiver.receiveWithKey("test", 0, 1, 1);
+		} catch (Exception e) {
+		}
+
 		receiver.close();
-		
+
 		KafkaMessageReceiver.logger.info("test");
 	}
-	
 }
