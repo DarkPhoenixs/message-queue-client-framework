@@ -154,4 +154,91 @@ public class KafkaMessageReceiverImplTest {
 		
 		KafkaMessageReceiver.logger.info("test");
 	}
+	
+	@Test
+	public void test1() throws Exception {
+
+		KafkaMessageSenderPool<byte[], byte[]> sendPool = new KafkaMessageSenderPool<byte[], byte[]>();
+
+		sendPool.setProps(TestUtils.getProducerConfig("localhost:" + port));
+
+		sendPool.init();
+
+		Properties properties = TestUtils
+				.getProducerConfig("localhost:" + port);
+
+		KafkaMessageSenderImpl<byte[], byte[]> sender = new KafkaMessageSenderImpl<byte[], byte[]>(
+				properties, sendPool);
+
+		Assert.assertEquals(sendPool, sender.getPool());
+		sender.setPool(sendPool);
+
+		Assert.assertNotNull(sender.getProducer());
+		sender.setProducer(sender.getProducer());
+
+		sender.send(topic, "test".getBytes());
+
+		sender.sendWithKey(topic, "key".getBytes(), "value".getBytes());
+		
+		sender.close();
+
+		sender.shutDown();
+
+		sendPool.destroy();
+		
+		Properties consumerProps = TestUtils.createConsumerProperties(
+				zkServer.connectString(), "group_1", "consumer_id", 1000);
+
+		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
+
+		recePool.setProps(consumerProps);
+		recePool.setPoolSize(10);
+		recePool.setClientId("test");
+
+		KafkaMessageReceiverImpl<byte[], byte[]> receiver = new KafkaMessageReceiverImpl<byte[], byte[]>(
+				consumerProps, recePool);
+		
+		try {
+			receiver.getEarliestOffset("test", 0);
+		} catch (Exception e) {
+		}
+		
+		try {
+			receiver.getLatestOffset("test", 0 );
+		} catch (Exception e) {
+		}
+		
+		try {
+			receiver.getEarliestOffset(topic, 2);
+		} catch (Exception e) {
+		}
+		
+		try {
+			receiver.getLatestOffset(topic, 2);
+		} catch (Exception e) {
+		}
+
+		try {
+			receiver.receive(topic, 2, 0, 1);
+		} catch (Exception e) {
+		}
+		
+		try {
+			receiver.receive("test", 0, 0, 1);
+		} catch (Exception e) {
+		}
+		
+		try {
+			receiver.receiveWithKey(topic, 2, 1, 1);
+		} catch (Exception e) {
+		}
+		
+		try {
+			receiver.receiveWithKey("test", 0, 1, 1);
+		} catch (Exception e) {
+		}
+
+		receiver.close();
+		
+	}
 }
