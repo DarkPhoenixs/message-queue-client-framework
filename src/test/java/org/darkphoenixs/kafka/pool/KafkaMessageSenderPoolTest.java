@@ -75,6 +75,18 @@ public class KafkaMessageSenderPoolTest {
 
 		final KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
 
+		Thread thread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				pool.init();
+			}
+		});
+		
+		thread.setDaemon(true);
+		
+		thread.start();
+
 		Assert.assertNotNull(pool.getThreadFactory());
 		pool.setThreadFactory(new KafkaPoolThreadFactory());
 
@@ -96,15 +108,13 @@ public class KafkaMessageSenderPoolTest {
 		pool.setConfig(new DefaultResourceLoader()
 				.getResource("kafka/producer.properties"));
 
-		pool.setProps(kafkaProps);
+		pool.setProps(TestUtils.getProducerConfig("localhost:" + port));
 		
 		pool.setZkhosts(new ZookeeperHosts(zkServer.connectString(), topic));
 
 		Assert.assertNotNull(pool.getSender(-1));
 
 		Assert.assertNotNull(pool.getSender(10000));
-
-		pool.setPoolSize(0);
 		
 		pool.init();
 
