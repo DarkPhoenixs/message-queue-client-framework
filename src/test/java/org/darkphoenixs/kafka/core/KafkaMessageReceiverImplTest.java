@@ -85,7 +85,7 @@ public class KafkaMessageReceiverImplTest {
 
 		recePool.setProps(consumerProps);
 		recePool.setPoolSize(10);
-		recePool.setClientId("test");
+		recePool.setClientId("test0");
 
 		KafkaMessageReceiverImpl<byte[], byte[]> receiver = new KafkaMessageReceiverImpl<byte[], byte[]>(
 				consumerProps, recePool);
@@ -131,7 +131,7 @@ public class KafkaMessageReceiverImplTest {
 
 		recePool.setProps(consumerProps);
 		recePool.setPoolSize(10);
-		recePool.setClientId("test");
+		recePool.setClientId("test1");
 
 		KafkaMessageReceiverImpl<byte[], byte[]> receiver = new KafkaMessageReceiverImpl<byte[], byte[]>(
 				consumerProps, recePool);
