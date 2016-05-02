@@ -104,12 +104,21 @@ public class ZookeeperBrokersTest {
 
 		try {
 			brokers.close();
-			brokers.getLeaderFor(0);
 			brokers.getNumPartitions();
-			brokers.getBrokerInfo();
 		} catch (Exception e) {
 			Assert.assertNotNull(e);
 		}
 
+		try {
+			brokers.getLeaderFor(0);
+		} catch (Exception e) {
+			Assert.assertNotNull(e);
+		}
+		
+		try {
+			brokers.getBrokerInfo();
+		} catch (Exception e) {
+			Assert.assertNotNull(e);
+		}
 	}
 }
