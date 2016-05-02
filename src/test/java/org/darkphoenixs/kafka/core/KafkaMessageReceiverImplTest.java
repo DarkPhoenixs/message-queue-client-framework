@@ -43,20 +43,25 @@ public class KafkaMessageReceiverImplTest {
 		// setup Broker
 		port = TestUtils.choosePort();
 		kafkaProps = TestUtils.createBrokerConfig(brokerId, port, true);
+		Properties kafkaProps2 = TestUtils.createBrokerConfig(1, TestUtils.choosePort(), true);
 
 		KafkaConfig config = new KafkaConfig(kafkaProps);
+		KafkaConfig config2 = new KafkaConfig(kafkaProps2);
 		Time mock = new MockTime();
+		Time mock2 = new MockTime();
 		kafkaServer = TestUtils.createServer(config, mock);
+		KafkaServer kafkaServer2 = TestUtils.createServer(config2, mock2);
 
 		// create topic
 		TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
 				new String[] { "--create", "--topic", topic,
-						"--replication-factor", "1", "--partitions", "1" });
+						"--replication-factor", "2", "--partitions", "2" });
 
 		TopicCommand.createTopic(zkClient, options);
 
 		List<KafkaServer> servers = new ArrayList<KafkaServer>();
 		servers.add(kafkaServer);
+		servers.add(kafkaServer2);
 		TestUtils.waitUntilMetadataIsPropagated(
 				scala.collection.JavaConversions.asScalaBuffer(servers), topic,
 				0, 5000);
@@ -144,7 +149,6 @@ public class KafkaMessageReceiverImplTest {
 		receiver.receiveWithKey(topic, 0, 2, 2);
 		
 		receiver.receiveWithKey(topic, 1, 1, 2);
-
 
 		receiver.close();
 		
