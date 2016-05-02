@@ -79,6 +79,8 @@ public class ZookeeperBrokersTest {
 
 		brokers.partitionPath();
 
+		System.out.println(brokers.getBrokerInfo());
+
 		Assert.assertEquals(
 				"localhost:9092",
 				brokers.getBrokerHost("{\"host\":\"localhost\", \"jmx_port\":9999, \"port\":9092, \"version\":1 }"
@@ -92,10 +94,22 @@ public class ZookeeperBrokersTest {
 
 		Assert.assertEquals(0, brokers.getLeaderFor(0));
 
+		try {
+			brokers.getLeaderFor(-1);
+		} catch (Exception e) {
+			Assert.assertNotNull(e);
+		}
+
 		Assert.assertEquals(4, brokers.getNumPartitions());
 
-		System.out.println(brokers.getBrokerInfo());
+		try {
+			brokers.close();
+			brokers.getLeaderFor(0);
+			brokers.getNumPartitions();
+			brokers.getBrokerInfo();
+		} catch (Exception e) {
+			Assert.assertNotNull(e);
+		}
 
-		brokers.close();
 	}
 }
