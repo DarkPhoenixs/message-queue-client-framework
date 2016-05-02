@@ -42,6 +42,15 @@ public class MessageFactoryConsumerListenerTest {
 		Assert.assertNull(factoryListener.getConsumerFactory());
 		factoryListener.setConsumerFactory(consumerFactory);
 
+		try {
+			factoryListener.onMessage(null);
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof MQException);
+		}
+
+		Assert.assertNull(factoryListener.getConsumerKeyField());
+		factoryListener.setConsumerKeyField("messageType");
+		
 		MessageBeanImpl messageBean1 = new MessageBeanImpl();
 
 		messageBean1.setMessageNo("MessageNo1");
@@ -49,15 +58,6 @@ public class MessageFactoryConsumerListenerTest {
 		messageBean1.setMessageAckNo("MessageAckNo1");
 		messageBean1.setMessageDate(System.currentTimeMillis());
 		messageBean1.setMessageContent("MessageContent1".getBytes());
-
-		try {
-			factoryListener.onMessage(messageBean1);
-		} catch (Exception e) {
-			Assert.assertTrue(e instanceof MQException);
-		}
-
-		Assert.assertNull(factoryListener.getConsumerKeyField());
-		factoryListener.setConsumerKeyField("messageType");
 
 		try {
 			factoryListener.onMessage(messageBean1);
