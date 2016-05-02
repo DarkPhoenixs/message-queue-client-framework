@@ -15,12 +15,13 @@ import kafka.utils.ZKStringSerializer$;
 import kafka.zk.EmbeddedZookeeper;
 
 import org.I0Itec.zkclient.ZkClient;
+import org.darkphoenixs.kafka.pool.KafkaMessageSenderPool;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ZookeeperBrokersTest {
+public class KafkaMessageSenderImplTest {
 
 	private int brokerId = 0;
 	private String topic = "QUEUE.TEST";
@@ -49,7 +50,7 @@ public class ZookeeperBrokersTest {
 		// create topic
 		TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
 				new String[] { "--create", "--topic", topic,
-						"--replication-factor", "1", "--partitions", "4" });
+						"--replication-factor", "1", "--partitions", "1" });
 
 		TopicCommand.createTopic(zkClient, options);
 
@@ -70,32 +71,34 @@ public class ZookeeperBrokersTest {
 	@Test
 	public void test() throws Exception {
 
-		ZookeeperHosts zooHosts = new ZookeeperHosts(zkServer.connectString(),
-				topic);
+		KafkaMessageSenderPool<byte[], byte[]> sendPool = new KafkaMessageSenderPool<byte[], byte[]>();
 
-		final ZookeeperBrokers brokers = new ZookeeperBrokers(zooHosts);
+		sendPool.setProps(TestUtils.getProducerConfig("localhost:" + port));
 
-		brokers.brokerPath();
+		sendPool.init();
 
-		brokers.partitionPath();
+		Properties properties = TestUtils
+				.getProducerConfig("localhost:" + port);
 
-		Assert.assertEquals(
-				"localhost:9092",
-				brokers.getBrokerHost("{\"host\":\"localhost\", \"jmx_port\":9999, \"port\":9092, \"version\":1 }"
-						.getBytes("UTF-8")));
+		KafkaMessageSenderImpl<byte[], byte[]> sender = new KafkaMessageSenderImpl<byte[], byte[]>(
+				properties, sendPool);
 
-		try {
-			brokers.getBrokerHost("1".getBytes());
-		} catch (Exception e) {
-			Assert.assertNotNull(e);
-		}
+		Assert.assertEquals(sendPool, sender.getPool());
+		sender.setPool(sendPool);
 
-		Assert.assertEquals(0, brokers.getLeaderFor(0));
+		Assert.assertNotNull(sender.getProducer());
+		sender.setProducer(sender.getProducer());
 
-		Assert.assertEquals(4, brokers.getNumPartitions());
+		sender.send(topic, "test".getBytes());
 
-		System.out.println(brokers.getBrokerInfo());
+		sender.sendWithKey(topic, "key".getBytes(), "value".getBytes());
+		
+		sender.close();
 
-		brokers.close();
+		sender.shutDown();
+
+		sendPool.destroy();
+		
+		KafkaMessageSender.logger.info("test");
 	}
 }
