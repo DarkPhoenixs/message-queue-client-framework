@@ -51,6 +51,12 @@ public class MessageFactoryConsumerListenerTest {
 		Assert.assertNull(factoryListener.getConsumerKeyField());
 		factoryListener.setConsumerKeyField("messageType");
 		
+		try {
+			factoryListener.onMessage(null);
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof MQException);
+		}
+		
 		MessageBeanImpl messageBean1 = new MessageBeanImpl();
 
 		messageBean1.setMessageNo("MessageNo1");
