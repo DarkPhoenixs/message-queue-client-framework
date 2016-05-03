@@ -1,9 +1,6 @@
 org.darkphoenixs.activemq.consumer
-org.darkphoenixs.activemq.convertor
 org.darkphoenixs.activemq.listener
 org.darkphoenixs.activemq.producer
-org.darkphoenixs.activemq.util
-org.darkphoenixs.kafka.codec
 org.darkphoenixs.kafka.consumer
 org.darkphoenixs.kafka.core
 org.darkphoenixs.kafka.listener
@@ -15,5 +12,5 @@ org.darkphoenixs.mq.consumer
 org.darkphoenixs.mq.exception
 org.darkphoenixs.mq.factory
 org.darkphoenixs.mq.listener
-org.darkphoenixs.mq.message
 org.darkphoenixs.mq.producer
+org.darkphoenixs.mq.util

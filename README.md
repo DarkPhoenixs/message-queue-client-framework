@@ -7,8 +7,9 @@
 [![GitHub release](https://img.shields.io/github/release/DarkPhoenixs/message-queue-client-framework.svg)](https://github.com/DarkPhoenixs/message-queue-client-framework/releases)
 [![License](https://img.shields.io/badge/license-%20Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-  A message queue client framework (Apache Kafka &amp; Apache ActiveMQ)
-  * [Release](#release)
+  A message queue client framework with Apache Kafka &amp; Apache ActiveMQ)
+  
+  * [Maven](#Maven)
   * [Documentation](#documentation)
   * [Configuration](#configuration)
   * [Producer](#producer)
@@ -16,12 +17,15 @@
   * [Listener](#listener)
   * [Factory](#factory)
 
-## Release
+## Maven
 
-[messagequeue-framework v1.1](https://github.com/darkphoenixs/message-queue-client-framework/releases/tag/v1.1) (2015-09-12)
-
-[messagequeue-framework v1.0](https://github.com/darkphoenixs/message-queue-client-framework/releases/tag/v1.0) (2015-06-01) 
-
+```xml
+<dependency>
+	<groupId>org.darkphoenixs</groupId>
+	<artifactId>messagequeue-framework</artifactId>
+	<version>X.X.X</version>
+</dependency>
+```
 ## Documentation
 
 API documentation is available at [messagequeue-framework-1.1 api] (http://htmlpreview.github.io/?https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/v1.1/doc/index.html)
