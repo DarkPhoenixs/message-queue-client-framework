@@ -303,8 +303,12 @@ public class KafkaMessageReceiverImpl<K, V> implements
 	@Override
 	public void close() {
 
-		if (this.consumer != null)
+		if (this.consumer != null) {
+			
 			this.consumer.close();
+			
+			this.consumer = null;
+		}
 	}
 
 	/**
