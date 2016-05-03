@@ -9,7 +9,7 @@
 
   A message queue client framework with Apache Kafka &amp; Apache ActiveMQ
   
-  * [Maven](#Maven)
+  * [Maven](#maven)
   * [Documentation](#documentation)
   * [Configuration](#configuration)
   * [Producer](#producer)
