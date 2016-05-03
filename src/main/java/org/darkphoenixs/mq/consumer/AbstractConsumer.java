@@ -32,79 +32,17 @@ public abstract class AbstractConsumer<T> implements Consumer<T> {
 
 	/** logger */
 	protected Logger logger = LoggerFactory.getLogger(getClass());
+
+	/** consumerKey */
+	private String consumerKey;
 	
-	/** protocolId */
-	private String protocolId;
-
-	/** iframeName */
-	private String iframeName;
-
-	/** tabName */
-	private String tabName;
-
-	/** funcName */
-	private String funcName;
-
 	/**
-	 * @return the protocolId
+	 * @param consumerKey the consumerKey to set
 	 */
-	public String getProtocolId() {
-		return protocolId;
+	public void setConsumerKey(String consumerKey) {
+		this.consumerKey = consumerKey;
 	}
-
-	/**
-	 * @param protocolId
-	 *            the protocolId to set
-	 */
-	public void setProtocolId(String protocolId) {
-		this.protocolId = protocolId;
-	}
-
-	/**
-	 * @return the iframeName
-	 */
-	public String getIframeName() {
-		return iframeName;
-	}
-
-	/**
-	 * @param iframeName
-	 *            the iframeName to set
-	 */
-	public void setIframeName(String iframeName) {
-		this.iframeName = iframeName;
-	}
-
-	/**
-	 * @return the tabName
-	 */
-	public String getTabName() {
-		return tabName;
-	}
-
-	/**
-	 * @param tabName
-	 *            the tabName to set
-	 */
-	public void setTabName(String tabName) {
-		this.tabName = tabName;
-	}
-
-	/**
-	 * @return the funcName
-	 */
-	public String getFuncName() {
-		return funcName;
-	}
-
-	/**
-	 * @param funcName
-	 *            the funcName to set
-	 */
-	public void setFuncName(String funcName) {
-		this.funcName = funcName;
-	}
-
+	
 	@Override
 	public void receive(T message) throws MQException {
 
@@ -123,7 +61,7 @@ public abstract class AbstractConsumer<T> implements Consumer<T> {
 	@Override
 	public String getConsumerKey() throws MQException {
 
-		return getProtocolId();
+		return this.consumerKey;
 	}
 
 	/**

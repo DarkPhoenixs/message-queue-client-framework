@@ -10,16 +10,11 @@ public class MessageConsumerTest {
 
 		MessageConsumer<String> consumer = new MessageConsumer<String>();
 
-		consumer.setTabName("TabName");
-		consumer.setFuncName("FuncName");
-		consumer.setIframeName("IframeName");
-		consumer.setProtocolId("ProtocolId");
+		consumer.setConsumerKey("ProtocolId");
 
-		consumer.receive(consumer.getConsumerKey() + " "
-				+ consumer.getFuncName() + " " + consumer.getIframeName() + " "
-				+ consumer.getTabName());
+		consumer.receive(consumer.getConsumerKey());
 
-		Assert.assertEquals(consumer.getConsumerKey(), consumer.getProtocolId());
+		Assert.assertEquals("ProtocolId", consumer.getConsumerKey());
 	}
 	
 }

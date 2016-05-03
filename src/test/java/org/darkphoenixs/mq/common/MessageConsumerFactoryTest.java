@@ -16,16 +16,10 @@ public class MessageConsumerFactoryTest {
 				.getInstance();
 
 		ConsumerTest consumer1 = new ConsumerTest();
-		consumer1.setTabName("TabName1");
-		consumer1.setFuncName("FuncName1");
-		consumer1.setIframeName("IframeName1");
-		consumer1.setProtocolId("ProtocolId1");
+		consumer1.setConsumerKey("ProtocolId1");
 
 		ConsumerTest consumer2 = new ConsumerTest();
-		consumer2.setTabName("TabName2");
-		consumer2.setFuncName("FuncName2");
-		consumer2.setIframeName("IframeName2");
-		consumer2.setProtocolId("ProtocolId2");
+		consumer2.setConsumerKey("ProtocolId2");
 		
 		factory.setConsumers(new Consumer[] { consumer1 });
 		factory.addConsumer(consumer2);

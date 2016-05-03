@@ -36,9 +36,6 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	/** logger */
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
-	/** protocolId */
-	private String protocolId;
-	
 	/** messageTemplate */
 	private KafkaMessageTemplate<T> messageTemplate;
 	
@@ -71,20 +68,6 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	 */
 	public void setDestination(KafkaDestination destination) {
 		this.destination = destination;
-	}
-
-	/**
-	 * @return the protocolId
-	 */
-	public String getProtocolId() {
-		return protocolId;
-	}
-
-	/**
-	 * @param protocolId the protocolId to set
-	 */
-	public void setProtocolId(String protocolId) {
-		this.protocolId = protocolId;
 	}
 
 	@Override

@@ -39,28 +39,11 @@ public abstract class AbstractProducer<T> implements Producer<T> {
 	/** logger */
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
-	/** protocolId */
-	private String protocolId;
-	
 	/** jmsTemplate */
 	private JmsTemplate jmsTemplate;
 
 	/** destination */
 	private Destination destination;
-	
-	/**
-	 * @return the protocolId
-	 */
-	public String getProtocolId() {
-		return protocolId;
-	}
-
-	/**
-	 * @param protocolId the protocolId to set
-	 */
-	public void setProtocolId(String protocolId) {
-		this.protocolId = protocolId;
-	}
 
 	/**
 	 * @return the jmsTemplate

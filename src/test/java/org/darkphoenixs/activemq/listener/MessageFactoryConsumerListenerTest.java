@@ -27,13 +27,13 @@ public class MessageFactoryConsumerListenerTest {
 				.getInstance();
 
 		ConsumerTest consumer1 = new ConsumerTest();
-		consumer1.setProtocolId("ProtocolId1");
+		consumer1.setConsumerKey("ProtocolId1");
 
 		ConsumerTest consumer2 = new ConsumerTest();
-		consumer2.setProtocolId("ProtocolId2");
+		consumer2.setConsumerKey("ProtocolId2");
 
 		ConsumerTestErr consumerErr = new ConsumerTestErr();
-		consumerErr.setProtocolId("ProtocolIdErr");
+		consumerErr.setConsumerKey("ProtocolIdErr");
 
 		consumerFactory.setConsumers(new Consumer[] { consumer1, consumer2 });
 		consumerFactory.addConsumer(consumerErr);

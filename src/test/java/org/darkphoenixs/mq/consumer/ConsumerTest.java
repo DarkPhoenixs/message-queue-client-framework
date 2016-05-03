@@ -11,16 +11,11 @@ public class ConsumerTest {
 
 		ConsumerImpl consumer = new ConsumerImpl();
 
-		consumer.setTabName("TabName");
-		consumer.setFuncName("FuncName");
-		consumer.setIframeName("IframeName");
-		consumer.setProtocolId("ProtocolId");
+		consumer.setConsumerKey("ProtocolId");
 
-		consumer.receive(consumer.getConsumerKey() + " "
-				+ consumer.getFuncName() + " " + consumer.getIframeName() + " "
-				+ consumer.getTabName());
+		consumer.receive(consumer.getConsumerKey());
 
-		Assert.assertEquals(consumer.getConsumerKey(), consumer.getProtocolId());
+		Assert.assertEquals(consumer.getConsumerKey(), consumer.getConsumerKey());
 		
 		ConsumerImpl2 consumer2 = new ConsumerImpl2();
 

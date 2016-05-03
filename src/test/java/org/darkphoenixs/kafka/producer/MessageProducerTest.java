@@ -13,9 +13,6 @@ public class MessageProducerTest {
 
 		MessageProducer<String> producer = new MessageProducer<String>();
 
-		Assert.assertNull(producer.getProtocolId());
-		producer.setProtocolId("ProtocolId");
-
 		Assert.assertNull(producer.getDestination());
 		KafkaDestination destination = new KafkaDestination("TempQueue");
 		producer.setDestination(destination);

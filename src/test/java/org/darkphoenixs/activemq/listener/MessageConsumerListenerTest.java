@@ -17,10 +17,7 @@ public class MessageConsumerListenerTest {
 
 		MessageConsumer<String> consumer = new MessageConsumer<String>();
 
-		consumer.setTabName("TabName");
-		consumer.setFuncName("FuncName");
-		consumer.setIframeName("IframeName");
-		consumer.setProtocolId("ProtocolId");
+		consumer.setConsumerKey("consumerKey");
 
 		try {
 			listener.onMessage("test");
