@@ -65,7 +65,7 @@ public class RefleTool {
 	 * @param obj
 	 * @param fieldName
 	 * @param fieldType
-	 * @return
+	 * @return 属性值
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T getFieldValue(Object obj, String fieldName, Class<T> fieldType) {
