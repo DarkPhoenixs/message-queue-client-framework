@@ -23,7 +23,7 @@
 <dependency>
 	<groupId>org.darkphoenixs</groupId>
 	<artifactId>messagequeue-framework</artifactId>
-	<version>X.X.X</version>
+	<version>x.x.x</version>
 </dependency>
 ```
 ## Documentation
