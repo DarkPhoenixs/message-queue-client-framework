@@ -4,11 +4,13 @@
 
 	<groupId>org.darkphoenixs</groupId>
 	<artifactId>messagequeue-framework</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>MessageQueueClientFramework</name>
 	<url>http://darkphoenixs.org/message-queue-client-framework/</url>
+	<description>A message queue client framework (Apache Kafka &amp; Apache ActiveMQ)</description>
+	<inceptionYear>2015</inceptionYear>
 
 	<organization>
 		<name>Dark Phoenixs</name>
@@ -36,8 +38,6 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
-
-	<inceptionYear>2015</inceptionYear>
 
 	<scm>
 		<connection>scm:git:https://github.com/DarkPhoenixs/message-queue-client-framework.git</connection>
