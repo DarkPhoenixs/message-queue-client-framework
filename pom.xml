@@ -4,7 +4,7 @@
 
 	<groupId>org.darkphoenixs</groupId>
 	<artifactId>messagequeue-framework</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1</version>
 	<packaging>jar</packaging>
 
 	<name>MessageQueueClientFramework</name>
@@ -68,27 +68,6 @@
 				<version>2.5</version>
 				<configuration>
 					<skip>${test.skip}</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<skip>${doc.skip}</skip>
-					<charset>UTF-8</charset>
-					<encoding>UTF-8</encoding>
-					<docencoding>UTF-8</docencoding>
-					<argLine>-Dfile.encoding=UTF-8</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -237,8 +216,7 @@
 		<activemq.version>5.10.0</activemq.version>
 		<spring.version>4.0.0.RELEASE</spring.version>
 		<jdk.version>1.7</jdk.version>
-		<test.skip>false</test.skip>
-		<doc.skip>true</doc.skip>
+		<test.skip>true</test.skip>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
