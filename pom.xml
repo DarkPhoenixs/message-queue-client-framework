@@ -4,7 +4,7 @@
 
 	<groupId>org.darkphoenixs</groupId>
 	<artifactId>messagequeue-framework</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2-SHAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>MessageQueueClientFramework</name>
@@ -44,6 +44,16 @@
 		<developerConnection>scm:git:https://github.com/DarkPhoenixs/message-queue-client-framework.git</developerConnection>
 		<url>http://darkphoenixs.org/message-queue-client-framework/</url>
 	</scm>
+
+	<properties>
+		<scala.version>2.10</scala.version>
+		<kafka.version>0.8.2.2</kafka.version>
+		<activemq.version>5.10.0</activemq.version>
+		<spring.version>4.0.0.RELEASE</spring.version>
+		<jdk.version>1.7</jdk.version>
+		<test.skip>true</test.skip>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -209,16 +219,6 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-
-	<properties>
-		<scala.version>2.10</scala.version>
-		<kafka.version>0.8.2.2</kafka.version>
-		<activemq.version>5.10.0</activemq.version>
-		<spring.version>4.0.0.RELEASE</spring.version>
-		<jdk.version>1.7</jdk.version>
-		<test.skip>true</test.skip>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 
 	<dependencies>
 		<!-- Spring Config -->
