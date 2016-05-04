@@ -63,6 +63,7 @@ API documentation is available at [apidocs](http://htmlpreview.github.io/?https:
 ![image](https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/factory.png)
 
 Factory config with Spring
+
 ```xml
 <!-- Message Producer Factory -->
 <bean id="messageProducerFactory" class="org.darkphoenixs.mq.common.MessageProducerFactory" 
