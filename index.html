@@ -29,20 +29,13 @@
 <a href="https://github.com/DarkPhoenixs/message-queue-client-framework/releases"><img src="https://img.shields.io/github/release/DarkPhoenixs/message-queue-client-framework.svg" alt="GitHub release"></a>
 <a href="https://www.apache.org/licenses/LICENSE-2.0.html"><img src="https://img.shields.io/badge/license-%20Apache%202-4EB1BA.svg" alt="License"></a></p>
 
-<p>A message queue client framework with Apache Kafka &amp; Apache ActiveMQ</p>
-
-<ul>
-<li><a href="#maven">Maven</a></li>
-<li><a href="#documentation">Documentation</a></li>
-<li><a href="#configuration">Configuration</a></li>
-<li><a href="#producer">Producer</a></li>
-<li><a href="#consumer">Consumer</a></li>
-<li><a href="#listener">Listener</a></li>
-<li><a href="#factory">Factory</a></li>
-</ul>
+<p>This is a message queue client framework with Apache Kafka &amp; Apache ActiveMQ</p>
 
 <h2>
-<a id="maven" class="anchor" href="#maven" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Maven</h2>
+<a id="download" class="anchor" href="#download" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Download</h2>
+
+<h4>
+<a id="maven" class="anchor" href="#maven" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Maven</h4>
 
 <div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
     &lt;<span class="pl-ent">groupId</span>&gt;org.darkphoenixs&lt;/<span class="pl-ent">groupId</span>&gt;
@@ -50,73 +43,38 @@
     &lt;<span class="pl-ent">version</span>&gt;x.x.x&lt;/<span class="pl-ent">version</span>&gt;
 &lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
 
+<h4>
+<a id="gradle" class="anchor" href="#gradle" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Gradle</h4>
+
+<div class="highlight highlight-source-groovy"><pre>compile <span class="pl-s"><span class="pl-pds">'</span>org.darkphoenixs:messagequeue-framework:x.x.x<span class="pl-pds">'</span></span></pre></div>
+
+<h4>
+<a id="sbt" class="anchor" href="#sbt" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SBT</h4>
+
+<div class="highlight highlight-source-scala"><pre>libraryDependencies <span class="pl-k">+</span><span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>org.darkphoenixs<span class="pl-pds">"</span></span> <span class="pl-k">%</span> <span class="pl-s"><span class="pl-pds">"</span>messagequeue-framework<span class="pl-pds">"</span></span> <span class="pl-k">%</span> <span class="pl-s"><span class="pl-pds">"</span>x.x.x<span class="pl-pds">"</span></span></pre></div>
+
 <h2>
 <a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h2>
 
-<p>API documentation is available at <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/DarkPhoenixs/message-queue-client-framework/master/doc/index.html">apidocs</a>.</p>
+<p>The documentation is available at <a href="https://github.com/DarkPhoenixs/message-queue-client-framework/wiki">Wiki</a>.</p>
 
 <h2>
-<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
-<p><strong>ActiveMQ config with Spring</strong></p>
+<pre><code>Copyright 2014-2024 Dark Phoenixs (Open-Source Organization).
 
-<ul>
-<li><a href="https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/activemq/applicationContext-message.xml">applicationContext-message.xm</a></li>
-<li><a href="https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/activemq/applicationContext-sender.xml">applicationContext-sender.xm</a></li>
-<li><a href="https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/activemq/applicationContext-receiver.xml">applicationContext-receiver.xml</a></li>
-<li><a href="https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/activemq/mq.properties">mq.properties</a></li>
-</ul>
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-<p><strong>Kafka config with Spring</strong></p>
+     http://www.apache.org/licenses/LICENSE-2.0
 
-<ul>
-<li><a href="https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/kafka/applicationContext-producer.xml">applicationContext-producer.xml</a></li>
-<li><a href="https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/kafka/applicationContext-consumer.xml">applicationContext-consumer.xml</a></li>
-<li><a href="https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/test/resources/kafka/producer.properties">producer.properties</a></li>
-<li><a href="https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/test/resources/kafka/consumer.properties">consumer.properties</a></li>
-</ul>
-
-<h2>
-<a id="producer" class="anchor" href="#producer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Producer</h2>
-
-<p><img src="https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/producer.png" alt="image"></p>
-
-<h2>
-<a id="consumer" class="anchor" href="#consumer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Consumer</h2>
-
-<p><img src="https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/consumer.png" alt="image"></p>
-
-<h2>
-<a id="listener" class="anchor" href="#listener" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Listener</h2>
-
-<p><img src="https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/listener.png" alt="image"></p>
-
-<h2>
-<a id="factory" class="anchor" href="#factory" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Factory</h2>
-
-<p><img src="https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/factory.png" alt="image"></p>
-
-<p>Factory config with Spring</p>
-
-<div class="highlight highlight-text-xml"><pre><span class="pl-c">&lt;!-- Message Producer Factory --&gt;</span>
-&lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>messageProducerFactory<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.darkphoenixs.mq.common.MessageProducerFactory<span class="pl-pds">"</span></span> 
-    <span class="pl-e">init-method</span>=<span class="pl-s"><span class="pl-pds">"</span>init<span class="pl-pds">"</span></span> <span class="pl-e">destroy-method</span>=<span class="pl-s"><span class="pl-pds">"</span>destroy<span class="pl-pds">"</span></span>&gt;
-    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>producers<span class="pl-pds">"</span></span>&gt; 
-        &lt;<span class="pl-ent">array</span>&gt; 
-            &lt;<span class="pl-ent">ref</span> <span class="pl-e">bean</span>=<span class="pl-s"><span class="pl-pds">"</span>messageProducer<span class="pl-pds">"</span></span> /&gt; 
-        &lt;/<span class="pl-ent">array</span>&gt; 
-    &lt;/<span class="pl-ent">property</span>&gt; 
-&lt;/<span class="pl-ent">bean</span>&gt; 
-
-<span class="pl-c">&lt;!-- Message Consumer Factory  --&gt;</span>
-&lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>messageConsumerFactory<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.darkphoenixs.mq.common.MessageConsumerFactory<span class="pl-pds">"</span></span> 
-    <span class="pl-e">init-method</span>=<span class="pl-s"><span class="pl-pds">"</span>init<span class="pl-pds">"</span></span> <span class="pl-e">destroy-method</span>=<span class="pl-s"><span class="pl-pds">"</span>destroy<span class="pl-pds">"</span></span>&gt;
-    &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>consumers<span class="pl-pds">"</span></span>&gt; 
-        &lt;<span class="pl-ent">array</span>&gt; 
-            &lt;<span class="pl-ent">ref</span> <span class="pl-e">bean</span>=<span class="pl-s"><span class="pl-pds">"</span>messageConsumer<span class="pl-pds">"</span></span> /&gt; 
-        &lt;/<span class="pl-ent">array</span>&gt;
-    &lt;/<span class="pl-ent">property</span>&gt; 
-&lt;/<span class="pl-ent">bean</span>&gt;</pre></div>
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+</code></pre>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/DarkPhoenixs/message-queue-client-framework">Message Queue Client Framework</a> is maintained by <a href="https://github.com/DarkPhoenixs">DarkPhoenixs</a>.</span>
