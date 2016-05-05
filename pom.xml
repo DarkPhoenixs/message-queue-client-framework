@@ -33,7 +33,7 @@
 	</developers>
 
 	<issueManagement>
-		<system>github</system>
+		<system>Github</system>
 		<url>https://github.com/DarkPhoenixs/message-queue-client-framework/issues</url>
 	</issueManagement>
 
@@ -251,7 +251,7 @@
 			<optional>true</optional>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
+		<dependency><!-- commons pool -->
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>1.6</version>
