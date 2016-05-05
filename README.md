@@ -33,7 +33,7 @@ libraryDependencies += "org.darkphoenixs" % "messagequeue-framework" % "x.x.x"
 
 ## Documentation
 
-API documentation is available at [apidocs](http://htmlpreview.github.io/?https://raw.githubusercontent.com/DarkPhoenixs/message-queue-client-framework/master/doc/index.html).
+The documentation is available at [wiki](https://github.com/DarkPhoenixs/message-queue-client-framework/wiki).
 
 ## License
 
