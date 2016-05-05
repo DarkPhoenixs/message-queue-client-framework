@@ -28,6 +28,7 @@ compile 'org.darkphoenixs:messagequeue-framework:x.x.x'
 ```
 
 #### SBT
+
 ```scala
 libraryDependencies += "org.darkphoenixs" % "messagequeue-framework" % "x.x.x"
 ```
