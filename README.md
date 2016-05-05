@@ -30,58 +30,20 @@
 
 API documentation is available at [apidocs](http://htmlpreview.github.io/?https://raw.githubusercontent.com/DarkPhoenixs/message-queue-client-framework/master/doc/index.html).
 
-## Configuration
+## License
 
-**ActiveMQ config with Spring**
- 
- - [applicationContext-message.xm](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/activemq/applicationContext-message.xml)
- - [applicationContext-sender.xm](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/activemq/applicationContext-sender.xml)
- - [applicationContext-receiver.xml](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/activemq/applicationContext-receiver.xml)
- - [mq.properties](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/activemq/mq.properties)
+```
+Copyright 2014-2024 Dark Phoenixs (Open-Source Organization).
 
-**Kafka config with Spring**
- 
- - [applicationContext-producer.xml](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/kafka/applicationContext-producer.xml)
- - [applicationContext-consumer.xml](https://github.com/darkphoenixs/message-queue-client-framework/blob/master/src/test/resources/kafka/applicationContext-consumer.xml)
- - [producer.properties](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/test/resources/kafka/producer.properties)
- - [consumer.properties](https://github.com/DarkPhoenixs/message-queue-client-framework/blob/master/src/test/resources/kafka/consumer.properties)
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-## Producer
+     http://www.apache.org/licenses/LICENSE-2.0
 
-![image](https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/producer.png)
-
-## Consumer
-
-![image](https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/consumer.png)
-
-## Listener
-
-![image](https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/listener.png)
-
-## Factory
-
-![image](https://raw.githubusercontent.com/darkphoenixs/message-queue-client-framework/master/uml/factory.png)
-
-Factory config with Spring
-
-```xml
-<!-- Message Producer Factory -->
-<bean id="messageProducerFactory" class="org.darkphoenixs.mq.common.MessageProducerFactory" 
-  	init-method="init" destroy-method="destroy">
-    <property name="producers"> 
-        <array> 
-            <ref bean="messageProducer" /> 
-        </array> 
-    </property> 
-</bean> 
-
-<!-- Message Consumer Factory  -->
-<bean id="messageConsumerFactory" class="org.darkphoenixs.mq.common.MessageConsumerFactory" 
-  	init-method="init" destroy-method="destroy">
-    <property name="consumers"> 
-        <array> 
-            <ref bean="messageConsumer" /> 
-        </array>
-    </property> 
-</bean>
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
