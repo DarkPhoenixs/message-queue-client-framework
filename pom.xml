@@ -53,7 +53,6 @@
 	</scm>
 
 	<properties>
-		<scala.version>2.10</scala.version>
 		<kafka.version>0.8.2.2</kafka.version>
 		<activemq.version>5.10.0</activemq.version>
 		<spring.version>4.0.0.RELEASE</spring.version>
@@ -234,6 +233,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jms</artifactId>
 			<version>${spring.version}</version>
+			<optional>true</optional>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -264,7 +264,7 @@
 		<!-- Kafka Config -->
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_${scala.version}</artifactId>
+			<artifactId>kafka_2.10</artifactId>
 			<version>${kafka.version}</version>
 			<optional>true</optional>
 			<scope>provided</scope>
@@ -277,10 +277,9 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_${scala.version}</artifactId>
+			<artifactId>kafka_2.10</artifactId>
 			<version>${kafka.version}</version>
 			<classifier>test</classifier>
-			<optional>true</optional>
 			<scope>test</scope>
 		</dependency>
 		<dependency><!-- zookeeper client -->
@@ -304,17 +303,6 @@
 			<groupId>org.darkphoenixs</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.12</version>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
