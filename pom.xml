@@ -7,7 +7,7 @@
 	<version>1.2.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>MessageQueueClientFramework</name>
+	<name>Message Queue Client Framework</name>
 	<url>http://darkphoenixs.org/message-queue-client-framework/</url>
 	<description>A message queue client framework (Apache Kafka &amp; Apache ActiveMQ)</description>
 	<inceptionYear>2015</inceptionYear>
