@@ -34,6 +34,9 @@ public class MessageProducerTest {
 			Assert.assertTrue(e instanceof MQException);
 		}
 
+		producer.setProducerKey("QUEUE.TEST");
+
+		Assert.assertEquals("QUEUE.TEST", producer.getProducerKey());
 	}
 
 	private class KafkaMessageTemplateImpl extends KafkaMessageTemplate<String> {

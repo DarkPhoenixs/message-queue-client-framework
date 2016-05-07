@@ -82,6 +82,10 @@ public class MessageProducerTest {
 		} catch (Exception e) {
 			Assert.assertTrue(e instanceof MQException);
 		}
+		
+		producer.setProducerKey("QUEUE.TEST");
+		
+		Assert.assertEquals("QUEUE.TEST", producer.getProducerKey());
 	}
 
 	private class JmsTemplateImpl extends JmsTemplate {

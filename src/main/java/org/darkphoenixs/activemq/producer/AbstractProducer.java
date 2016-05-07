@@ -44,6 +44,9 @@ public abstract class AbstractProducer<T> implements Producer<T> {
 
 	/** destination */
 	private Destination destination;
+	
+	/** @since 1.2.3 producerKey */
+	private String producerKey;
 
 	/**
 	 * @return the jmsTemplate
@@ -75,6 +78,15 @@ public abstract class AbstractProducer<T> implements Producer<T> {
 		this.destination = destination;
 	}
 
+	/**
+	 * @since 1.2.3
+	 * @param producerKey
+	 *            the producerKey to set
+	 */
+	public void setProducerKey(String producerKey) {
+		this.producerKey = producerKey;
+	}
+	
 	@Override
 	public void send(T message) throws MQException {
 
@@ -96,6 +108,10 @@ public abstract class AbstractProducer<T> implements Producer<T> {
 	@Override
 	public String getProducerKey() throws MQException {
 
+		if (this.producerKey != null)
+			
+			return this.producerKey;
+		
 		if (destination instanceof Queue)
 
 			try {
