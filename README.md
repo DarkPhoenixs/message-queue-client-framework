@@ -9,6 +9,10 @@
 
   This is a message queue client framework with Apache Kafka &amp; Apache ActiveMQ
 
+## Documentation
+
+The documentation is available at [Wiki](https://github.com/DarkPhoenixs/message-queue-client-framework/wiki).
+
 ## Download
 
 #### Maven
@@ -32,10 +36,6 @@ compile 'org.darkphoenixs:messagequeue-framework:x.x.x'
 ```scala
 libraryDependencies += "org.darkphoenixs" % "messagequeue-framework" % "x.x.x"
 ```
-
-## Documentation
-
-The documentation is available at [Wiki](https://github.com/DarkPhoenixs/message-queue-client-framework/wiki).
 
 ## License
 
