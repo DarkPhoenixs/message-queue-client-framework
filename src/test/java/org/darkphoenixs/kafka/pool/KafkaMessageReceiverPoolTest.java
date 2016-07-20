@@ -105,6 +105,8 @@ public class KafkaMessageReceiverPoolTest {
 
 		KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
+		pool.destroy();
+		
 		Assert.assertNotNull(pool.getThreadFactory());
 		pool.setThreadFactory(new KafkaPoolThreadFactory());
 
@@ -112,7 +114,7 @@ public class KafkaMessageReceiverPoolTest {
 		pool.setProps(new Properties());
 
 		Assert.assertEquals(0, pool.getPoolSize());
-		pool.setPoolSize(10);
+		pool.setPoolSize(1);
 
 		Assert.assertNull(pool.getZookeeperStr());
 		pool.setZookeeperStr("");
@@ -210,7 +212,7 @@ public class KafkaMessageReceiverPoolTest {
 
 		recePool.setMessageAdapter(getAdapterWishErr());
 
-		recePool.setAutoCommit(false);
+		recePool.setAutoCommit(true);
 
 		recePool.init();
 
