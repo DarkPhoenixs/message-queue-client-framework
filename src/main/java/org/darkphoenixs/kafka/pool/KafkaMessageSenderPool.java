@@ -199,7 +199,7 @@ public class KafkaMessageSenderPool<K, V> {
 	 */
 	public synchronized void init() {
 		
-		if( poolSize ==0 )
+		if(poolSize == 0)
 			this.setPoolSize(defaultSize);
 		
 		logger.info("Message sender pool initializing. poolSize : " + poolSize + " config : " + props.toString());
@@ -242,10 +242,8 @@ public class KafkaMessageSenderPool<K, V> {
 			sender = queue.poll();
 			if (sender == null) {
 				sender = new KafkaMessageSenderImpl<K, V>(props, this);
-				if (sender != null) {
-					logger.info("Add new sender to the pool.");
-					queue.offer(sender);
-				}
+				logger.info("Add new sender to the pool.");
+				queue.offer(sender);
 			}
 		} catch (Exception e) {
 			logger.error("Failed to get the MessageSender", e);
@@ -309,12 +307,9 @@ public class KafkaMessageSenderPool<K, V> {
 
 		@Override
 		public Boolean call() throws Exception {
-			KafkaMessageSender<K, V> sender = new KafkaMessageSenderImpl<K, V>(
-					props, pool);
-			if (sender != null) {
-				queue.offer(sender);
-				count.countDown();
-			}
+			KafkaMessageSender<K, V> sender = new KafkaMessageSenderImpl<K, V>(props, pool);
+			queue.offer(sender);
+			count.countDown();
 			return true;
 		}
 	}
@@ -333,10 +328,8 @@ public class KafkaMessageSenderPool<K, V> {
 		@Override
 		public Boolean call() throws Exception {
 			KafkaMessageSender<K, V> sender = queue.poll();
-			if (sender != null) {
-				sender.shutDown();
-				count.countDown();
-			}
+			sender.shutDown();
+			count.countDown();
 			return true;
 		}
 		

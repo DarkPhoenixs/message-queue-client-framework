@@ -155,6 +155,8 @@ public class KafkaMessageReceiverPoolTest {
 
 		pool.destroy();
 
+		pool.destroy();
+
 	}
 
 	@Test
