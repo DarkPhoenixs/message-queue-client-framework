@@ -34,21 +34,11 @@ public class KafkaCommand {
 	/** 空格 */
 	private static final String space = " ";
 
-	private static final int zookeeperSessionTimeout = 30000;
+	/** 会话超时时间 */
+	private static final int sessionTimeout = 30000;
 
-	private static final int zookeeperConnectionTimeout = 30000;
-
-	/**
-	 * <p>Title: topicCommand</p>
-	 * <p>Description: 命令操作</p>
-	 *
-	 * @param options 命令参数
-	 */
-	@Deprecated
-	public static void topicCommand(String... options) {
-
-		TopicCommand.main(options);
-	}
+	/** 连接超时时间 */
+	private static final int connectionTimeout = 30000;
 
 	/**
 	 * <p>Title: listTopics</p>
@@ -59,7 +49,7 @@ public class KafkaCommand {
 	public static void listTopics(String zookeeperStr) {
 
 		TopicCommand.listTopics(ZkUtils.apply(zookeeperStr,
-				zookeeperSessionTimeout, zookeeperConnectionTimeout,
+				sessionTimeout, connectionTimeout,
 				JaasUtils.isZkSecurityEnabled()), new TopicCommandOptions(
 				new String[] { "--list" }));
 	}
@@ -77,7 +67,7 @@ public class KafkaCommand {
 			int replications, int partitions) {
 
 		TopicCommand.createTopic(ZkUtils.apply(zookeeperStr,
-				zookeeperSessionTimeout, zookeeperConnectionTimeout,
+				sessionTimeout, connectionTimeout,
 				JaasUtils.isZkSecurityEnabled()), new TopicCommandOptions(
 				new String[] { "--create", "--topic", topic,
 						"--replication-factor", String.valueOf(replications),
@@ -95,7 +85,7 @@ public class KafkaCommand {
 	public static void describeTopic(String zookeeperStr, String topic) {
 
 		TopicCommand.describeTopic(ZkUtils.apply(zookeeperStr,
-				zookeeperSessionTimeout, zookeeperConnectionTimeout,
+				sessionTimeout, connectionTimeout,
 				JaasUtils.isZkSecurityEnabled()), new TopicCommandOptions(
 				new String[] { "--describe", "--topic", topic }));
 	}
@@ -112,7 +102,7 @@ public class KafkaCommand {
 			int partitions) {
 
 		TopicCommand.alterTopic(ZkUtils.apply(zookeeperStr,
-				zookeeperSessionTimeout, zookeeperConnectionTimeout,
+				sessionTimeout, connectionTimeout,
 				JaasUtils.isZkSecurityEnabled()), new TopicCommandOptions(
 				new String[] { "--alter", "--topic", topic, 
 						"--partitions" ,String.valueOf(partitions)}));
@@ -146,7 +136,7 @@ public class KafkaCommand {
 		}
 
 		TopicCommand.alterTopic(ZkUtils.apply(zookeeperStr,
-				zookeeperSessionTimeout, zookeeperConnectionTimeout,
+				sessionTimeout, connectionTimeout,
 				JaasUtils.isZkSecurityEnabled()), new TopicCommandOptions(
 				updateOptions.toString().split(space)));
 	}
@@ -181,7 +171,7 @@ public class KafkaCommand {
 		}
 
 		TopicCommand.alterTopic(ZkUtils.apply(zookeeperStr,
-				zookeeperSessionTimeout, zookeeperConnectionTimeout,
+				sessionTimeout, connectionTimeout,
 				JaasUtils.isZkSecurityEnabled()), new TopicCommandOptions(
 				updateOptions.toString().split(space)));
 	}
@@ -196,7 +186,7 @@ public class KafkaCommand {
 	public static void deleteTopic(String zookeeperStr, String topic) {
 		
 		TopicCommand.deleteTopic(ZkUtils.apply(zookeeperStr,
-				zookeeperSessionTimeout, zookeeperConnectionTimeout,
+				sessionTimeout, connectionTimeout,
 				JaasUtils.isZkSecurityEnabled()), new TopicCommandOptions(
 				new String[] { "--delete", "--topic", topic}));
 	}

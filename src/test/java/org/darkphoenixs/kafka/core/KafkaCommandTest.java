@@ -85,7 +85,6 @@ public class KafkaCommandTest {
 		zkServer.shutdown();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void test() throws Exception {
 
@@ -107,7 +106,7 @@ public class KafkaCommandTest {
 
 		KafkaCommand.deleteTopic(zkConnect, "COMMAND.TEST");
 
-		KafkaCommand.topicCommand("--list", "--zookeeper", zkConnect);
+//		KafkaCommand.topicCommand("--list", "--zookeeper", zkConnect);
 	}
 
 }
