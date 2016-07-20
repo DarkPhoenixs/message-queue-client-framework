@@ -121,6 +121,8 @@ public class KafkaMessageSenderPoolTest {
 
 		Assert.assertNotNull(pool.getSender(-1));
 
+		Assert.assertNotNull(pool.getSender(200));
+
 		Assert.assertNotNull(pool.getSender(10000));
 
 		pool.init();
@@ -150,24 +152,5 @@ public class KafkaMessageSenderPoolTest {
 
 		pool.destroy();
 	}
-
-	@Test
-	public void test_2() throws Exception {
-
-		final KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
-
-		pool.init();
-
-		Thread thread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				pool.destroy();
-			}
-		});
-
-		thread.start();
-
-		pool.destroy();
-	}
+	
 }

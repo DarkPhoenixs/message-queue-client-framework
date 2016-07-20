@@ -103,7 +103,7 @@ public class KafkaMessageReceiverPoolTest {
 	@Test
 	public void test() throws Exception {
 
-		KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
+		final KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
 		pool.destroy();
 		
@@ -153,10 +153,17 @@ public class KafkaMessageReceiverPoolTest {
 
 		Thread.sleep(5000);
 
-		pool.destroy();
+		Thread thread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				pool.destroy();
+			}
+		});
+
+		thread.start();
 
 		pool.destroy();
-
 	}
 
 	@Test
