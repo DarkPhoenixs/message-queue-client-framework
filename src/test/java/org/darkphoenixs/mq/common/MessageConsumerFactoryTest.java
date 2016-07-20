@@ -15,6 +15,13 @@ public class MessageConsumerFactoryTest {
 		MessageConsumerFactory factory = (MessageConsumerFactory) MessageConsumerFactory
 				.getInstance();
 
+		factory = (MessageConsumerFactory) MessageConsumerFactory
+				.getInstance();
+		
+		factory.init();
+
+		factory.destroy();
+
 		ConsumerTest consumer1 = new ConsumerTest();
 		consumer1.setConsumerKey("ProtocolId1");
 
@@ -28,10 +35,8 @@ public class MessageConsumerFactoryTest {
 		Assert.assertEquals(consumer1, factory.getConsumer("ProtocolId1"));
 		Assert.assertEquals(consumer2, factory.getConsumer("ProtocolId2"));
 		Assert.assertNull(factory.getConsumer("ProtocolId3"));
-
 		
 		factory.destroy();
-
 	}
 
 	private class ConsumerTest extends AbstractConsumer<MessageBeanImpl> {

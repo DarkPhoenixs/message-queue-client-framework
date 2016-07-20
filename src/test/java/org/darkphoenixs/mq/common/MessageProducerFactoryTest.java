@@ -13,6 +13,13 @@ public class MessageProducerFactoryTest {
 
 		MessageProducerFactory factory = (MessageProducerFactory) MessageProducerFactory
 				.getInstance();
+		
+		factory = (MessageProducerFactory) MessageProducerFactory
+				.getInstance();
+
+		factory.init();
+
+		factory.destroy();
 
 		ProducerTest producer1 = new ProducerTest();
 		producer1.setProducerKey("ProducerKey1");
