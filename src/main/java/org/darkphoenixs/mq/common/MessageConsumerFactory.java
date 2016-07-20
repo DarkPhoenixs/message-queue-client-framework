@@ -118,9 +118,8 @@ public class MessageConsumerFactory implements ConsumerFactory {
 		if (instance != null)
 			instance = null;
 
-		if (consumerCache != null)
-			consumerCache.clear();
-
+		consumerCache.clear();
+		
 		logger.debug("Destroyed!");
 	}
 

@@ -117,8 +117,7 @@ public class MessageProducerFactory implements ProducerFactory {
 		if (instance != null)
 			instance = null;
 
-		if (producerCache != null)
-			producerCache.clear();
+		producerCache.clear();
 
 		logger.debug("Destroyed!");
 	}
