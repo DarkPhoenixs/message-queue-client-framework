@@ -114,12 +114,13 @@ public class KafkaMessageReceiverImplTest {
 
 		KafkaMessageSenderPool<byte[], byte[]> sendPool = new KafkaMessageSenderPool<byte[], byte[]>();
 
-		sendPool.setProps(TestUtils.getProducerConfig("localhost:" + port));
+		sendPool.setProps(TestUtils.getProducerConfig("localhost:" + port
+				+ ",localhost:" + (port - 1)));
 
 		sendPool.init();
 
-		Properties properties = TestUtils
-				.getProducerConfig("localhost:" + port);
+		Properties properties = TestUtils.getProducerConfig("localhost:" + port
+				+ ",localhost:" + (port - 1));
 
 		KafkaMessageSenderImpl<byte[], byte[]> sender = new KafkaMessageSenderImpl<byte[], byte[]>(
 				properties, sendPool);
@@ -184,7 +185,7 @@ public class KafkaMessageReceiverImplTest {
 		receiver.receiveWithKey(topic, 0, 2, 2);
 
 		receiver.receiveWithKey(topic, 1, 1, 2);
-
+		
 		receiver.close();
 
 		try {
