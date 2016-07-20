@@ -4,7 +4,7 @@
 
 	<groupId>org.darkphoenixs</groupId>
 	<artifactId>messagequeue-framework</artifactId>
-	<version>1.2.4-SNAPSHOT</version>
+	<version>1.3.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Message Queue Client Framework</name>
@@ -53,7 +53,7 @@
 	</scm>
 
 	<properties>
-		<kafka.version>0.8.2.2</kafka.version>
+		<kafka.version>0.9.0.1</kafka.version>
 		<activemq.version>5.10.0</activemq.version>
 		<spring.version>4.0.0.RELEASE</spring.version>
 		<jdk.version>1.7</jdk.version>
@@ -264,7 +264,7 @@
 		<!-- Kafka Config -->
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.10</artifactId>
+			<artifactId>kafka_2.11</artifactId>
 			<version>${kafka.version}</version>
 			<optional>true</optional>
 			<scope>provided</scope>
@@ -277,7 +277,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.10</artifactId>
+			<artifactId>kafka_2.11</artifactId>
 			<version>${kafka.version}</version>
 			<classifier>test</classifier>
 			<scope>test</scope>

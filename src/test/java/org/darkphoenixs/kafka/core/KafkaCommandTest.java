@@ -9,16 +9,19 @@ import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
 import kafka.utils.MockTime;
 import kafka.utils.TestUtils;
-import kafka.utils.TestZKUtils;
 import kafka.utils.Time;
-import kafka.utils.ZKStringSerializer$;
+import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
 
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.kafka.common.protocol.SecurityProtocol;
+import org.apache.kafka.common.security.JaasUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import scala.Option;
 
 public class KafkaCommandTest {
 
@@ -33,14 +36,29 @@ public class KafkaCommandTest {
 
 	@Before
 	public void before() {
-		zkConnect = TestZKUtils.zookeeperConnect();
-		zkServer = new EmbeddedZookeeper(zkConnect);
-		zkClient = new ZkClient(zkServer.connectString(), 30000, 30000,
-				ZKStringSerializer$.MODULE$);
 
-		// setup Broker
-		port = TestUtils.choosePort();
-		kafkaProps = TestUtils.createBrokerConfig(brokerId, port, true);
+		zkServer = new EmbeddedZookeeper();
+		zkConnect = String.format("localhost:%d", zkServer.port());
+		ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
+				JaasUtils.isZkSecurityEnabled());
+		zkClient = zkUtils.zkClient();
+
+		final Option<java.io.File> noFile = scala.Option.apply(null);
+		final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option
+				.apply(null);
+
+		port = TestUtils.RandomPort();
+		kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
+				false, port, noInterBrokerSecurityProtocol, noFile, true,
+				false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
+				false, TestUtils.RandomPort());
+
+		kafkaProps.setProperty("auto.create.topics.enable", "true");
+		kafkaProps.setProperty("num.partitions", "1");
+		// We *must* override this to use the port we allocated (Kafka currently
+		// allocates one port
+		// that it always uses for ZK
+		kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
 
 		KafkaConfig config = new KafkaConfig(kafkaProps);
 		Time mock = new MockTime();
@@ -51,7 +69,7 @@ public class KafkaCommandTest {
 				new String[] { "--create", "--topic", topic,
 						"--replication-factor", "1", "--partitions", "1" });
 
-		TopicCommand.createTopic(zkClient, options);
+		TopicCommand.createTopic(zkUtils, options);
 
 		List<KafkaServer> servers = new ArrayList<KafkaServer>();
 		servers.add(kafkaServer);
@@ -67,26 +85,29 @@ public class KafkaCommandTest {
 		zkServer.shutdown();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void test() throws Exception {
 
 		Assert.assertNotNull(new KafkaCommand());
 
-		KafkaCommand.createOptions(zkServer.connectString(), "COMMAND.TEST", 1, 1);
+		KafkaCommand.createTopic(zkConnect, "COMMAND.TEST", 1, 1);
 
-		KafkaCommand.listOptions(zkServer.connectString());
+		KafkaCommand.listTopics(zkConnect);
 
-		KafkaCommand.selectOptions(zkServer.connectString(), "COMMAND.TEST");
+		KafkaCommand.describeTopic(zkConnect, "COMMAND.TEST");
 
-		KafkaCommand.updateOptions(zkServer.connectString(), "COMMAND.TEST", 2);
+		KafkaCommand.alterTopic(zkConnect, "COMMAND.TEST", 2);
 
-		KafkaCommand.updateOptions(zkServer.connectString(), "COMMAND.TEST", "flush.messages=1", "max.message.bytes");
+		KafkaCommand.alterTopic(zkConnect, "COMMAND.TEST", "flush.messages=1",
+				"max.message.bytes");
 
-		KafkaCommand.updateOptions(zkServer.connectString(), "COMMAND.TEST", 3, "flush.messages", "max.message.bytes=64000");
+		KafkaCommand.alterTopic(zkConnect, "COMMAND.TEST", 3, "flush.messages",
+				"max.message.bytes=64000");
 
-		KafkaCommand.deleteOptions(zkServer.connectString(), "COMMAND.TEST");
+		KafkaCommand.deleteTopic(zkConnect, "COMMAND.TEST");
 
-		KafkaCommand.topicCommand("--list", "--zookeeper", zkServer.connectString());
+		KafkaCommand.topicCommand("--list", "--zookeeper", zkConnect);
 	}
 
 }

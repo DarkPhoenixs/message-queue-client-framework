@@ -9,12 +9,13 @@ import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
 import kafka.utils.MockTime;
 import kafka.utils.TestUtils;
-import kafka.utils.TestZKUtils;
 import kafka.utils.Time;
-import kafka.utils.ZKStringSerializer$;
+import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
 
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.kafka.common.protocol.SecurityProtocol;
+import org.apache.kafka.common.security.JaasUtils;
 import org.darkphoenixs.kafka.core.KafkaMessageSender;
 import org.darkphoenixs.kafka.core.ZookeeperHosts;
 import org.junit.After;
@@ -22,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
+
+import scala.Option;
 
 public class KafkaMessageSenderPoolTest {
 
@@ -31,19 +34,35 @@ public class KafkaMessageSenderPoolTest {
 	private EmbeddedZookeeper zkServer;
 	private ZkClient zkClient;
 	private KafkaServer kafkaServer;
-	private int port;
+	private int port = 9999;
 	private Properties kafkaProps;
 
 	@Before
 	public void before() {
-		zkConnect = TestZKUtils.zookeeperConnect();
-		zkServer = new EmbeddedZookeeper(zkConnect);
-		zkClient = new ZkClient(zkServer.connectString(), 30000, 30000,
-				ZKStringSerializer$.MODULE$);
 
-		// setup Broker
-		port = TestUtils.choosePort();
-		kafkaProps = TestUtils.createBrokerConfig(brokerId, port, true);
+		zkServer = new EmbeddedZookeeper();
+		zkConnect = String.format("localhost:%d", zkServer.port());
+		ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
+				JaasUtils.isZkSecurityEnabled());
+		zkClient = zkUtils.zkClient();
+
+		final Option<java.io.File> noFile = scala.Option.apply(null);
+		final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option
+				.apply(null);
+
+		kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
+				false, port, noInterBrokerSecurityProtocol, noFile, true,
+				false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
+				false, TestUtils.RandomPort());
+
+		kafkaProps.setProperty("auto.create.topics.enable", "true");
+		kafkaProps.setProperty("num.partitions", "1");
+		// We *must* override this to use the port we allocated (Kafka currently
+		// allocates one port
+		// that it always uses for ZK
+		kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
+		kafkaProps.setProperty("host.name", "localhost");
+		kafkaProps.setProperty("port", port + "");
 
 		KafkaConfig config = new KafkaConfig(kafkaProps);
 		Time mock = new MockTime();
@@ -54,7 +73,7 @@ public class KafkaMessageSenderPoolTest {
 				new String[] { "--create", "--topic", topic,
 						"--replication-factor", "1", "--partitions", "1" });
 
-		TopicCommand.createTopic(zkClient, options);
+		TopicCommand.createTopic(zkUtils, options);
 
 		List<KafkaServer> servers = new ArrayList<KafkaServer>();
 		servers.add(kafkaServer);
@@ -98,7 +117,7 @@ public class KafkaMessageSenderPoolTest {
 
 		pool.setProps(TestUtils.getProducerConfig("localhost:" + port));
 
-		pool.setZkhosts(new ZookeeperHosts(zkServer.connectString(), topic));
+		pool.setZkhosts(new ZookeeperHosts(zkConnect, topic));
 
 		Assert.assertNotNull(pool.getSender(-1));
 
@@ -128,7 +147,7 @@ public class KafkaMessageSenderPoolTest {
 		});
 
 		thread.start();
-		
+
 		pool.destroy();
 	}
 

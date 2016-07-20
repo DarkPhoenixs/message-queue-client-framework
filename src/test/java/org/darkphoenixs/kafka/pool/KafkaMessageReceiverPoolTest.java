@@ -10,12 +10,13 @@ import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
 import kafka.utils.MockTime;
 import kafka.utils.TestUtils;
-import kafka.utils.TestZKUtils;
 import kafka.utils.Time;
-import kafka.utils.ZKStringSerializer$;
+import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
 
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.kafka.common.protocol.SecurityProtocol;
+import org.apache.kafka.common.security.JaasUtils;
 import org.darkphoenixs.kafka.codec.MessageDecoderImpl;
 import org.darkphoenixs.kafka.codec.MessageEncoderImpl;
 import org.darkphoenixs.kafka.consumer.MessageConsumer;
@@ -34,6 +35,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
 
+import scala.Option;
+
 public class KafkaMessageReceiverPoolTest {
 
 	private int brokerId = 0;
@@ -42,19 +45,35 @@ public class KafkaMessageReceiverPoolTest {
 	private EmbeddedZookeeper zkServer;
 	private ZkClient zkClient;
 	private KafkaServer kafkaServer;
-	private int port;
+	private int port = 9999;
 	private Properties kafkaProps;
 
 	@Before
 	public void before() {
-		zkConnect = TestZKUtils.zookeeperConnect();
-		zkServer = new EmbeddedZookeeper(zkConnect);
-		zkClient = new ZkClient(zkServer.connectString(), 30000, 30000,
-				ZKStringSerializer$.MODULE$);
 
-		// setup Broker
-		port = TestUtils.choosePort();
-		kafkaProps = TestUtils.createBrokerConfig(brokerId, port, true);
+		zkServer = new EmbeddedZookeeper();
+		zkConnect = String.format("localhost:%d", zkServer.port());
+		ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
+				JaasUtils.isZkSecurityEnabled());
+		zkClient = zkUtils.zkClient();
+
+		final Option<java.io.File> noFile = scala.Option.apply(null);
+		final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option
+				.apply(null);
+
+		kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
+				false, port, noInterBrokerSecurityProtocol, noFile, true,
+				false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
+				false, TestUtils.RandomPort());
+
+		kafkaProps.setProperty("auto.create.topics.enable", "true");
+		kafkaProps.setProperty("num.partitions", "1");
+		// We *must* override this to use the port we allocated (Kafka currently
+		// allocates one port
+		// that it always uses for ZK
+		kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
+		kafkaProps.setProperty("host.name", "localhost");
+		kafkaProps.setProperty("port", port + "");
 
 		KafkaConfig config = new KafkaConfig(kafkaProps);
 		Time mock = new MockTime();
@@ -65,7 +84,7 @@ public class KafkaMessageReceiverPoolTest {
 				new String[] { "--create", "--topic", topic,
 						"--replication-factor", "1", "--partitions", "1" });
 
-		TopicCommand.createTopic(zkClient, options);
+		TopicCommand.createTopic(zkUtils, options);
 
 		List<KafkaServer> servers = new ArrayList<KafkaServer>();
 		servers.add(kafkaServer);
@@ -111,7 +130,7 @@ public class KafkaMessageReceiverPoolTest {
 				.getResource("kafka/consumer.properties"));
 
 		pool.setProps(TestUtils.createConsumerProperties(
-				zkServer.connectString(), "group_1", "consumer_id", 1000));
+				zkConnect, "group_1", "consumer_id", 1000));
 
 		Assert.assertSame(DefaultDecoder.class, pool.getKeyDecoderClass());
 		pool.setKeyDecoderClass(DefaultDecoder.class);
@@ -142,7 +161,7 @@ public class KafkaMessageReceiverPoolTest {
 		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
 		recePool.setProps(TestUtils.createConsumerProperties(
-				zkServer.connectString(), "group_1", "consumer_id", 1000));
+				zkConnect, "group_1", "consumer_id", 1000));
 
 		recePool.setMessageAdapter(getAdapter());
 
@@ -187,7 +206,7 @@ public class KafkaMessageReceiverPoolTest {
 		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
 		recePool.setProps(TestUtils.createConsumerProperties(
-				zkServer.connectString(), "group_1", "consumer_id", 1000));
+				zkConnect, "group_1", "consumer_id", 1000));
 
 		recePool.setMessageAdapter(getAdapterWishErr());
 

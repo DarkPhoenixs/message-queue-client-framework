@@ -28,6 +28,7 @@ import java.util.Properties;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
 import kafka.api.PartitionOffsetRequestInfo;
+import kafka.cluster.BrokerEndPoint;
 import kafka.common.ErrorMapping;
 import kafka.common.TopicAndPartition;
 import kafka.javaapi.FetchResponse;
@@ -404,7 +405,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
 
 		if (returnMetaData != null) {
 			replicaBrokers.clear();
-			for (kafka.cluster.Broker replica : returnMetaData.replicas()) {
+			for (BrokerEndPoint replica : returnMetaData.replicas()) {
 				replicaBrokers.put(replica.host(), replica.port());
 			}
 		}

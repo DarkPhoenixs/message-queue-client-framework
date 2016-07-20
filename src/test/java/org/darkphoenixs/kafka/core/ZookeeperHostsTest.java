@@ -9,16 +9,19 @@ import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
 import kafka.utils.MockTime;
 import kafka.utils.TestUtils;
-import kafka.utils.TestZKUtils;
 import kafka.utils.Time;
-import kafka.utils.ZKStringSerializer$;
+import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
 
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.kafka.common.protocol.SecurityProtocol;
+import org.apache.kafka.common.security.JaasUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import scala.Option;
 
 public class ZookeeperHostsTest {
 
@@ -28,19 +31,35 @@ public class ZookeeperHostsTest {
 	private EmbeddedZookeeper zkServer;
 	private ZkClient zkClient;
 	private KafkaServer kafkaServer;
-	private int port;
+	private int port = 9999;
 	private Properties kafkaProps;
 
 	@Before
 	public void before() {
-		zkConnect = TestZKUtils.zookeeperConnect();
-		zkServer = new EmbeddedZookeeper(zkConnect);
-		zkClient = new ZkClient(zkServer.connectString(), 30000, 30000,
-				ZKStringSerializer$.MODULE$);
 
-		// setup Broker
-		port = TestUtils.choosePort();
-		kafkaProps = TestUtils.createBrokerConfig(brokerId, port, true);
+		zkServer = new EmbeddedZookeeper();
+		zkConnect = String.format("localhost:%d", zkServer.port());
+		ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
+				JaasUtils.isZkSecurityEnabled());
+		zkClient = zkUtils.zkClient();
+
+		final Option<java.io.File> noFile = scala.Option.apply(null);
+		final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option
+				.apply(null);
+
+		kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
+				false, port, noInterBrokerSecurityProtocol, noFile, true,
+				false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
+				false, TestUtils.RandomPort());
+
+		kafkaProps.setProperty("auto.create.topics.enable", "true");
+		kafkaProps.setProperty("num.partitions", "1");
+		// We *must* override this to use the port we allocated (Kafka currently
+		// allocates one port
+		// that it always uses for ZK
+		kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
+		kafkaProps.setProperty("host.name", "localhost");
+		kafkaProps.setProperty("port", port + "");
 
 		KafkaConfig config = new KafkaConfig(kafkaProps);
 		Time mock = new MockTime();
@@ -51,7 +70,7 @@ public class ZookeeperHostsTest {
 				new String[] { "--create", "--topic", topic,
 						"--replication-factor", "1", "--partitions", "1" });
 
-		TopicCommand.createTopic(zkClient, options);
+		TopicCommand.createTopic(zkUtils, options);
 
 		List<KafkaServer> servers = new ArrayList<KafkaServer>();
 		servers.add(kafkaServer);
@@ -70,17 +89,17 @@ public class ZookeeperHostsTest {
 	@Test
 	public void test() throws Exception {
 
-		ZookeeperHosts zooHosts = new ZookeeperHosts(zkServer.connectString(),
+		ZookeeperHosts zooHosts = new ZookeeperHosts(zkConnect,
 				topic);
 
 		Assert.assertEquals(KafkaConstants.DEFAULT_ZK_ROOT,
 				zooHosts.getBrokerZkPath());
 
-		Assert.assertEquals(zkServer.connectString(), zooHosts.getBrokerZkStr());
+		Assert.assertEquals(zkConnect, zooHosts.getBrokerZkStr());
 
 		Assert.assertEquals(topic, zooHosts.getTopic());
 
-		ZookeeperHosts zooHosts1 = new ZookeeperHosts(zkServer.connectString(),
+		ZookeeperHosts zooHosts1 = new ZookeeperHosts(zkConnect,
 				KafkaConstants.DEFAULT_ZK_ROOT, topic);
 
 		Assert.assertEquals(KafkaConstants.DEFAULT_REFRESH_FRE_SEC,
@@ -89,6 +108,6 @@ public class ZookeeperHostsTest {
 		zooHosts1.setRefreshFreqSecs(0);
 		zooHosts1.setTopic(topic);
 		zooHosts1.setBrokerZkPath(KafkaConstants.DEFAULT_ZK_ROOT);
-		zooHosts1.setBrokerZkStr(zkServer.connectString());
+		zooHosts1.setBrokerZkStr(zkConnect);
 	}
 }
