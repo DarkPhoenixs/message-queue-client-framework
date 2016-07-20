@@ -63,19 +63,40 @@ public class KafkaMessageReceiverImplTest {
 		kafkaProps.setProperty("host.name", "localhost");
 		kafkaProps.setProperty("port", port + "");
 
+		Properties kafkaProps2 = TestUtils.createBrokerConfig(brokerId + 1,
+				zkConnect, false, false, (port - 1),
+				noInterBrokerSecurityProtocol, noFile, true, false,
+				TestUtils.RandomPort(), false, TestUtils.RandomPort(), false,
+				TestUtils.RandomPort());
+
+		kafkaProps2.setProperty("auto.create.topics.enable", "true");
+		kafkaProps2.setProperty("num.partitions", "1");
+		// We *must* override this to use the port we allocated (Kafka currently
+		// allocates one port
+		// that it always uses for ZK
+		kafkaProps2.setProperty("zookeeper.connect", this.zkConnect);
+		kafkaProps2.setProperty("host.name", "localhost");
+		kafkaProps2.setProperty("port", (port - 1) + "");
+
 		KafkaConfig config = new KafkaConfig(kafkaProps);
+		KafkaConfig config2 = new KafkaConfig(kafkaProps2);
+
 		Time mock = new MockTime();
+		Time mock2 = new MockTime();
+
 		kafkaServer = TestUtils.createServer(config, mock);
+		KafkaServer kafkaServer2 = TestUtils.createServer(config2, mock2);
 
 		// create topic
 		TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
 				new String[] { "--create", "--topic", topic,
-						"--replication-factor", "1", "--partitions", "1" });
+						"--replication-factor", "2", "--partitions", "2" });
 
 		TopicCommand.createTopic(zkUtils, options);
 
 		List<KafkaServer> servers = new ArrayList<KafkaServer>();
 		servers.add(kafkaServer);
+		servers.add(kafkaServer2);
 		TestUtils.waitUntilMetadataIsPropagated(
 				scala.collection.JavaConversions.asScalaBuffer(servers), topic,
 				0, 5000);
