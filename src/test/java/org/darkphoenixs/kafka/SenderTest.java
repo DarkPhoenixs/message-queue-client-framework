@@ -121,6 +121,8 @@ public class SenderTest {
 		MessageBeanImpl messageBean = new MessageBeanImpl();
 
 		messageProducer.send(messageBean);
+		
+		messageProducer.sendWithKey(1, messageBean);
 
 		pool.destroy();
 	}

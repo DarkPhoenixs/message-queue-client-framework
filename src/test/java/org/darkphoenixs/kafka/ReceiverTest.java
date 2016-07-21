@@ -20,7 +20,7 @@ import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
 import org.darkphoenixs.kafka.consumer.MessageConsumer;
 import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
-import org.darkphoenixs.kafka.listener.MessageConsumerListener;
+import org.darkphoenixs.kafka.listener.KafkaMessageConsumerListener;
 import org.darkphoenixs.kafka.pool.KafkaMessageReceiverPool;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.After;
@@ -101,7 +101,7 @@ public class ReceiverTest {
 
 		MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
 
-		MessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<Integer, MessageBeanImpl>();
+		KafkaMessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new KafkaMessageConsumerListener<Integer, MessageBeanImpl>();
 
 		messageConsumerListener.setConsumer(MessageConsumer);
 

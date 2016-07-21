@@ -13,7 +13,7 @@ public class MessageFactoryConsumerListenerTest {
 	@Test
 	public void test() throws Exception {
 
-		MessageFactoryConsumerListener<Integer, MessageBeanImpl> factoryListener = new MessageFactoryConsumerListener<Integer, MessageBeanImpl>();
+		KafkaMessageFactoryConsumerListener<Integer, MessageBeanImpl> factoryListener = new KafkaMessageFactoryConsumerListener<Integer, MessageBeanImpl>();
 
 		try {
 			factoryListener.onMessage(null);
