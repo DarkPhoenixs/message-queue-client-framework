@@ -119,25 +119,17 @@ public class KafkaMessageSenderPoolTest {
 
 		pool.setZkhosts(new ZookeeperHosts(zkConnect, topic));
 
-		pool.init();
+		Assert.assertNotNull(pool.getSender());
 
 		Assert.assertNotNull(pool.getSender());
-		Assert.assertNotNull(pool.getSender());
+
+		pool.init();
 
 		KafkaMessageSender<byte[], byte[]> sender = pool.getSender();
 
 		pool.returnSender(sender);
 		pool.returnSender(sender);
 
-		for (int i = 0; i < 20; i++) {
-
-			try {
-				pool.getSender();
-			} catch (Exception e) {
-			}
-		}
-
-		pool.destroy();
 		pool.destroy();
 	}
 
@@ -159,4 +151,29 @@ public class KafkaMessageSenderPoolTest {
 		pool.destroy();
 	}
 
+	@Test
+	public void test_2() throws Exception {
+
+		KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
+
+		pool.setConfig(new DefaultResourceLoader()
+				.getResource("kafka/producer.properties"));
+
+		pool.setProps(TestUtils.getProducerConfig("localhost:" + port));
+
+		pool.setZkhosts(new ZookeeperHosts(zkConnect, topic));
+		
+		pool.init();
+		
+		for (int i = 0; i < 20; i++) {
+			
+			try {
+				pool.getSender();
+			} catch (Exception e) {
+			}
+		}
+		
+		pool.destroy();
+
+	}
 }
