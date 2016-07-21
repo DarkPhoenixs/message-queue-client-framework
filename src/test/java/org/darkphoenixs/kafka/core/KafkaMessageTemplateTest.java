@@ -16,7 +16,6 @@ import org.junit.Test;
 
 public class KafkaMessageTemplateTest {
 
-	
 	@Test
 	public void test() throws Exception {
 
@@ -40,18 +39,18 @@ public class KafkaMessageTemplateTest {
 		messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
 
 		template.convertAndSend(new KafkaDestination("QUEUE.TEST"), messageBean);
-		
-		template.convertAndSendWithKey(new KafkaDestination("QUEUE.TEST"), 1, messageBean);
+
+		template.convertAndSendWithKey(new KafkaDestination("QUEUE.TEST"), 1,
+				messageBean);
 
 		Assert.assertNull(template.getMessageReceiverPool());
 		template.setMessageReceiverPool(new KafkaMessageReceiverPoolImpl());
 
 		template.receiveAndConvert(new KafkaDestination("QUEUE.TEST"), 1, 0, 1);
-		
-		try {
-			template.receiveWithKeyAndConvert(new KafkaDestination("QUEUE.TEST"), 1, 0, 1);
-		} catch (Exception e) {
-		}
+
+		template.receiveWithKeyAndConvert(new KafkaDestination("QUEUE.TEST"),
+				0, 0, 0);
+
 	}
 
 	private class KafkaMessageSenderPoolImpl extends
@@ -113,14 +112,15 @@ public class KafkaMessageTemplateTest {
 					System.out.println("receive" + topic);
 
 					MessageBeanImpl messageBean = new MessageBeanImpl();
-					
+
 					try {
-						return Arrays.asList(new MessageEncoderImpl().encode(messageBean));
+						return Arrays.asList(new MessageEncoderImpl()
+								.encode(messageBean));
 					} catch (MQException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+
 					return null;
 				}
 

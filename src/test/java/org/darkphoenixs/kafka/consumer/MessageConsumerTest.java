@@ -15,6 +15,8 @@ public class MessageConsumerTest {
 		consumer.receive(consumer.getConsumerKey());
 
 		Assert.assertEquals("ProtocolId", consumer.getConsumerKey());
+		
+		consumer.receive(2, "test");
 	}
 	
 }

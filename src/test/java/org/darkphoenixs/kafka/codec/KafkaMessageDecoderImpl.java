@@ -33,7 +33,7 @@ public class KafkaMessageDecoderImpl extends
 		if (bytes != null)
 
 			return Integer.valueOf(new String(bytes));
-		
+
 		return null;
 	}
 
@@ -80,10 +80,11 @@ public class KafkaMessageDecoderImpl extends
 
 		Map<Integer, MessageBeanImpl> map = new HashMap<Integer, MessageBeanImpl>();
 
-		for (Entry<byte[], byte[]> entry : bytes.entrySet()) {
+		if (bytes != null)
 
-			map.put(decodeKey(entry.getKey()), decodeVal(entry.getValue()));
-		}
+			for (Entry<byte[], byte[]> entry : bytes.entrySet())
+
+				map.put(decodeKey(entry.getKey()), decodeVal(entry.getValue()));
 
 		return map;
 	}

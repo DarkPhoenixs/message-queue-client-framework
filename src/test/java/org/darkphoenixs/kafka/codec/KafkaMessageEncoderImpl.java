@@ -31,9 +31,9 @@ public class KafkaMessageEncoderImpl extends
 	public byte[] encodeKey(Integer key) throws MQException {
 
 		if (key != null)
-			
+
 			return String.valueOf(key).getBytes();
-		
+
 		return null;
 	}
 
@@ -82,10 +82,11 @@ public class KafkaMessageEncoderImpl extends
 
 		Map<byte[], byte[]> map = new HashMap<byte[], byte[]>();
 
-		for (Entry<Integer, MessageBeanImpl> entry : messages.entrySet()) {
+		if (messages != null)
 
-			map.put(encodeKey(entry.getKey()), encodeVal(entry.getValue()));
-		}
+			for (Entry<Integer, MessageBeanImpl> entry : messages.entrySet())
+
+				map.put(encodeKey(entry.getKey()), encodeVal(entry.getValue()));
 
 		return map;
 	}
