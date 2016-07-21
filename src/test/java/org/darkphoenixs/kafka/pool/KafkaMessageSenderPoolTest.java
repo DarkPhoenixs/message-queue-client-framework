@@ -122,6 +122,7 @@ public class KafkaMessageSenderPoolTest {
 		pool.init();
 
 		Assert.assertNotNull(pool.getSender());
+		Assert.assertNotNull(pool.getSender());
 
 		KafkaMessageSender<byte[], byte[]> sender = pool.getSender();
 
