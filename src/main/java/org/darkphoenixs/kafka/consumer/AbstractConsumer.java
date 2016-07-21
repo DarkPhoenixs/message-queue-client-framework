@@ -52,7 +52,7 @@ public abstract class AbstractConsumer<K, V> extends org.darkphoenixs.mq.consume
 	
 	@Override
 	protected void doReceive(V message) throws MQException {
-		// TODO Auto-generated method stub
+		// For compatible without Key. 
 	}
 	
 	/**

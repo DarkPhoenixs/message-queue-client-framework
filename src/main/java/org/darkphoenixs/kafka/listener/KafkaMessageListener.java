@@ -44,6 +44,6 @@ public abstract class KafkaMessageListener<K, V> implements MessageListener<V> {
 	
 	@Override
 	public void onMessage(V message) throws MQException {
-		// TODO Auto-generated method stub
+		// For compatible without Key. 
 	}
 }
