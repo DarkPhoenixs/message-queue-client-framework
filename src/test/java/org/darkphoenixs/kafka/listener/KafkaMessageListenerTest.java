@@ -1,6 +1,5 @@
 package org.darkphoenixs.kafka.listener;
 
-import org.darkphoenixs.mq.exception.MQException;
 import org.junit.Test;
 
 public class KafkaMessageListenerTest {
@@ -17,16 +16,5 @@ public class KafkaMessageListenerTest {
 	
 	class KafkaMessageListenerDemo extends KafkaMessageListener<Integer, String> {
 		
-		@Override
-		public void onMessage(Integer key, String val) throws MQException {
-			
-			System.out.println(key + ":" + val);
-		}
-		
-		@Override
-		public void onMessage(String message) throws MQException {
-
-			System.out.println(message);
-		}
 	}
 }
