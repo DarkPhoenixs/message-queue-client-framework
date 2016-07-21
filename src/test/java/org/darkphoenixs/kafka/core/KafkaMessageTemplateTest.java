@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.darkphoenixs.kafka.codec.MessageDecoderImpl;
+import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
+import org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl;
 import org.darkphoenixs.kafka.codec.MessageEncoderImpl;
 import org.darkphoenixs.kafka.pool.KafkaMessageReceiverPool;
 import org.darkphoenixs.kafka.pool.KafkaMessageSenderPool;
@@ -19,13 +20,13 @@ public class KafkaMessageTemplateTest {
 	@Test
 	public void test() throws Exception {
 
-		KafkaMessageTemplate<MessageBeanImpl> template = new KafkaMessageTemplate<MessageBeanImpl>();
+		KafkaMessageTemplate<Integer, MessageBeanImpl> template = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
 
 		Assert.assertNull(template.getDecoder());
-		template.setDecoder(new MessageDecoderImpl());
+		template.setDecoder(new KafkaMessageDecoderImpl());
 
 		Assert.assertNull(template.getEncoder());
-		template.setEncoder(new MessageEncoderImpl());
+		template.setEncoder(new KafkaMessageEncoderImpl());
 
 		Assert.assertNull(template.getMessageSenderPool());
 		template.setMessageSenderPool(new KafkaMessageSenderPoolImpl());
@@ -51,7 +52,7 @@ public class KafkaMessageTemplateTest {
 			KafkaMessageSenderPool<byte[], byte[]> {
 
 		@Override
-		public KafkaMessageSender<byte[], byte[]> getSender(long waitTimeMillis) {
+		public KafkaMessageSender<byte[], byte[]> getSender() {
 
 			return new KafkaMessageSender<byte[], byte[]>() {
 

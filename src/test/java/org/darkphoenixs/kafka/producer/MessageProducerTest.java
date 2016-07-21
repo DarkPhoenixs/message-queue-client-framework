@@ -11,7 +11,7 @@ public class MessageProducerTest {
 	@Test
 	public void test() throws Exception {
 
-		MessageProducer<String> producer = new MessageProducer<String>();
+		MessageProducer<Integer,String> producer = new MessageProducer<Integer, String>();
 
 		Assert.assertNull(producer.getDestination());
 		KafkaDestination destination = new KafkaDestination("TempQueue");
@@ -39,7 +39,7 @@ public class MessageProducerTest {
 		Assert.assertEquals("QUEUE.TEST", producer.getProducerKey());
 	}
 
-	private class KafkaMessageTemplateImpl extends KafkaMessageTemplate<String> {
+	private class KafkaMessageTemplateImpl extends KafkaMessageTemplate<Integer, String> {
 
 		@Override
 		public void convertAndSend(KafkaDestination destination, String message)
@@ -49,7 +49,7 @@ public class MessageProducerTest {
 	}
 
 	private class KafkaMessageTemplateImpl2 extends
-			KafkaMessageTemplate<String> {
+			KafkaMessageTemplate<Integer, String> {
 
 		@Override
 		public void convertAndSend(KafkaDestination destination, String message)

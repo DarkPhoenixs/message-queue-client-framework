@@ -8,7 +8,7 @@ public class MessageConsumerTest {
 	@Test
 	public void test() throws Exception {
 
-		MessageConsumer<String> consumer = new MessageConsumer<String>();
+		MessageConsumer<Integer, String> consumer = new MessageConsumer<Integer, String>();
 
 		consumer.setConsumerKey("ProtocolId");
 

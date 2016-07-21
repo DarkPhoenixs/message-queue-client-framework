@@ -119,15 +119,13 @@ public class KafkaMessageSenderPoolTest {
 
 		pool.setZkhosts(new ZookeeperHosts(zkConnect, topic));
 
-		Assert.assertNotNull(pool.getSender(-1));
+		Assert.assertNotNull(pool.getSender());
 
-		Assert.assertNotNull(pool.getSender(200));
-
-		Assert.assertNotNull(pool.getSender(10000));
+		Assert.assertNotNull(pool.getSender());
 
 		pool.init();
 
-		KafkaMessageSender<byte[], byte[]> sender = pool.getSender(0);
+		KafkaMessageSender<byte[], byte[]> sender = pool.getSender();
 
 		pool.returnSender(sender);
 		pool.returnSender(sender);

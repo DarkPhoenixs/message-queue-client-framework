@@ -13,7 +13,7 @@ public class MessageFactoryConsumerListenerTest {
 	@Test
 	public void test() throws Exception {
 
-		MessageFactoryConsumerListener<MessageBeanImpl> factoryListener = new MessageFactoryConsumerListener<MessageBeanImpl>();
+		MessageFactoryConsumerListener<Integer, MessageBeanImpl> factoryListener = new MessageFactoryConsumerListener<Integer, MessageBeanImpl>();
 
 		try {
 			factoryListener.onMessage(null);

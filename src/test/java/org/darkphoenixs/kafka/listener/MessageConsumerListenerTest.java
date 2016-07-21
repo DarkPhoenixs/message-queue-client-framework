@@ -11,7 +11,7 @@ public class MessageConsumerListenerTest {
 	@Test
 	public void test() throws Exception {
 		
-		MessageConsumerListener<String> listener = new MessageConsumerListener<String>();
+		MessageConsumerListener<Integer, String> listener = new MessageConsumerListener<Integer, String>();
 		
 		try {
 			listener.onMessage("test");
@@ -19,7 +19,7 @@ public class MessageConsumerListenerTest {
 			Assert.assertTrue(e instanceof MQException);
 		}
 
-		MessageConsumer<String> consumer = new MessageConsumer<String>();
+		MessageConsumer<Integer, String> consumer = new MessageConsumer<Integer, String>();
 
 		consumer.setConsumerKey("ProtocolId");
 		

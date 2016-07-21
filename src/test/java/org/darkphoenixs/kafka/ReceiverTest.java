@@ -16,13 +16,12 @@ import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
-import org.darkphoenixs.kafka.codec.MessageDecoderImpl;
+import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
 import org.darkphoenixs.kafka.consumer.MessageConsumer;
 import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.kafka.listener.MessageConsumerListener;
 import org.darkphoenixs.kafka.pool.KafkaMessageReceiverPool;
-import org.darkphoenixs.mq.codec.MessageDecoder;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -96,17 +95,17 @@ public class ReceiverTest {
 	@Test
 	public void test() throws Exception {
 
-		MessageDecoder<MessageBeanImpl> messageDecoder = new MessageDecoderImpl();
+		KafkaMessageDecoderImpl messageDecoder = new KafkaMessageDecoderImpl();
 
 		KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
-		MessageConsumer<MessageBeanImpl> MessageConsumer = new MessageConsumer<MessageBeanImpl>();
+		MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
 
-		MessageConsumerListener<MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<MessageBeanImpl>();
+		MessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<Integer, MessageBeanImpl>();
 
 		messageConsumerListener.setConsumer(MessageConsumer);
 
-		KafkaMessageAdapter<MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<MessageBeanImpl>();
+		KafkaMessageAdapter<Integer, MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
 
 		messageAdapter.setDecoder(messageDecoder);
 

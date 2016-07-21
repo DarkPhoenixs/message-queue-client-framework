@@ -17,7 +17,6 @@ package org.darkphoenixs.kafka.listener;
 
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.listener.MessageListener;
 
 /**
  * <p>Title: MessageConsumerListener</p>
@@ -25,30 +24,30 @@ import org.darkphoenixs.mq.listener.MessageListener;
  *
  * @since 2015-06-01
  * @author Victor.Zxy
- * @see MessageListener
+ * @see KafkaMessageListener
  * @version 1.0
  */
-public class MessageConsumerListener<T> implements MessageListener<T> {
+public class MessageConsumerListener<K, V> extends KafkaMessageListener<K, V> {
 
 	/** messageConsumer */
-	private Consumer<T> consumer;
+	private Consumer<V> consumer;
 	
 	/**
 	 * @return the consumer
 	 */
-	public Consumer<T> getConsumer() {
+	public Consumer<V> getConsumer() {
 		return consumer;
 	}
 
 	/**
 	 * @param consumer the consumer to set
 	 */
-	public void setConsumer(Consumer<T> consumer) {
+	public void setConsumer(Consumer<V> consumer) {
 		this.consumer = consumer;
 	}
 
 	@Override
-	public void onMessage(T message) throws MQException {
+	public void onMessage(V message) throws MQException {
 
 		if (consumer != null)
 			

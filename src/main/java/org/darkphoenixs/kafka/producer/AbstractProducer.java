@@ -31,13 +31,13 @@ import org.slf4j.LoggerFactory;
  * @see Producer
  * @version 1.0
  */
-public abstract class AbstractProducer<T> implements Producer<T>  {
+public abstract class AbstractProducer<K, V> implements Producer<V>  {
 
 	/** logger */
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/** messageTemplate */
-	private KafkaMessageTemplate<T> messageTemplate;
+	private KafkaMessageTemplate<K, V> messageTemplate;
 	
 	/** destination */
 	private KafkaDestination destination;
@@ -48,14 +48,14 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	/**
 	 * @return the messageTemplate
 	 */
-	public KafkaMessageTemplate<T> getMessageTemplate() {
+	public KafkaMessageTemplate<K, V> getMessageTemplate() {
 		return messageTemplate;
 	}
 
 	/**
 	 * @param messageTemplate the messageTemplate to set
 	 */
-	public void setMessageTemplate(KafkaMessageTemplate<T> messageTemplate) {
+	public void setMessageTemplate(KafkaMessageTemplate<K, V> messageTemplate) {
 		this.messageTemplate = messageTemplate;
 	}
 	
@@ -82,10 +82,10 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	}
 	
 	@Override
-	public void send(T message) throws MQException {
+	public void send(V message) throws MQException {
 
 		try {
-			T obj = doSend(message);
+			V obj = doSend(message);
 
 			messageTemplate.convertAndSend(destination, obj);
 
@@ -97,6 +97,29 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 		logger.debug("Send Success, ProducerKey : " + this.getProducerKey()
 				+ " , Message : " + message);
 
+	}
+	
+	/**
+	 * <p>sendWithKey</p>
+	 * <p>发送消息带标识</p>
+	 *
+	 * @param key 标识
+	 * @param message 消息
+	 * @throws MQException
+	 * @since 1.3.0
+	 */
+	public void sendWithKey(K key, V message) throws MQException {
+
+		try {
+			messageTemplate.convertAndSendWithKey(destination, key, message);
+
+		} catch (Exception e) {
+
+			throw new MQException(e);
+		}
+
+		logger.debug("Send Success, ProducerKey : " + this.getProducerKey()
+				+ " , MessageKey : " + key + " , Message : " + message);
 	}
 	
 	@Override
@@ -117,5 +140,6 @@ public abstract class AbstractProducer<T> implements Producer<T>  {
 	 * @return 消息
 	 * @throws MQException MQ异常
 	 */
-	protected abstract T doSend(T message) throws MQException;
+	protected abstract V doSend(V message) throws MQException;
+
 }

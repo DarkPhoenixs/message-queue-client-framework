@@ -6,7 +6,7 @@
 	<description>Sender Configuration</description>
 
 	<!-- Kafka Message Encoder -->
-	<bean id="encoder" class="org.darkphoenixs.kafka.codec.MessageEncoderImpl" />
+	<bean id="encoder" class="org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl" />
 
 	<!-- Kafka Message Queue -->
 	<bean id="destination" class="org.darkphoenixs.kafka.core.KafkaDestination">

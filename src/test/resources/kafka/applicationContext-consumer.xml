@@ -6,7 +6,7 @@
 	<description>Receiver Configuration</description>
 
 	<!-- Kafka Message Decoder -->
-	<bean id="decoder" class="org.darkphoenixs.kafka.codec.MessageDecoderImpl" />
+	<bean id="decoder" class="org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl" />
 
 	<!-- Kafka Message Queue -->
 	<bean id="destination" class="org.darkphoenixs.kafka.core.KafkaDestination">

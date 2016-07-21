@@ -55,7 +55,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
  * @author Victor.Zxy
  * @version 1.0
  */
-public class KafkaMessageReceiverPool<K, V> {
+public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V> {
 
 	private static final String tagger = "KafkaMessageReceiverPool";
 
@@ -70,7 +70,7 @@ public class KafkaMessageReceiverPool<K, V> {
 	protected Properties props = new Properties();
 
 	/** messageAdapter */
-	private KafkaMessageAdapter<?> messageAdapter;
+	private KafkaMessageAdapter<?, ?> messageAdapter;
 
 	/** poolSize */
 	private int poolSize;
@@ -240,7 +240,7 @@ public class KafkaMessageReceiverPool<K, V> {
 	/**
 	 * @return the messageAdapter
 	 */
-	public KafkaMessageAdapter<?> getMessageAdapter() {
+	public KafkaMessageAdapter<?, ?> getMessageAdapter() {
 		return messageAdapter;
 	}
 
@@ -248,7 +248,7 @@ public class KafkaMessageReceiverPool<K, V> {
 	 * @param messageAdapter
 	 *            the messageAdapter to set
 	 */
-	public void setMessageAdapter(KafkaMessageAdapter<?> messageAdapter) {
+	public void setMessageAdapter(KafkaMessageAdapter<?, ?> messageAdapter) {
 		this.messageAdapter = messageAdapter;
 	}
 
@@ -285,10 +285,11 @@ public class KafkaMessageReceiverPool<K, V> {
 	}
 
 	/**
-	 * Get a receiver from the pool (just only create a new receiver).
+	 * Get a receiver from the pool (just only create a lower-level receiver).
 	 * 
 	 * @return a receiver instance
 	 */
+	@Override
 	public KafkaMessageReceiver<K, V> getReceiver() {
 
 		KafkaMessageReceiver<K, V> receiver = new KafkaMessageReceiverImpl<K, V>(
@@ -298,8 +299,17 @@ public class KafkaMessageReceiverPool<K, V> {
 	}
 
 	/**
-	 * Init the pool.
+	 * Return a receiver back to pool.
 	 */
+	@Override
+	public void returnReceiver(KafkaMessageReceiver<K, V> receiver) {
+		
+		if (receiver != null)
+			
+			receiver.close();
+	}
+	
+	@Override
 	public synchronized void init() {
 
 		String topic = messageAdapter.getDestination().getDestinationName();
@@ -352,12 +362,12 @@ public class KafkaMessageReceiverPool<K, V> {
 
 		private KafkaStream<K, V> stream;
 
-		private KafkaMessageAdapter<?> adapter;
+		private KafkaMessageAdapter<?, ?> adapter;
 
 		private int threadNumber;
 
 		public ReceiverThread(KafkaStream<K, V> stream,
-				KafkaMessageAdapter<?> adapter, int threadNumber) {
+				KafkaMessageAdapter<?, ?> adapter, int threadNumber) {
 
 			this.stream = stream;
 			this.threadNumber = threadNumber;
@@ -414,9 +424,7 @@ public class KafkaMessageReceiverPool<K, V> {
 
 	}
 
-	/**
-	 * Destroy the pool.
-	 */
+	@Override
 	public synchronized void destroy() {
 
 		logger.info("Message receiver pool closing.");

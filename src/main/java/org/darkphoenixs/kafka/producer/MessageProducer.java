@@ -26,10 +26,10 @@ import org.darkphoenixs.mq.exception.MQException;
  * @see AbstractProducer
  * @version 1.0
  */
-public class MessageProducer<T> extends AbstractProducer<T> {
+public class MessageProducer<K, V> extends AbstractProducer<K, V> {
 
 	@Override
-	protected T doSend(T message) throws MQException {
+	protected V doSend(V message) throws MQException {
 
 		return message;
 	}

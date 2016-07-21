@@ -2,6 +2,7 @@ package org.darkphoenixs.kafka.pool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import kafka.admin.TopicCommand;
@@ -17,16 +18,15 @@ import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
-import org.darkphoenixs.kafka.codec.MessageDecoderImpl;
-import org.darkphoenixs.kafka.codec.MessageEncoderImpl;
+import org.darkphoenixs.kafka.codec.KafkaMessageDecoder;
+import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
+import org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl;
 import org.darkphoenixs.kafka.consumer.MessageConsumer;
 import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.kafka.core.KafkaMessageTemplate;
 import org.darkphoenixs.kafka.listener.MessageConsumerListener;
 import org.darkphoenixs.kafka.producer.MessageProducer;
-import org.darkphoenixs.mq.codec.MessageDecoder;
-import org.darkphoenixs.mq.codec.MessageEncoder;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.After;
@@ -106,7 +106,7 @@ public class KafkaMessageReceiverPoolTest {
 		final KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
 		pool.destroy();
-		
+
 		Assert.assertNotNull(pool.getThreadFactory());
 		pool.setThreadFactory(new KafkaPoolThreadFactory());
 
@@ -131,8 +131,8 @@ public class KafkaMessageReceiverPoolTest {
 		pool.setConfig(new DefaultResourceLoader()
 				.getResource("kafka/consumer.properties"));
 
-		pool.setProps(TestUtils.createConsumerProperties(
-				zkConnect, "group_1", "consumer_id", 1000));
+		pool.setProps(TestUtils.createConsumerProperties(zkConnect, "group_1",
+				"consumer_id", 1000));
 
 		Assert.assertSame(DefaultDecoder.class, pool.getKeyDecoderClass());
 		pool.setKeyDecoderClass(DefaultDecoder.class);
@@ -171,8 +171,8 @@ public class KafkaMessageReceiverPoolTest {
 
 		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
-		recePool.setProps(TestUtils.createConsumerProperties(
-				zkConnect, "group_1", "consumer_id", 1000));
+		recePool.setProps(TestUtils.createConsumerProperties(zkConnect,
+				"group_1", "consumer_id", 1000));
 
 		recePool.setMessageAdapter(getAdapter());
 
@@ -180,7 +180,7 @@ public class KafkaMessageReceiverPoolTest {
 
 		recePool.init();
 
-		MessageEncoder<MessageBeanImpl> messageEncoder = new MessageEncoderImpl();
+		KafkaMessageEncoderImpl messageEncoder = new KafkaMessageEncoderImpl();
 
 		KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
@@ -190,13 +190,13 @@ public class KafkaMessageReceiverPoolTest {
 
 		sendPool.init();
 
-		KafkaMessageTemplate<MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<MessageBeanImpl>();
+		KafkaMessageTemplate<Integer, MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
 
 		messageTemplate.setEncoder(messageEncoder);
 
 		messageTemplate.setMessageSenderPool(sendPool);
 
-		MessageProducer<MessageBeanImpl> messageProducer = new MessageProducer<MessageBeanImpl>();
+		MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
 
 		messageProducer.setMessageTemplate(messageTemplate);
 
@@ -216,8 +216,8 @@ public class KafkaMessageReceiverPoolTest {
 
 		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
-		recePool.setProps(TestUtils.createConsumerProperties(
-				zkConnect, "group_1", "consumer_id", 1000));
+		recePool.setProps(TestUtils.createConsumerProperties(zkConnect,
+				"group_1", "consumer_id", 1000));
 
 		recePool.setMessageAdapter(getAdapterWishErr());
 
@@ -225,7 +225,7 @@ public class KafkaMessageReceiverPoolTest {
 
 		recePool.init();
 
-		MessageEncoder<MessageBeanImpl> messageEncoder = new MessageEncoderImpl();
+		KafkaMessageEncoderImpl messageEncoder = new KafkaMessageEncoderImpl();
 
 		KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
@@ -235,13 +235,13 @@ public class KafkaMessageReceiverPoolTest {
 
 		sendPool.init();
 
-		KafkaMessageTemplate<MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<MessageBeanImpl>();
+		KafkaMessageTemplate<Integer, MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
 
 		messageTemplate.setEncoder(messageEncoder);
 
 		messageTemplate.setMessageSenderPool(sendPool);
 
-		MessageProducer<MessageBeanImpl> messageProducer = new MessageProducer<MessageBeanImpl>();
+		MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
 
 		messageProducer.setMessageTemplate(messageTemplate);
 
@@ -256,19 +256,19 @@ public class KafkaMessageReceiverPoolTest {
 		recePool.destroy();
 	}
 
-	private KafkaMessageAdapter<MessageBeanImpl> getAdapter() {
+	private KafkaMessageAdapter<Integer, MessageBeanImpl> getAdapter() {
 
-		MessageDecoder<MessageBeanImpl> messageDecoder = new MessageDecoderImpl();
+		KafkaMessageDecoderImpl messageDecoder = new KafkaMessageDecoderImpl();
 
 		KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
-		MessageConsumer<MessageBeanImpl> MessageConsumer = new MessageConsumer<MessageBeanImpl>();
+		MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
 
-		MessageConsumerListener<MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<MessageBeanImpl>();
+		MessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<Integer, MessageBeanImpl>();
 
 		messageConsumerListener.setConsumer(MessageConsumer);
 
-		KafkaMessageAdapter<MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<MessageBeanImpl>();
+		KafkaMessageAdapter<Integer, MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
 
 		messageAdapter.setDecoder(messageDecoder);
 
@@ -279,9 +279,9 @@ public class KafkaMessageReceiverPoolTest {
 		return messageAdapter;
 	}
 
-	private KafkaMessageAdapter<MessageBeanImpl> getAdapterWishErr() {
+	private KafkaMessageAdapter<Integer, MessageBeanImpl> getAdapterWishErr() {
 
-		MessageDecoder<MessageBeanImpl> messageDecoder = new MessageDecoder<MessageBeanImpl>() {
+		KafkaMessageDecoder<Integer, MessageBeanImpl> messageDecoder = new KafkaMessageDecoder<Integer, MessageBeanImpl>() {
 
 			@Override
 			public MessageBeanImpl decode(byte[] bytes) throws MQException {
@@ -294,17 +294,33 @@ public class KafkaMessageReceiverPoolTest {
 					throws MQException {
 				throw new MQException("Test");
 			}
+
+			@Override
+			public Integer decodeKey(byte[] bytes) throws MQException {
+				throw new MQException("Test");
+			}
+
+			@Override
+			public MessageBeanImpl decodeVal(byte[] bytes) throws MQException {
+				throw new MQException("Test");
+			}
+
+			@Override
+			public Map<Integer, MessageBeanImpl> batchDecode(
+					Map<byte[], byte[]> bytes) throws MQException {
+				throw new MQException("Test");
+			}
 		};
 
 		KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
-		MessageConsumer<MessageBeanImpl> MessageConsumer = new MessageConsumer<MessageBeanImpl>();
+		MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
 
-		MessageConsumerListener<MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<MessageBeanImpl>();
+		MessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<Integer, MessageBeanImpl>();
 
 		messageConsumerListener.setConsumer(MessageConsumer);
 
-		KafkaMessageAdapter<MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<MessageBeanImpl>();
+		KafkaMessageAdapter<Integer, MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
 
 		messageAdapter.setDecoder(messageDecoder);
 

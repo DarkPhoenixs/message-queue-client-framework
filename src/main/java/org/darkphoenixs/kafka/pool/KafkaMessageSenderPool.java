@@ -48,7 +48,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
  * @author Victor.Zxy
  * @version 1.0
  */
-public class KafkaMessageSenderPool<K, V> {
+public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
 
 	private static final String tagger = "KafkaMessageSenderPool";
 
@@ -194,9 +194,7 @@ public class KafkaMessageSenderPool<K, V> {
 		this.props = props;
 	}
 
-	/**
-	 * Init the pool.
-	 */
+	@Override
 	public synchronized void init() {
 		
 		if(poolSize == 0)
@@ -221,13 +219,13 @@ public class KafkaMessageSenderPool<K, V> {
 	/**
 	 * Get a sender from the pool within the given timeout
 	 * 
-	 * @param waitTimeMillis
-	 *            how long should it wait for getting the sender instance
 	 * @return a sender instance
 	 */
-	public KafkaMessageSender<K, V> getSender(long waitTimeMillis) {
+	@Override
+	public KafkaMessageSender<K, V> getSender() {
 		try {
-			if (!freeSender.tryAcquire(waitTimeMillis, TimeUnit.MILLISECONDS))
+			// how long should it wait for getting the sender instance
+			if (!freeSender.tryAcquire(KafkaConstants.WAIT_TIME_MS, TimeUnit.MILLISECONDS))
 				throw new RuntimeException(
 						"Timeout waiting for idle object in the pool.");
 
@@ -257,6 +255,7 @@ public class KafkaMessageSenderPool<K, V> {
 	/**
 	 * Return a sender back to pool.
 	 */
+	@Override
 	public void returnSender(KafkaMessageSender<K, V> sender) {
 		if (this.queue.contains(sender))
 			return;
@@ -264,9 +263,7 @@ public class KafkaMessageSenderPool<K, V> {
 		this.freeSender.release();
 	}
 
-	/**
-	 * Close the pool.
-	 */
+	@Override
 	public synchronized void destroy() {
 		
 		logger.info("Message sender pool closing.");

@@ -16,12 +16,11 @@ import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
-import org.darkphoenixs.kafka.codec.MessageEncoderImpl;
+import org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl;
 import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageTemplate;
 import org.darkphoenixs.kafka.pool.KafkaMessageSenderPool;
 import org.darkphoenixs.kafka.producer.MessageProducer;
-import org.darkphoenixs.mq.codec.MessageEncoder;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -95,7 +94,7 @@ public class SenderTest {
 	@Test
 	public void test() throws Exception {
 
-		MessageEncoder<MessageBeanImpl> messageEncoder = new MessageEncoderImpl();
+		KafkaMessageEncoderImpl messageEncoder = new KafkaMessageEncoderImpl();
 
 		KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
@@ -107,13 +106,13 @@ public class SenderTest {
 
 		pool.init();
 
-		KafkaMessageTemplate<MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<MessageBeanImpl>();
+		KafkaMessageTemplate<Integer, MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
 
 		messageTemplate.setEncoder(messageEncoder);
 
 		messageTemplate.setMessageSenderPool(pool);
 
-		MessageProducer<MessageBeanImpl> messageProducer = new MessageProducer<MessageBeanImpl>();
+		MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
 
 		messageProducer.setMessageTemplate(messageTemplate);
 

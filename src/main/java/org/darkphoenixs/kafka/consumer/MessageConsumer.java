@@ -15,7 +15,6 @@
  */
 package org.darkphoenixs.kafka.consumer;
 
-import org.darkphoenixs.mq.consumer.AbstractConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 
 /**
@@ -27,11 +26,11 @@ import org.darkphoenixs.mq.exception.MQException;
  * @see AbstractConsumer
  * @version 1.0
  */
-public class MessageConsumer<T> extends AbstractConsumer<T> {
+public class MessageConsumer<K, V> extends AbstractConsumer<K, V> {
+
 
 	@Override
-	protected void doReceive(T message) throws MQException {
-
-		System.out.println(message);
+	protected void doReceive(K key, V val) throws MQException {
+		System.out.println(key + ":" + val);
 	}
 }

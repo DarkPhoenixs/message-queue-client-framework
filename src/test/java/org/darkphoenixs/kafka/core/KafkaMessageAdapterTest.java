@@ -1,8 +1,8 @@
 package org.darkphoenixs.kafka.core;
 
-import org.darkphoenixs.activemq.listener.MessageConsumerListener;
-import org.darkphoenixs.kafka.codec.MessageDecoderImpl;
+import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
 import org.darkphoenixs.kafka.codec.MessageEncoderImpl;
+import org.darkphoenixs.kafka.listener.MessageConsumerListener;
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
@@ -14,17 +14,17 @@ public class KafkaMessageAdapterTest {
 	@Test
 	public void test() throws Exception {
 
-		KafkaMessageAdapter<MessageBeanImpl> adapter = new KafkaMessageAdapter<MessageBeanImpl>();
+		KafkaMessageAdapter<Integer, MessageBeanImpl> adapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
 
 		Assert.assertNull(adapter.getDecoder());
-		adapter.setDecoder(new MessageDecoderImpl());
+		adapter.setDecoder(new KafkaMessageDecoderImpl());
 
 		Assert.assertNull(adapter.getDestination());
 		adapter.setDestination(new KafkaDestination("QUEUE.TEST"));
 
 		Assert.assertNull(adapter.getMessageListener());
 
-		MessageConsumerListener<MessageBeanImpl> listener = new MessageConsumerListener<MessageBeanImpl>();
+		MessageConsumerListener<Integer, MessageBeanImpl> listener = new MessageConsumerListener<Integer, MessageBeanImpl>();
 		listener.setConsumer(new Consumer<MessageBeanImpl>() {
 			
 			@Override

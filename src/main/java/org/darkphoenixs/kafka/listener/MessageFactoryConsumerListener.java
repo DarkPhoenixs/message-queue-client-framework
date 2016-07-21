@@ -18,7 +18,6 @@ package org.darkphoenixs.kafka.listener;
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.factory.ConsumerFactory;
-import org.darkphoenixs.mq.listener.MessageListener;
 import org.darkphoenixs.mq.util.RefleTool;
 
 /**
@@ -27,10 +26,10 @@ import org.darkphoenixs.mq.util.RefleTool;
  *
  * @since 2015-06-01
  * @author Victor.Zxy
- * @see MessageListener
+ * @see KafkaMessageListener
  * @version 1.0
  */
-public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
+public class MessageFactoryConsumerListener<K, V> extends KafkaMessageListener<K, V> {
 
 	/** consumerKeyField */
 	private String consumerKeyField;
@@ -69,7 +68,7 @@ public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
 	}
 
 	@Override
-	public void onMessage(T message) throws MQException {
+	public void onMessage(V message) throws MQException {
 
 		if (consumerFactory == null)	
 			throw new MQException("ConsumerFactory is null !");
@@ -85,7 +84,7 @@ public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
 		if (consumerKey == null)	
 			throw new MQException("Consumer Key is null !");
 		
-		Consumer<T> consumer = consumerFactory.getConsumer(consumerKey);
+		Consumer<V> consumer = consumerFactory.getConsumer(consumerKey);
 		
 		if (consumer == null)
 			throw new MQException("Consumer is null !");

@@ -15,9 +15,9 @@
  */
 package org.darkphoenixs.kafka.core;
 
-import org.darkphoenixs.mq.codec.MessageDecoder;
+import org.darkphoenixs.kafka.codec.KafkaMessageDecoder;
+import org.darkphoenixs.kafka.listener.KafkaMessageListener;
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.listener.MessageListener;
 
 /**
  * <p>Title: KafkaMessageAdapter</p>
@@ -27,13 +27,13 @@ import org.darkphoenixs.mq.listener.MessageListener;
  * @author Victor.Zxy
  * @version 1.0
  */
-public class KafkaMessageAdapter<T> {
+public class KafkaMessageAdapter<K, V> {
 
 	/** decoder */
-	private MessageDecoder<T> decoder;
+	private KafkaMessageDecoder<K, V> decoder;
 	
 	/** consumerListener */
-	private MessageListener<T> messageListener;
+	private KafkaMessageListener<K, V> messageListener;
 
 	/** destination */
 	private KafkaDestination destination;
@@ -41,28 +41,28 @@ public class KafkaMessageAdapter<T> {
 	/**
 	 * @return the decoder
 	 */
-	public MessageDecoder<T> getDecoder() {
+	public KafkaMessageDecoder<K, V> getDecoder() {
 		return decoder;
 	}
 
 	/**
 	 * @param decoder the decoder to set
 	 */
-	public void setDecoder(MessageDecoder<T> decoder) {
+	public void setDecoder(KafkaMessageDecoder<K, V> decoder) {
 		this.decoder = decoder;
 	}
 
 	/**
 	 * @return the messageListener
 	 */
-	public MessageListener<T> getMessageListener() {
+	public KafkaMessageListener<K, V> getMessageListener() {
 		return messageListener;
 	}
 
 	/**
 	 * @param messageListener the messageListener to set
 	 */
-	public void setMessageListener(MessageListener<T> messageListener) {
+	public void setMessageListener(KafkaMessageListener<K, V> messageListener) {
 		this.messageListener = messageListener;
 	}
 	
@@ -90,11 +90,15 @@ public class KafkaMessageAdapter<T> {
 	 */
 	public void messageAdapter(Object key, Object value) throws MQException{
 		
-		byte[] bytes = (byte[])value;
+		byte[] keyBytes = (byte[])key;
 		
-		T message = decoder.decode(bytes);
+		byte[] valBytes = (byte[])value;
+
+		K k = decoder.decodeKey(keyBytes);
 		
-		messageListener.onMessage(message);
+		V v = decoder.decodeVal(valBytes);
+		
+		messageListener.onMessage(k, v);
 	}
 }
 
