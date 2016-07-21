@@ -101,7 +101,7 @@ public class KafkaMessageSenderPoolTest {
 		pool.setProps(new Properties());
 
 		Assert.assertEquals(0, pool.getPoolSize());
-		pool.setPoolSize(1);
+		pool.setPoolSize(10);
 
 		Assert.assertNull(pool.getClientId());
 		pool.setClientId("test");
@@ -119,17 +119,24 @@ public class KafkaMessageSenderPoolTest {
 
 		pool.setZkhosts(new ZookeeperHosts(zkConnect, topic));
 
-		Assert.assertNotNull(pool.getSender());
-
-		Assert.assertNotNull(pool.getSender());
-
 		pool.init();
+
+		Assert.assertNotNull(pool.getSender());
 
 		KafkaMessageSender<byte[], byte[]> sender = pool.getSender();
 
 		pool.returnSender(sender);
 		pool.returnSender(sender);
 
+		for (int i = 0; i < 20; i++) {
+
+			try {
+				pool.getSender();
+			} catch (Exception e) {
+			}
+		}
+
+		pool.destroy();
 		pool.destroy();
 	}
 
@@ -150,5 +157,5 @@ public class KafkaMessageSenderPoolTest {
 
 		pool.destroy();
 	}
-	
+
 }

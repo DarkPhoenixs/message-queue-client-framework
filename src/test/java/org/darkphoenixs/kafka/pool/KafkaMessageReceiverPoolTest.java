@@ -164,6 +164,8 @@ public class KafkaMessageReceiverPoolTest {
 		thread.start();
 
 		pool.destroy();
+		
+		pool.returnReceiver(null);
 	}
 
 	@Test

@@ -11,10 +11,20 @@ public class KafkaPoolThreadFactoryTest {
 		KafkaPoolThreadFactory threadFactory = new KafkaPoolThreadFactory();
 		threadFactory.setDaemon(true);
 		threadFactory.setPrefix("Test");
-		threadFactory.setPriority(5);
 		threadFactory.setPriority(15);
 
 		Thread thread = threadFactory.newThread(new Runnable() {
+
+			@Override
+			public void run() {
+
+				System.out.println("test");
+			}
+		});
+		
+		threadFactory.setPriority(5);
+
+		threadFactory.newThread(new Runnable() {
 
 			@Override
 			public void run() {
