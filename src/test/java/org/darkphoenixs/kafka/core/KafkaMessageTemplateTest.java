@@ -40,12 +40,18 @@ public class KafkaMessageTemplateTest {
 		messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
 
 		template.convertAndSend(new KafkaDestination("QUEUE.TEST"), messageBean);
+		
+		template.convertAndSendWithKey(new KafkaDestination("QUEUE.TEST"), 1, messageBean);
 
 		Assert.assertNull(template.getMessageReceiverPool());
 		template.setMessageReceiverPool(new KafkaMessageReceiverPoolImpl());
 
 		template.receiveAndConvert(new KafkaDestination("QUEUE.TEST"), 1, 0, 1);
-
+		
+		try {
+			template.receiveWithKeyAndConvert(new KafkaDestination("QUEUE.TEST"), 1, 0, 1);
+		} catch (Exception e) {
+		}
 	}
 
 	private class KafkaMessageSenderPoolImpl extends

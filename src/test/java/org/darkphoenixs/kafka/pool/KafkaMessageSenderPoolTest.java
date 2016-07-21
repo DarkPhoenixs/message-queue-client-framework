@@ -162,18 +162,17 @@ public class KafkaMessageSenderPoolTest {
 		pool.setProps(TestUtils.getProducerConfig("localhost:" + port));
 
 		pool.setZkhosts(new ZookeeperHosts(zkConnect, topic));
-		
+
 		pool.init();
-		
+
 		for (int i = 0; i < 20; i++) {
-			
+
 			try {
 				pool.getSender();
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
-		
 		pool.destroy();
-
 	}
 }
