@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.darkphoenixs.kafka.consumer;
+package org.darkphoenixs.activemq.consumer;
 
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
@@ -21,16 +21,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>AbstractConsumer</p>
- * <p>消费者抽象类</p>
+ * <p>Title: AbstractConsumer</p>
+ * <p>Description: 消费者抽象类</p>
  *
- * @since 2016年7月21日
+ * @since 2015-06-01
  * @author Victor.Zxy
  * @see Consumer
- * @version 1.3.0
+ * @version 1.3.1
  */
-public abstract class AbstractConsumer<K, V> implements Consumer<V> {
-	
+public abstract class AbstractConsumer<T> implements Consumer<T> {
+
 	/** logger */
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -45,34 +45,7 @@ public abstract class AbstractConsumer<K, V> implements Consumer<V> {
 	}
 	
 	@Override
-	public String getConsumerKey() throws MQException {
-		return this.consumerKey;
-	}
-	
-	/**
-	 * <p>receive</p>
-	 * <p>接收消息</p>
-	 *
-	 * @param key 标识
-	 * @param Val 消息
-	 * @throws MQException
-	 */
-	public void receive(K key, V Val) throws MQException {
-
-		try {
-			doReceive(key, Val);
-
-		} catch (Exception e) {
-
-			throw new MQException(e);
-		}
-
-		logger.debug("Receive Success, ConsumerKey : " + this.getConsumerKey()
-				+ " , MessageKey : " + key + " , Message : " + Val);
-	}
-	
-	@Override
-	public void receive(V message) throws MQException {
+	public void receive(T message) throws MQException {
 
 		try {
 			doReceive(message);
@@ -85,18 +58,20 @@ public abstract class AbstractConsumer<K, V> implements Consumer<V> {
 		logger.debug("Receive Success, ConsumerKey : " + this.getConsumerKey()
 				+ " , Message : " + message);
 	}
-	
-	protected void doReceive(V message) throws MQException {
-		// For compatible without Key. 
+
+	@Override
+	public String getConsumerKey() throws MQException {
+
+		return this.consumerKey;
 	}
-	
+
 	/**
-	 * <p>doReceive</p>
-	 * <p>消息接收方法</p>
+	 * <p>Title: doReceive</p>
+	 * <p>Description: 消息接收方法</p>
 	 * 
-	 * @param key 标识
-	 * @param val 消息
+	 * @param message 消息
 	 * @throws MQException MQ异常
 	 */
-	protected abstract void doReceive(K key, V val) throws MQException;
+	protected abstract void doReceive(T message) throws MQException;
+
 }

@@ -15,7 +15,6 @@
  */
 package org.darkphoenixs.activemq.consumer;
 
-import org.darkphoenixs.mq.consumer.AbstractConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 
 /**

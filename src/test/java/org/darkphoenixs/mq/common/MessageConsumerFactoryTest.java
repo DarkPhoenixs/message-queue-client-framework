@@ -7,6 +7,7 @@ import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class MessageConsumerFactoryTest {
 
 	@Test

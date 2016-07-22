@@ -1,7 +1,7 @@
 package org.darkphoenixs.kafka.listener;
 
+import org.darkphoenixs.kafka.consumer.AbstractConsumer;
 import org.darkphoenixs.mq.common.MessageConsumerFactory;
-import org.darkphoenixs.mq.consumer.AbstractConsumer;
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
@@ -86,12 +86,18 @@ public class MessageFactoryConsumerListenerTest {
 
 	}
 
-	private class ConsumerTest extends AbstractConsumer<MessageBeanImpl> {
+	private class ConsumerTest extends AbstractConsumer<Integer, MessageBeanImpl> {
 
-		@Override
 		protected void doReceive(MessageBeanImpl message) throws MQException {
 
 			System.out.println(message);
+		}
+
+		@Override
+		protected void doReceive(Integer key, MessageBeanImpl val)
+				throws MQException {
+
+			System.out.println(key + ":" + val);
 		}
 	}
 }

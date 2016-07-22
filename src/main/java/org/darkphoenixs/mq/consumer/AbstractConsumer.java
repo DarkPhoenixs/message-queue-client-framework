@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * @see Consumer
  * @version 1.0
  */
+@Deprecated
 public abstract class AbstractConsumer<T> implements Consumer<T> {
 
 	/** logger */

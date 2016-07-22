@@ -39,8 +39,6 @@ public class AbstractConsumerTest {
 		protected void doReceive(String message) throws MQException {
 
 			throw new RuntimeException("Test");
-
 		}
-
 	}
 }

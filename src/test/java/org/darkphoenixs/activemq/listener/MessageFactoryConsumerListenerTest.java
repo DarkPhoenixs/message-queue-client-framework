@@ -2,8 +2,8 @@ package org.darkphoenixs.activemq.listener;
 
 import java.util.concurrent.Executors;
 
+import org.darkphoenixs.activemq.consumer.AbstractConsumer;
 import org.darkphoenixs.mq.common.MessageConsumerFactory;
-import org.darkphoenixs.mq.consumer.AbstractConsumer;
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
