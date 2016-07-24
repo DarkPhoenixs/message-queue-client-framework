@@ -74,7 +74,6 @@ public class KafkaCommand {
 						"--partitions", String.valueOf(partitions) }));
 	}
 
-
 	/**
 	 * <p>Title: describeTopic</p>
 	 * <p>Description: 查询队列操作</p>
