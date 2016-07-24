@@ -246,7 +246,7 @@
 		<!-- ActiveMQ Config -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-client</artifactId>
+			<artifactId>activemq-all</artifactId>
 			<version>${activemq.version}</version>
 			<optional>true</optional>
 			<scope>provided</scope>
