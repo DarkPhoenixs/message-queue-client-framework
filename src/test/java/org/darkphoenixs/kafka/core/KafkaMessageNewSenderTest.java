@@ -103,7 +103,7 @@ public class KafkaMessageNewSenderTest {
     }
 
     @Test
-    public void getOrCreatInstance() throws Exception {
+    public void test() throws Exception {
 
         Properties properties = new Properties();
         properties.setProperty("bootstrap.servers", "localhost:" + port);
@@ -118,78 +118,13 @@ public class KafkaMessageNewSenderTest {
 
         Assert.assertSame(sender, sender2);
 
-        sender.shutDown();
-    }
-
-    @Test
-    public void getPartitions() throws Exception {
-
-        Properties properties = new Properties();
-        properties.setProperty("bootstrap.servers", "localhost:" + port);
-        properties.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-        properties.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-
-        KafkaMessageNewSender<byte[], byte[]> sender = KafkaMessageNewSender.getOrCreateInstance(properties);
-
         Assert.assertEquals(sender.getPartitions(topic).size(), 4);
-
-        sender.shutDown();
-    }
-
-    @Test
-    public void send() throws Exception {
-
-        Properties properties = new Properties();
-        properties.setProperty("bootstrap.servers", "localhost:" + port);
-        properties.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-        properties.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-
-        KafkaMessageNewSender<byte[], byte[]> sender = KafkaMessageNewSender.getOrCreateInstance(properties);
 
         sender.send(topic, "hahah".getBytes());
 
-        sender.shutDown();
-    }
-
-    @Test
-    public void sendWithKey() throws Exception {
-
-        Properties properties = new Properties();
-        properties.setProperty("bootstrap.servers", "localhost:" + port);
-        properties.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-        properties.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-
-        KafkaMessageNewSender<byte[], byte[]> sender = KafkaMessageNewSender.getOrCreateInstance(properties);
-
         sender.sendWithKey(topic, "key".getBytes(), "value".getBytes());
 
-        sender.shutDown();
-    }
-
-    @Test
-    public void close() throws Exception {
-
-        Properties properties = new Properties();
-        properties.setProperty("bootstrap.servers", "localhost:" + port);
-        properties.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-        properties.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-
-        KafkaMessageNewSender<byte[], byte[]> sender = KafkaMessageNewSender.getOrCreateInstance(properties);
-
         sender.close();
-
-        sender.shutDown();
-    }
-
-    @Test
-    public void shutDown() throws Exception {
-
-        Properties properties = new Properties();
-        properties.setProperty("bootstrap.servers", "localhost:" + port);
-        properties.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-        properties.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-
-        KafkaMessageNewSender<byte[], byte[]> sender = KafkaMessageNewSender.getOrCreateInstance(properties);
 
         sender.shutDown();
     }
