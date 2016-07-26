@@ -43,7 +43,7 @@ import java.util.Properties;
 /**
  * The type Kafka messag new sender pool test.
  */
-public class KafkaMessagNewSenderPoolTest {
+public class KafkaMessageNewSenderPoolTest {
 
     private int brokerId = 0;
     private String topic = "QUEUE.TEST";
@@ -112,10 +112,11 @@ public class KafkaMessagNewSenderPoolTest {
         properties.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         properties.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
 
-        KafkaMessagNewSenderPool<byte[], byte[]> pool = new KafkaMessagNewSenderPool<byte[], byte[]>();
+        KafkaMessageNewSenderPool<byte[], byte[]> pool = new KafkaMessageNewSenderPool<byte[], byte[]>();
 
         Assert.assertNull(pool.getConfig());
         Assert.assertNotNull(pool.getProps());
+        Assert.assertEquals(pool.getPoolSize(), 0);
 
         pool.setConfig(new DefaultResourceLoader()
                 .getResource("kafka/producer1.properties"));
@@ -123,6 +124,7 @@ public class KafkaMessagNewSenderPoolTest {
                 .getResource("kafka/producer.properties"));
 
         pool.setProps(properties);
+        pool.setPoolSize(10);
 
         pool.init();
 

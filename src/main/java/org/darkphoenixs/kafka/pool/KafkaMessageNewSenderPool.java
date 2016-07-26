@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * <p>Title: KafkaMessagNewSenderPool</p>
+ * <p>Title: KafkaMessageNewSenderPool</p>
  * <p>Description: Kafka消息发送连接池（连接单例）</p>
  *
  * @param <K> the type of message key
@@ -37,9 +37,9 @@ import java.util.Properties;
  * @see MessageSenderPool
  * @since 2016 /7/26
  */
-public class KafkaMessagNewSenderPool<K, V> implements MessageSenderPool<K, V> {
+public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> {
 
-    private static final Logger logger = LoggerFactory.getLogger(KafkaMessagNewSenderPool.class);
+    private static final Logger logger = LoggerFactory.getLogger(KafkaMessageNewSenderPool.class);
 
     /**
      * The Props.
@@ -55,6 +55,29 @@ public class KafkaMessagNewSenderPool<K, V> implements MessageSenderPool<K, V> {
      * The Sender.
      */
     protected KafkaMessageNewSender sender;
+
+    /**
+     * The Pool size.
+     */
+    protected int poolSize;
+
+    /**
+     * Gets pool size.
+     *
+     * @return the pool size
+     */
+    public int getPoolSize() {
+        return poolSize;
+    }
+
+    /**
+     * Sets pool size.
+     *
+     * @param poolSize the pool size
+     */
+    public void setPoolSize(int poolSize) {
+        this.poolSize = poolSize;
+    }
 
     /**
      * Gets props.

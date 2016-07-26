@@ -15,16 +15,14 @@
  */
 package org.darkphoenixs.kafka.core;
 
-import java.util.List;
-import java.util.Map;
-
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoder;
 import org.darkphoenixs.kafka.codec.KafkaMessageEncoder;
-import org.darkphoenixs.kafka.pool.KafkaMessageReceiverPool;
-import org.darkphoenixs.kafka.pool.KafkaMessageSenderPool;
 import org.darkphoenixs.kafka.pool.MessageReceiverPool;
 import org.darkphoenixs.kafka.pool.MessageSenderPool;
 import org.darkphoenixs.mq.exception.MQException;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Title: KafkaMessageTemplate</p>
@@ -51,8 +49,7 @@ public class KafkaMessageTemplate<K, V> {
 	/**
 	 * @param messageSenderPool the messageSenderPool to set
 	 */
-	public void setMessageSenderPool(
-			KafkaMessageSenderPool<byte[], byte[]> messageSenderPool) {
+	public void setMessageSenderPool(MessageSenderPool<byte[], byte[]> messageSenderPool) {
 		this.messageSenderPool = messageSenderPool;
 	}
 	
@@ -73,8 +70,7 @@ public class KafkaMessageTemplate<K, V> {
 	/**
 	 * @param messageReceiverPool the messageReceiverPool to set
 	 */
-	public void setMessageReceiverPool(
-			KafkaMessageReceiverPool<byte[], byte[]> messageReceiverPool) {
+	public void setMessageReceiverPool(MessageReceiverPool<byte[], byte[]> messageReceiverPool) {
 		this.messageReceiverPool = messageReceiverPool;
 	}
 
