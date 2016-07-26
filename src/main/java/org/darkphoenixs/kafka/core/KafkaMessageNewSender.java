@@ -39,7 +39,7 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
     /**
      * Atomic singleton instance.
      */
-    private static final AtomicReference<KafkaMessageNewSender> instance = new AtomicReference<>();
+    private static final AtomicReference<KafkaMessageNewSender> instance = new AtomicReference<KafkaMessageNewSender>();
 
     /**
      * The producer is thread safe and sharing a single producer instance
@@ -52,7 +52,7 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
      */
     private KafkaMessageNewSender(Properties properties) {
 
-        kafkaProducer = new KafkaProducer<>(properties);
+        kafkaProducer = new KafkaProducer<K, V>(properties);
     }
 
     /**
@@ -90,7 +90,7 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
     @Override
     public void sendWithKey(String topic, K key, V value) {
 
-        kafkaProducer.send(new ProducerRecord<>(topic, key, value));
+        kafkaProducer.send(new ProducerRecord<K, V>(topic, key, value));
     }
 
     @Override
