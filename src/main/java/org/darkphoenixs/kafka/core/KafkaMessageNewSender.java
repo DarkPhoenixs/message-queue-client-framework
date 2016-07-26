@@ -104,5 +104,7 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
     public void shutDown() {
 
         kafkaProducer.close();
+
+        instance.set(null);
     }
 }
