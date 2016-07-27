@@ -15,97 +15,80 @@
  */
 package org.darkphoenixs.kafka.core;
 
-import java.util.Properties;
-
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
-import org.darkphoenixs.kafka.pool.KafkaMessageSenderPool;
+import java.util.Properties;
 
 /**
  * <p>Title: KafkaMessageSenderImpl</p>
  * <p>Description: Kafka消息发送实现类</p>
  *
- * @since 2015-06-01
+ * @param <K> the type of message key
+ * @param <V> the type of message value
  * @author Victor.Zxy
- * @see KafkaMessageSender
  * @version 1.0
+ * @see KafkaMessageSender
+ * @since 2015-06-01
  */
 public class KafkaMessageSenderImpl<K, V> implements KafkaMessageSender<K, V> {
 
-	/** producer */
-	private Producer<K, V> producer;
+    /**
+     * producer
+     */
+    private Producer<K, V> producer;
 
-	/** pool */
-	private KafkaMessageSenderPool<K, V> pool;
+    /**
+     * Gets producer.
+     *
+     * @return the producer
+     */
+    public Producer<K, V> getProducer() {
+        return producer;
+    }
 
-	/**
-	 * @return the producer
-	 */
-	public Producer<K, V> getProducer() {
-		return producer;
-	}
+    /**
+     * Sets producer.
+     *
+     * @param producer the producer to set
+     */
+    public void setProducer(Producer<K, V> producer) {
+        this.producer = producer;
+    }
 
-	/**
-	 * @param producer
-	 *            the producer to set
-	 */
-	public void setProducer(Producer<K, V> producer) {
-		this.producer = producer;
-	}
+    /**
+     * Construction method.
+     *
+     * @param props param props
+     */
+    public KafkaMessageSenderImpl(Properties props) {
 
-	/**
-	 * @return the pool
-	 */
-	public KafkaMessageSenderPool<K, V> getPool() {
-		return pool;
-	}
+        ProducerConfig config = new ProducerConfig(props);
 
-	/**
-	 * @param pool
-	 *            the pool to set
-	 */
-	public void setPool(KafkaMessageSenderPool<K, V> pool) {
-		this.pool = pool;
-	}
+        this.producer = new Producer<K, V>(config);
+    }
 
-	/**
-	 * Construction method.
-	 * 
-	 * @param props
-	 *            param props
-	 * @param pool
-	 *            sender Pool
-	 */
-	public KafkaMessageSenderImpl(Properties props,
-			KafkaMessageSenderPool<K, V> pool) {
-		super();
-		ProducerConfig config = new ProducerConfig(props);
-		this.producer = new Producer<K, V>(config);
-		this.pool = pool;
-	}
+    @Override
+    public void send(String topic, V value) {
 
-	@Override
-	public void send(String topic, V value) {
-		KeyedMessage<K, V> data = new KeyedMessage<K, V>(topic, value);
-		this.producer.send(data);
-	}
+        KeyedMessage<K, V> data = new KeyedMessage<K, V>(topic, value);
 
-	@Override
-	public void sendWithKey(String topic, K key, V value) {
-		KeyedMessage<K, V> data = new KeyedMessage<K, V>(topic, key, value);
-		this.producer.send(data);
-	}
+        this.producer.send(data);
+    }
 
-	@Override
-	public void close() {
-		this.pool.returnSender(this);
-	}
+    @Override
+    public void sendWithKey(String topic, K key, V value) {
 
-	@Override
-	public void shutDown() {
-		this.producer.close();
-	}
+        KeyedMessage<K, V> data = new KeyedMessage<K, V>(topic, key, value);
+
+        this.producer.send(data);
+    }
+
+    @Override
+    public void shutDown() {
+
+        this.producer.close();
+    }
 
 }

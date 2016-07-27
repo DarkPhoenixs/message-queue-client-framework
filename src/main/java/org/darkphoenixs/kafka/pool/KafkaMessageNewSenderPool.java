@@ -54,7 +54,7 @@ public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> 
     /**
      * The Sender.
      */
-    protected KafkaMessageNewSender sender;
+    protected KafkaMessageNewSender<K, V> sender;
 
     /**
      * The Pool size.
@@ -120,6 +120,7 @@ public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> 
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public synchronized void init() {
 
@@ -136,6 +137,7 @@ public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> 
         sender.shutDown();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public KafkaMessageSender<K, V> getSender() {
 
@@ -147,6 +149,6 @@ public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> 
     @Override
     public void returnSender(KafkaMessageSender<K, V> sender) {
 
-        sender.close();
+        // nothing to do.
     }
 }

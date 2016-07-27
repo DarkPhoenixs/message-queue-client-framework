@@ -1,9 +1,5 @@
 package org.darkphoenixs.kafka.core;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
 import org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl;
 import org.darkphoenixs.kafka.codec.MessageEncoderImpl;
@@ -13,6 +9,10 @@ import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class KafkaMessageTemplateTest {
 
@@ -56,6 +56,11 @@ public class KafkaMessageTemplateTest {
 	private class KafkaMessageSenderPoolImpl extends
 			KafkaMessageSenderPool<byte[], byte[]> {
 
+		public KafkaMessageSenderPoolImpl() {
+
+			setPoolSize(1);
+		}
+
 		@Override
 		public KafkaMessageSender<byte[], byte[]> getSender() {
 
@@ -79,11 +84,6 @@ public class KafkaMessageTemplateTest {
 					System.out.println("send" + topic);
 				}
 
-				@Override
-				public void close() {
-
-					System.out.println("close");
-				}
 			};
 		}
 	}
@@ -141,10 +141,10 @@ public class KafkaMessageTemplateTest {
 				}
 
 				@Override
-				public void close() {
-
-					System.out.println("close");
+				public void shutDown() {
+					System.out.println("shutDown");
 				}
+
 			};
 		}
 

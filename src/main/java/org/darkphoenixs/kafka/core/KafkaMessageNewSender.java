@@ -39,7 +39,7 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
     /**
      * Atomic singleton instance.
      */
-    private static final AtomicReference<KafkaMessageNewSender> instance = new AtomicReference<KafkaMessageNewSender>();
+    private static final AtomicReference<KafkaMessageNewSender<?, ?>> instance = new AtomicReference<KafkaMessageNewSender<?, ?>>();
 
     /**
      * The producer is thread safe and sharing a single producer instance
@@ -61,6 +61,7 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
      * @param properties the properties
      * @return the or create instance
      */
+    @SuppressWarnings("rawtypes")
     public static KafkaMessageNewSender getOrCreateInstance(Properties properties) {
 
         if (instance.get() == null)
@@ -94,14 +95,9 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
     }
 
     @Override
-    public void close() {
-
-        // flush the producer
-        kafkaProducer.flush();
-    }
-
-    @Override
     public void shutDown() {
+
+        kafkaProducer.flush();
 
         kafkaProducer.close();
 

@@ -41,6 +41,7 @@ import java.util.Properties;
 /**
  * Created by Victor.Zxy on 2016/7/26.
  */
+@SuppressWarnings("unchecked")
 public class KafkaMessageNewSenderTest {
 
     private int brokerId = 0;
@@ -123,8 +124,6 @@ public class KafkaMessageNewSenderTest {
         sender.send(topic, "hahah".getBytes());
 
         sender.sendWithKey(topic, "key".getBytes(), "value".getBytes());
-
-        sender.close();
 
         sender.shutDown();
     }

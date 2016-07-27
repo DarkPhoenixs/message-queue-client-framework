@@ -1,9 +1,5 @@
 package org.darkphoenixs.kafka.core;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import kafka.admin.TopicCommand;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
@@ -12,7 +8,6 @@ import kafka.utils.TestUtils;
 import kafka.utils.Time;
 import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
-
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
@@ -22,8 +17,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import scala.Option;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 public class KafkaMessageReceiverImplTest {
 
@@ -123,10 +121,7 @@ public class KafkaMessageReceiverImplTest {
 				+ ",localhost:" + (port - 1));
 
 		KafkaMessageSenderImpl<byte[], byte[]> sender = new KafkaMessageSenderImpl<byte[], byte[]>(
-				properties, sendPool);
-
-		Assert.assertEquals(sendPool, sender.getPool());
-		sender.setPool(sendPool);
+				properties);
 
 		Assert.assertNotNull(sender.getProducer());
 		sender.setProducer(sender.getProducer());
@@ -134,8 +129,6 @@ public class KafkaMessageReceiverImplTest {
 		sender.send(topic, "test".getBytes());
 
 		sender.sendWithKey(topic, "key".getBytes(), "value".getBytes());
-
-		sender.close();
 
 		sender.shutDown();
 
@@ -186,7 +179,7 @@ public class KafkaMessageReceiverImplTest {
 
 		receiver.receiveWithKey(topic, 1, 1, 2);
 		
-		receiver.close();
+		receiver.shutDown();
 
 		try {
 			receiver.getEarliestOffset("test", 0);
@@ -228,7 +221,7 @@ public class KafkaMessageReceiverImplTest {
 		} catch (Exception e) {
 		}
 
-		receiver.close();
+		receiver.shutDown();
 
 		KafkaMessageReceiver.logger.info("test");
 	}

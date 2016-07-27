@@ -23,46 +23,39 @@ import org.slf4j.LoggerFactory;
  * <p>Title: KafkaMessageSender</p>
  * <p>Description: Kafka消息发送接口</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
  * @version 1.0
+ * @since 2015-06-01
  */
-public interface KafkaMessageSender<K,V> {
+public interface KafkaMessageSender<K, V> {
 
-	/** logger */
-	Logger logger = LoggerFactory.getLogger(KafkaMessageSender.class);
-	
-	/**
-	 * <p>Title: send</p>
-	 * <p>Description: Send the msg to Kafka</p>
-	 *
-	 * @param topic topic name
-	 * @param value data to be sent
-	 */
-	void send(String topic, V value);
-	
-	/**
-	 * <p>Title: sendWithKey</p>
-	 * <p>Description: Send the msg to Kafka</p>
-	 *
-	 * @param topic topic name
-	 * @param key the key of data
-	 * @param value data to be sent
-	 */
-	void sendWithKey(String topic, K key, V value);
-	
-	/**
-	 * <p>Title: close</p>
-	 * <p>Description: The sender is not really closed but sent back into pool.</p>
-	 *
-	 */
-	void close();
-	
-	/**
-	 * <p>Title: shutDown</p>
-	 * <p>Description: Shutdown this sender, so it could not be used again.</p>
-	 *
-	 */
-	public void shutDown();
+    /**
+     * logger
+     */
+    Logger logger = LoggerFactory.getLogger(KafkaMessageSender.class);
 
+    /**
+     * <p>Title: send</p>
+     * <p>Description: Send the msg to Kafka</p>
+     *
+     * @param topic topic name
+     * @param value data to be sent
+     */
+    void send(String topic, V value);
+
+    /**
+     * <p>Title: sendWithKey</p>
+     * <p>Description: Send the msg to Kafka</p>
+     *
+     * @param topic topic name
+     * @param key   the key of data
+     * @param value data to be sent
+     */
+    void sendWithKey(String topic, K key, V value);
+
+    /**
+     * <p>Title: shutDown</p>
+     * <p>Description: Shutdown this sender, so it could not be used again.</p>
+     */
+    void shutDown();
 }

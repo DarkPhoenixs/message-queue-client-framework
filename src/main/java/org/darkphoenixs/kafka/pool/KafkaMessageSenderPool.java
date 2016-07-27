@@ -15,30 +15,19 @@
  */
 package org.darkphoenixs.kafka.pool;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.darkphoenixs.kafka.core.KafkaConstants;
-import org.darkphoenixs.kafka.core.KafkaMessageSender;
-import org.darkphoenixs.kafka.core.KafkaMessageSenderImpl;
-import org.darkphoenixs.kafka.core.ZookeeperBrokers;
-import org.darkphoenixs.kafka.core.ZookeeperHosts;
+import org.darkphoenixs.kafka.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * <p>Title: KafkaMessageSenderPool</p>
@@ -239,7 +228,7 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
 		try {
 			sender = queue.poll();
 			if (sender == null) {
-				sender = new KafkaMessageSenderImpl<K, V>(props, this);
+				sender = new KafkaMessageSenderImpl<K, V>(props);
 				logger.info("Add new sender to the pool.");
 				queue.offer(sender);
 			}
@@ -304,7 +293,7 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
 
 		@Override
 		public Boolean call() throws Exception {
-			KafkaMessageSender<K, V> sender = new KafkaMessageSenderImpl<K, V>(props, pool);
+			KafkaMessageSender<K, V> sender = new KafkaMessageSenderImpl<K, V>(props);
 			queue.offer(sender);
 			count.countDown();
 			return true;
