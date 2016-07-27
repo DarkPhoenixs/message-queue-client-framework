@@ -174,7 +174,7 @@ public class KafkaMessageReceiverImplTest {
 
         receiver.receiveWithKey(topic, 0, 2, 2);
 
-        receiver.receiveWithKey(topic, 1, 1, 2);
+        receiver.receiveWithKey(topic, 0, 1, 3);
 
         try {
             receiver.receiveWithKey(topic, 1, 1, 0);

@@ -28,7 +28,9 @@ import java.util.Properties;
 
 /**
  * <p>Title: KafkaMessageNewSenderPool</p>
- * <p>Description: Kafka消息发送连接池（连接单例）</p>
+ * <p>Description: 新Kafka消息发送连接池/p>
+ * <p>
+ * <p>连接采用线程安全单例模式</p>
  *
  * @param <K> the type of kafka message key
  * @param <V> the type of kafka message value
