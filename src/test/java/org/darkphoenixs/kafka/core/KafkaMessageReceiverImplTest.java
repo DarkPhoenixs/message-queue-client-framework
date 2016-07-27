@@ -130,6 +130,8 @@ public class KafkaMessageReceiverImplTest {
 
         sender.sendWithKey(topic, "key".getBytes(), "value".getBytes());
 
+        sender.sendWithKey(topic, "key".getBytes(), "value".getBytes());
+
         sender.shutDown();
 
         sendPool.destroy();
@@ -174,7 +176,7 @@ public class KafkaMessageReceiverImplTest {
 
         receiver.receiveWithKey(topic, 0, 2, 2);
 
-        receiver.receiveWithKey(topic, 0, 1, 3);
+        receiver.receiveWithKey(topic, 0, 1, 2);
 
         try {
             receiver.receiveWithKey(topic, 1, 1, 0);
