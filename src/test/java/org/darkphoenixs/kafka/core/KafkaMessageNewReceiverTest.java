@@ -135,11 +135,25 @@ public class KafkaMessageNewReceiverTest {
 
         receiver.receive(topic, 0, 2, 5);
 
+        try {
+            receiver.receive(topic, 0, 2, 0);
+        } catch (Exception e) {
+
+        }
+
         Map<byte[], byte[]> maps1 = receiver.receiveWithKey(topic, 0, 1, 2);
 
         Assert.assertEquals(maps1.size(), 2);
 
         receiver.receiveWithKey(topic, 0, 3, 5);
+
+        try {
+            receiver.receiveWithKey(topic, 0, 3, 0);
+        } catch (Exception e) {
+
+        }
+        
+        receiver.shutDown();
 
         receiver.shutDown();
     }

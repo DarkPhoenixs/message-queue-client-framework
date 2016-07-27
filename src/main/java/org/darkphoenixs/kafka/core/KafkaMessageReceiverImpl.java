@@ -94,6 +94,10 @@ public class KafkaMessageReceiverImpl<K, V> implements
     @Override
     public synchronized List<V> receive(String topic, int partition, long beginOffset,
                                         long readOffset) {
+        if (readOffset <= 0) {
+
+            throw new IllegalArgumentException("read offset must be greater than 0");
+        }
 
         List<V> messages = new ArrayList<V>();
 
@@ -115,13 +119,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
 
             long currentOffset = messageAndOffset.offset();
 
-            if (currentOffset < beginOffset) {
-
-                continue;
-            }
-
-            if (readOffset > 0
-                    && (currentOffset > beginOffset + readOffset - 1)) {
+            if (currentOffset > beginOffset + readOffset - 1) {
 
                 break;
             }
@@ -146,6 +144,10 @@ public class KafkaMessageReceiverImpl<K, V> implements
     @Override
     public synchronized Map<K, V> receiveWithKey(String topic, int partition,
                                                  long beginOffset, long readOffset) {
+        if (readOffset <= 0) {
+
+            throw new IllegalArgumentException("read offset must be greater than 0");
+        }
 
         Map<K, V> messages = new LinkedHashMap<K, V>();
 
@@ -167,13 +169,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
 
             long currentOffset = messageAndOffset.offset();
 
-            if (currentOffset < beginOffset) {
-
-                continue;
-            }
-
-            if (readOffset > 0
-                    && (currentOffset > beginOffset + readOffset - 1)) {
+            if (currentOffset > beginOffset + readOffset - 1) {
 
                 break;
             }
