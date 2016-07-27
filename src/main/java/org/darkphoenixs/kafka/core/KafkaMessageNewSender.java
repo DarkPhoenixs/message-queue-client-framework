@@ -27,8 +27,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>Title: KafkaMessageNewSender</p>
  * <p>Description: Kafka消息新发送器</p>
  *
- * @param <K> the type of message key
- * @param <V> the type of message value
+ * @param <K> the type of kafka message key
+ * @param <V> the type of kafka message value
  * @author Victor.Zxy
  * @version 1.4.0
  * @see KafkaMessageSender

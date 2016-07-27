@@ -30,8 +30,8 @@ import java.util.Properties;
  * <p>Title: KafkaMessageNewSenderPool</p>
  * <p>Description: Kafka消息发送连接池（连接单例）</p>
  *
- * @param <K> the type of message key
- * @param <V> the type of message value
+ * @param <K> the type of kafka message key
+ * @param <V> the type of kafka message value
  * @author Victor.Zxy
  * @version 1.4.0
  * @see MessageSenderPool

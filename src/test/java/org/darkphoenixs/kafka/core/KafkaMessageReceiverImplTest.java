@@ -146,15 +146,6 @@ public class KafkaMessageReceiverImplTest {
 		KafkaMessageReceiverImpl<byte[], byte[]> receiver = new KafkaMessageReceiverImpl<byte[], byte[]>(
 				consumerProps, recePool);
 
-		Assert.assertNotNull(receiver.getProps());
-		receiver.setProps(receiver.getProps());
-
-		Assert.assertNotNull(receiver.getPool());
-		receiver.setPool(receiver.getPool());
-
-		Assert.assertNull(receiver.getConsumer());
-		receiver.setConsumer(receiver.getConsumer());
-
 		receiver.getEarliestOffset(topic, -1);
 
 		receiver.getLatestOffset(topic, -1);

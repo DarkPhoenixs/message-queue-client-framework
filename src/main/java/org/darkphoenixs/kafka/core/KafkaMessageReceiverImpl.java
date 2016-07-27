@@ -33,6 +33,7 @@ import org.darkphoenixs.mq.util.RefleTool;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>Title: KafkaMessageReceiverImpl</p>
@@ -49,7 +50,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
     /**
      * consumer
      */
-    private SimpleConsumer consumer;
+    private final AtomicReference<SimpleConsumer> consumer = new AtomicReference<SimpleConsumer>();
 
     /**
      * pool
@@ -77,48 +78,6 @@ public class KafkaMessageReceiverImpl<K, V> implements
     protected FetchResponse fetchResponse;
 
     /**
-     * @return the consumer
-     */
-    public SimpleConsumer getConsumer() {
-        return consumer;
-    }
-
-    /**
-     * @param consumer the consumer to set
-     */
-    public void setConsumer(SimpleConsumer consumer) {
-        this.consumer = consumer;
-    }
-
-    /**
-     * @return the poll
-     */
-    public KafkaMessageReceiverPool<K, V> getPool() {
-        return pool;
-    }
-
-    /**
-     * @return the props
-     */
-    public VerifiableProperties getProps() {
-        return props;
-    }
-
-    /**
-     * @param props the props to set
-     */
-    public void setProps(VerifiableProperties props) {
-        this.props = props;
-    }
-
-    /**
-     * @param pool the pool to set
-     */
-    public void setPool(KafkaMessageReceiverPool<K, V> pool) {
-        this.pool = pool;
-    }
-
-    /**
      * Construction method.
      *
      * @param props param props
@@ -133,8 +92,8 @@ public class KafkaMessageReceiverImpl<K, V> implements
     }
 
     @Override
-    public List<V> receive(String topic, int partition, long beginOffset,
-                           long readOffset) {
+    public synchronized List<V> receive(String topic, int partition, long beginOffset,
+                                        long readOffset) {
 
         List<V> messages = new ArrayList<V>();
 
@@ -185,8 +144,8 @@ public class KafkaMessageReceiverImpl<K, V> implements
     }
 
     @Override
-    public Map<K, V> receiveWithKey(String topic, int partition,
-                                    long beginOffset, long readOffset) {
+    public synchronized Map<K, V> receiveWithKey(String topic, int partition,
+                                                 long beginOffset, long readOffset) {
 
         Map<K, V> messages = new LinkedHashMap<K, V>();
 
@@ -245,7 +204,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
     }
 
     @Override
-    public long getLatestOffset(String topic, int partition) {
+    public synchronized long getLatestOffset(String topic, int partition) {
 
         if (checkConsumer(topic, partition)) {
 
@@ -257,7 +216,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
             kafka.javaapi.OffsetRequest request = new kafka.javaapi.OffsetRequest(
                     requestInfo, kafka.api.OffsetRequest.CurrentVersion(),
                     pool.getClientId());
-            OffsetResponse response = consumer.getOffsetsBefore(request);
+            OffsetResponse response = consumer.get().getOffsetsBefore(request);
 
             if (response.hasError()) {
                 logger.error("Error fetching data Offset Data the Broker. Reason: "
@@ -271,7 +230,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
     }
 
     @Override
-    public long getEarliestOffset(String topic, int partition) {
+    public synchronized long getEarliestOffset(String topic, int partition) {
 
         if (checkConsumer(topic, partition)) {
 
@@ -283,7 +242,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
             kafka.javaapi.OffsetRequest request = new kafka.javaapi.OffsetRequest(
                     requestInfo, kafka.api.OffsetRequest.CurrentVersion(),
                     pool.getClientId());
-            OffsetResponse response = consumer.getOffsetsBefore(request);
+            OffsetResponse response = consumer.get().getOffsetsBefore(request);
 
             if (response.hasError()) {
                 logger.error("Error fetching data Offset Data the Broker. Reason: "
@@ -298,13 +257,13 @@ public class KafkaMessageReceiverImpl<K, V> implements
     }
 
     @Override
-    public void shutDown() {
+    public synchronized void shutDown() {
 
-        if (this.consumer != null) {
+        if (this.consumer.get() != null) {
 
-            this.consumer.close();
+            this.consumer.get().close();
 
-            this.consumer = null;
+            this.consumer.set(null);
         }
     }
 
@@ -419,7 +378,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
                     .clientId(pool.getClientId())
                     .addFetch(a_topic, a_partition, a_beginOffset,
                             KafkaConstants.FETCH_SIZE).build();
-            fetchResponse = consumer.fetch(req);
+            fetchResponse = consumer.get().fetch(req);
             String leadHost = metadata.leader().host();
 
             if (fetchResponse.hasError()) {
@@ -434,8 +393,8 @@ public class KafkaMessageReceiverImpl<K, V> implements
                     // the last element to reset
                     a_beginOffset = getLatestOffset(a_topic, a_partition);
                 }
-                consumer.close();
-                consumer = null;
+                consumer.get().close();
+                consumer.set(null);
 
                 try {
                     metadata = findNewLeader(leadHost, a_topic, a_partition);
@@ -459,7 +418,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
      */
     private boolean checkConsumer(String a_topic, int a_partition) {
 
-        if (consumer == null) {
+        if (consumer.get() == null) {
 
             if (metadata == null) {
 
@@ -486,9 +445,9 @@ public class KafkaMessageReceiverImpl<K, V> implements
             Integer leadPort = metadata.leader().port();
             String clientName = pool.getClientId();
 
-            consumer = new SimpleConsumer(leadHost, leadPort,
+            consumer.set(new SimpleConsumer(leadHost, leadPort,
                     KafkaConstants.SO_TIMEOUT, KafkaConstants.BUFFER_SIZE,
-                    clientName);
+                    clientName));
         }
 
         return true;
