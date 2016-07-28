@@ -1,10 +1,5 @@
 package org.darkphoenixs.kafka.pool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import kafka.admin.TopicCommand;
 import kafka.serializer.DefaultDecoder;
 import kafka.server.KafkaConfig;
@@ -14,7 +9,6 @@ import kafka.utils.TestUtils;
 import kafka.utils.Time;
 import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
-
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
@@ -34,8 +28,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
-
 import scala.Option;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class KafkaMessageReceiverPoolTest {
 
@@ -144,10 +142,6 @@ public class KafkaMessageReceiverPoolTest {
 		pool.setMessageAdapter(getAdapter());
 
 		Assert.assertNotNull(pool.getReceiver());
-
-		pool.getBrokerStr(topic);
-
-		pool.getPartitionNum(topic);
 
 		pool.init();
 

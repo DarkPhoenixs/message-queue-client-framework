@@ -59,7 +59,9 @@ public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> 
     protected KafkaMessageNewSender<K, V> sender;
 
     /**
-     * The Pool size.
+     * The Pool size (unused).
+     *
+     * @deprecated
      */
     protected int poolSize;
 
@@ -67,6 +69,7 @@ public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> 
      * Gets pool size.
      *
      * @return the pool size
+     * @deprecated
      */
     public int getPoolSize() {
         return poolSize;
@@ -76,6 +79,7 @@ public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> 
      * Sets pool size.
      *
      * @param poolSize the pool size
+     * @deprecated
      */
     public void setPoolSize(int poolSize) {
         this.poolSize = poolSize;

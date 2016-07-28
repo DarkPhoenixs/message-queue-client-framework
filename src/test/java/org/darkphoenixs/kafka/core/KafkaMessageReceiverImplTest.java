@@ -226,6 +226,8 @@ public class KafkaMessageReceiverImplTest {
         } catch (Exception e) {
         }
 
+        receiver.getPartitionCount(topic);
+
         receiver.shutDown();
 
         KafkaMessageReceiver.logger.info("test");

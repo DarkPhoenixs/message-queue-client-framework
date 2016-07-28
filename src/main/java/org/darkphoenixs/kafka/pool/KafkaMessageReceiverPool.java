@@ -258,36 +258,6 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
     }
 
     /**
-     * Get broker address
-     *
-     * @param topic topic name
-     * @return broker address
-     */
-    public String getBrokerStr(String topic) {
-
-        ZookeeperHosts zkHosts = new ZookeeperHosts(getZookeeperStr(), topic);
-        ZookeeperBrokers brokers = new ZookeeperBrokers(zkHosts);
-        String brokerStr = brokers.getBrokerInfo();
-        brokers.close();
-        return brokerStr;
-    }
-
-    /**
-     * Get partition number
-     *
-     * @param topic topic name
-     * @return partition number
-     */
-    public int getPartitionNum(String topic) {
-
-        ZookeeperHosts zkHosts = new ZookeeperHosts(getZookeeperStr(), topic);
-        ZookeeperBrokers brokers = new ZookeeperBrokers(zkHosts);
-        int partitionNum = brokers.getNumPartitions();
-        brokers.close();
-        return partitionNum;
-    }
-
-    /**
      * Get a receiver from the pool (just only create a lower-level receiver).
      *
      * @return a receiver instance
@@ -317,7 +287,7 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
         String topic = messageAdapter.getDestination().getDestinationName();
 
-        int defaultSize = getPartitionNum(topic);
+        int defaultSize = getReceiver().getPartitionCount(topic);
 
         if (poolSize == 0 || poolSize > defaultSize)
 
@@ -348,13 +318,9 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
         List<KafkaStream<K, V>> streams = consumerMap.get(topic);
 
-        int threadNumber = 0;
-
         for (final KafkaStream<K, V> stream : streams) {
 
-            pool.submit(new ReceiverThread(stream, messageAdapter, threadNumber));
-
-            threadNumber++;
+            pool.submit(new ReceiverThread(stream, messageAdapter));
         }
     }
 
@@ -367,20 +333,17 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
         private KafkaMessageAdapter<?, ?> adapter;
 
-        private int threadNumber;
-
         public ReceiverThread(KafkaStream<K, V> stream,
-                              KafkaMessageAdapter<?, ?> adapter, int threadNumber) {
+                              KafkaMessageAdapter<?, ?> adapter) {
 
             this.stream = stream;
-            this.threadNumber = threadNumber;
             this.adapter = adapter;
         }
 
         @Override
         public void run() {
 
-            logger.info("ReceiverThread-" + threadNumber + " clientId: "
+            logger.info(Thread.currentThread().getName() + " clientId: "
                     + stream.clientId() + " start.");
 
             ConsumerIterator<K, V> it = stream.iterator();
@@ -389,31 +352,17 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
                 MessageAndMetadata<K, V> messageAndMetadata = it.next();
 
-                K key = messageAndMetadata.key();
-
-                V value = messageAndMetadata.message();
-
                 try {
 
-                    this.adapter.messageAdapter(key, value);
+                    this.adapter.messageAdapter(messageAndMetadata);
 
                 } catch (MQException e) {
 
-                    int partition = messageAndMetadata.partition();
-
-                    String topic = messageAndMetadata.topic();
-
-                    long offset = messageAndMetadata.offset();
-
-                    int productArity = messageAndMetadata.productArity();
-
-                    String productPrefix = messageAndMetadata.productPrefix();
-
-                    logger.error("ReceiverThread-" + threadNumber
-                            + " productArity: " + productArity
-                            + " productPrefix: " + productPrefix + " topic: "
-                            + topic + " offset: " + offset + " partition: "
-                            + partition + " Exception: " + e.getMessage());
+                    logger.error(Thread.currentThread().getName()
+                            + " productArity: " + messageAndMetadata.productArity()
+                            + " productPrefix: " + messageAndMetadata.productPrefix() + " topic: "
+                            + messageAndMetadata.topic() + " offset: " + messageAndMetadata.offset() + " partition: "
+                            + messageAndMetadata.partition() + " Exception: " + e.getMessage());
                 }
 
 				/* commitOffsets */
@@ -421,7 +370,7 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
                     consumer.commitOffsets();
             }
 
-            logger.info("ReceiverThread-" + threadNumber + " clientId: "
+            logger.info(Thread.currentThread().getName() + " clientId: "
                     + stream.clientId() + " end.");
         }
 

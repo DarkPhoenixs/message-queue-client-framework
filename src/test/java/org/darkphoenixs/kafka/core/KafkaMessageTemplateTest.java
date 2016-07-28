@@ -141,6 +141,14 @@ public class KafkaMessageTemplateTest {
 				}
 
 				@Override
+				public int getPartitionCount(String topic) {
+
+					System.out.println("getPartitionCount" + topic);
+
+					return 0;
+				}
+
+				@Override
 				public void shutDown() {
 					System.out.println("shutDown");
 				}

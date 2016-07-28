@@ -25,9 +25,11 @@ import java.util.Map;
  * <p>Title: KafkaMessageReceiver</p>
  * <p>Description: Kafka消息接收接口</p>
  *
+ * @param <K> the type parameter
+ * @param <V> the type parameter
  * @author Victor.Zxy
  * @version 1.0
- * @since 2015-06-01
+ * @since 2015 -06-01
  */
 public interface KafkaMessageReceiver<K, V> {
 
@@ -44,7 +46,7 @@ public interface KafkaMessageReceiver<K, V> {
      * @param partition   Partition number
      * @param beginOffset Begin the offset index
      * @param readOffset  Number of read messages
-     * @return message
+     * @return message list
      */
     List<V> receive(String topic, int partition, long beginOffset, long readOffset);
 
@@ -56,7 +58,7 @@ public interface KafkaMessageReceiver<K, V> {
      * @param partition   Partition number
      * @param beginOffset Begin the offset index
      * @param readOffset  Number of read messages
-     * @return message
+     * @return message map
      */
     Map<K, V> receiveWithKey(String topic, int partition, long beginOffset, long readOffset);
 
@@ -79,6 +81,15 @@ public interface KafkaMessageReceiver<K, V> {
      * @return the earliest offset
      */
     long getEarliestOffset(String topic, int partition);
+
+    /**
+     * <p>Title: getPartitionCount</p>
+     * <p>Description: Get the partition count</p>
+     *
+     * @param topic the topic
+     * @return the partitions
+     */
+    int getPartitionCount(String topic);
 
     /**
      * <p>Title: shutDown</p>

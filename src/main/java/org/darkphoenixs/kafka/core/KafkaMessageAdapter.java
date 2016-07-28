@@ -15,6 +15,9 @@
  */
 package org.darkphoenixs.kafka.core;
 
+import kafka.message.MessageAndMetadata;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoder;
 import org.darkphoenixs.kafka.listener.KafkaMessageListener;
 import org.darkphoenixs.mq.exception.MQException;
@@ -23,82 +26,125 @@ import org.darkphoenixs.mq.exception.MQException;
  * <p>Title: KafkaMessageAdapter</p>
  * <p>Description: Kafka消息适配器</p>
  *
- * @since 2015-06-01
+ * @param <K> the type parameter
+ * @param <V> the type parameter
  * @author Victor.Zxy
  * @version 1.0
+ * @since 2015 -06-01
  */
 public class KafkaMessageAdapter<K, V> {
 
-	/** decoder */
-	private KafkaMessageDecoder<K, V> decoder;
-	
-	/** consumerListener */
-	private KafkaMessageListener<K, V> messageListener;
+    /**
+     * decoder
+     */
+    private KafkaMessageDecoder<K, V> decoder;
 
-	/** destination */
-	private KafkaDestination destination;
-	
-	/**
-	 * @return the decoder
-	 */
-	public KafkaMessageDecoder<K, V> getDecoder() {
-		return decoder;
-	}
+    /**
+     * consumerListener
+     */
+    private KafkaMessageListener<K, V> messageListener;
 
-	/**
-	 * @param decoder the decoder to set
-	 */
-	public void setDecoder(KafkaMessageDecoder<K, V> decoder) {
-		this.decoder = decoder;
-	}
+    /**
+     * destination
+     */
+    private KafkaDestination destination;
 
-	/**
-	 * @return the messageListener
-	 */
-	public KafkaMessageListener<K, V> getMessageListener() {
-		return messageListener;
-	}
+    /**
+     * Gets decoder.
+     *
+     * @return the decoder
+     */
+    public KafkaMessageDecoder<K, V> getDecoder() {
+        return decoder;
+    }
 
-	/**
-	 * @param messageListener the messageListener to set
-	 */
-	public void setMessageListener(KafkaMessageListener<K, V> messageListener) {
-		this.messageListener = messageListener;
-	}
-	
-	/**
-	 * @return the destination
-	 */
-	public KafkaDestination getDestination() {
-		return destination;
-	}
+    /**
+     * Sets decoder.
+     *
+     * @param decoder the decoder to set
+     */
+    public void setDecoder(KafkaMessageDecoder<K, V> decoder) {
+        this.decoder = decoder;
+    }
 
-	/**
-	 * @param destination the destination to set
-	 */
-	public void setDestination(KafkaDestination destination) {
-		this.destination = destination;
-	}
+    /**
+     * Gets message listener.
+     *
+     * @return the messageListener
+     */
+    public KafkaMessageListener<K, V> getMessageListener() {
+        return messageListener;
+    }
 
-	/**
-	 * <p>Title: messageAdapter</p>
-	 * <p>Description: 消息适配方法</p>
-	 *
-	 * @param key 消息key
-	 * @param value 消息 value
-	 * @throws MQException
-	 */
-	public void messageAdapter(Object key, Object value) throws MQException{
-		
-		byte[] keyBytes = (byte[])key;
-		
-		byte[] valBytes = (byte[])value;
+    /**
+     * Sets message listener.
+     *
+     * @param messageListener the messageListener to set
+     */
+    public void setMessageListener(KafkaMessageListener<K, V> messageListener) {
+        this.messageListener = messageListener;
+    }
 
-		K k = decoder.decodeKey(keyBytes);
-		
-		V v = decoder.decodeVal(valBytes);
-		
-		messageListener.onMessage(k, v);
-	}
+    /**
+     * Gets destination.
+     *
+     * @return the destination
+     */
+    public KafkaDestination getDestination() {
+        return destination;
+    }
+
+    /**
+     * Sets destination.
+     *
+     * @param destination the destination to set
+     */
+    public void setDestination(KafkaDestination destination) {
+        this.destination = destination;
+    }
+
+    /**
+     * <p>Title: messageAdapter</p>
+     * <p>Description: 消息适配方法</p>
+     *
+     * @param messageAndMetadata the message and metadata
+     * @throws MQException the mq exception
+     */
+    public void messageAdapter(MessageAndMetadata<?, ?> messageAndMetadata) throws MQException {
+
+        byte[] keyBytes = (byte[]) messageAndMetadata.key();
+
+        byte[] valBytes = (byte[]) messageAndMetadata.message();
+
+        K k = decoder.decodeKey(keyBytes);
+
+        V v = decoder.decodeVal(valBytes);
+
+        messageListener.onMessage(k, v);
+    }
+
+    /**
+     * <p>Title: messageAdapter</p>
+     * <p>Description: 消息适配方法</p>
+     *
+     * @param records the records
+     * @throws MQException the mq exception
+     * @since 1.4.0
+     */
+    public void messageAdapter(ConsumerRecords<?, ?> records) throws MQException {
+
+        for (ConsumerRecord<?, ?> record : records) {
+
+            byte[] keyBytes = (byte[]) record.key();
+
+            byte[] valBytes = (byte[]) record.value();
+
+            K k = decoder.decodeKey(keyBytes);
+
+            V v = decoder.decodeVal(valBytes);
+
+            messageListener.onMessage(k, v);
+        }
+    }
 }
 

@@ -161,6 +161,14 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
     }
 
     @Override
+    public int getPartitionCount(String topic) {
+
+        KafkaConsumer<K, V> kafkaConsumer = consumer.get();
+
+        return kafkaConsumer.partitionsFor(topic).size();
+    }
+
+    @Override
     public synchronized void shutDown() {
 
         if (consumer.get() != null) {

@@ -253,6 +253,12 @@ public class KafkaMessageReceiverImpl<K, V> implements
     }
 
     @Override
+    public int getPartitionCount(String topic) {
+
+        return getPartitionNum(topic);
+    }
+
+    @Override
     public synchronized void shutDown() {
 
         if (this.consumer.get() != null) {
@@ -419,7 +425,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
             if (metadata == null) {
 
                 replicaBrokers.clear();
-                String brokerStr = pool.getBrokerStr(a_topic);
+                String brokerStr = getBrokerStr(a_topic);
                 String[] brokers = brokerStr.split(",");
                 for (String broker : brokers) {
                     String[] hostport = broker.split(":");
@@ -448,4 +454,35 @@ public class KafkaMessageReceiverImpl<K, V> implements
 
         return true;
     }
+
+    /**
+     * Get broker address
+     *
+     * @param topic topic name
+     * @return broker address
+     */
+    private String getBrokerStr(String topic) {
+
+        ZookeeperHosts zkHosts = new ZookeeperHosts(pool.getZookeeperStr(), topic);
+        ZookeeperBrokers brokers = new ZookeeperBrokers(zkHosts);
+        String brokerStr = brokers.getBrokerInfo();
+        brokers.close();
+        return brokerStr;
+    }
+
+    /**
+     * Get partition number
+     *
+     * @param topic topic name
+     * @return partition number
+     */
+    private int getPartitionNum(String topic) {
+
+        ZookeeperHosts zkHosts = new ZookeeperHosts(pool.getZookeeperStr(), topic);
+        ZookeeperBrokers brokers = new ZookeeperBrokers(zkHosts);
+        int partitionNum = brokers.getNumPartitions();
+        brokers.close();
+        return partitionNum;
+    }
+
 }

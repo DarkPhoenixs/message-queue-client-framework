@@ -125,6 +125,8 @@ public class KafkaMessageNewReceiverTest {
 
         KafkaMessageReceiver<byte[], byte[]> receiver = new KafkaMessageNewReceiver<byte[], byte[]>(receProperties);
 
+        Assert.assertEquals(receiver.getPartitionCount(topic), 1);
+
         Assert.assertEquals(receiver.getEarliestOffset(topic, 0), 0);
 
         Assert.assertEquals(receiver.getLatestOffset(topic, 0), 10);
@@ -152,7 +154,7 @@ public class KafkaMessageNewReceiverTest {
         } catch (Exception e) {
 
         }
-        
+
         receiver.shutDown();
 
         receiver.shutDown();
