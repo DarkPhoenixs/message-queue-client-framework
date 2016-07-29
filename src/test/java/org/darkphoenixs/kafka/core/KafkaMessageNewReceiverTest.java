@@ -142,6 +142,9 @@ public class KafkaMessageNewReceiverTest {
         } catch (Exception e) {
 
         }
+        receiver.receive(topic, 0, -1, 10);
+
+        receiver.receive(topic, 0, -1, 11);
 
         Map<byte[], byte[]> maps1 = receiver.receiveWithKey(topic, 0, 1, 2);
 
@@ -154,6 +157,10 @@ public class KafkaMessageNewReceiverTest {
         } catch (Exception e) {
 
         }
+
+        receiver.receiveWithKey(topic, 0, -1, 10);
+
+        receiver.receiveWithKey(topic, 0, -1, 11);
 
         receiver.shutDown();
 

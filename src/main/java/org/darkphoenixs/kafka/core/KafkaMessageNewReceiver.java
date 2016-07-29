@@ -60,6 +60,18 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
             throw new IllegalArgumentException("read offset must be greater than 0");
         }
 
+        long earliestOffset = getEarliestOffset(topic, partition);
+
+        if (beginOffset < earliestOffset)
+
+            beginOffset = earliestOffset;
+
+        long latestOffset = getLatestOffset(topic, partition);
+
+        if (beginOffset + readOffset > latestOffset)
+
+            readOffset = latestOffset - beginOffset;
+
         List<V> list = new ArrayList<V>();
 
         KafkaConsumer<K, V> kafkaConsumer = consumer.get();
@@ -78,7 +90,7 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
 
                 long currentOffset = record.offset();
 
-                if (currentOffset > beginOffset + readOffset - 1) {
+                if ((currentOffset == latestOffset - 1) || (currentOffset > beginOffset + readOffset - 1)) {
 
                     flag = false;
 
@@ -100,6 +112,18 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
             throw new IllegalArgumentException("read offset must be greater than 0");
         }
 
+        long earliestOffset = getEarliestOffset(topic, partition);
+
+        if (beginOffset < earliestOffset)
+
+            beginOffset = earliestOffset;
+
+        long latestOffset = getLatestOffset(topic, partition);
+
+        if (beginOffset + readOffset > latestOffset)
+
+            readOffset = latestOffset - beginOffset;
+
         Map<K, V> map = new HashMap<K, V>();
 
         KafkaConsumer<K, V> kafkaConsumer = consumer.get();
@@ -118,7 +142,7 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
 
                 long currentOffset = record.offset();
 
-                if (currentOffset > beginOffset + readOffset - 1) {
+                if ((currentOffset == latestOffset - 1) || (currentOffset > beginOffset + readOffset - 1)) {
 
                     flag = false;
 
