@@ -133,18 +133,34 @@ public class KafkaMessageAdapter<K, V> {
      */
     public void messageAdapter(ConsumerRecords<?, ?> records) throws MQException {
 
+        StringBuffer exceptionMsg = new StringBuffer();
+
         for (ConsumerRecord<?, ?> record : records) {
 
-            byte[] keyBytes = (byte[]) record.key();
+            try {
+                byte[] keyBytes = (byte[]) record.key();
 
-            byte[] valBytes = (byte[]) record.value();
+                byte[] valBytes = (byte[]) record.value();
 
-            K k = decoder.decodeKey(keyBytes);
+                K k = decoder.decodeKey(keyBytes);
 
-            V v = decoder.decodeVal(valBytes);
+                V v = decoder.decodeVal(valBytes);
 
-            messageListener.onMessage(k, v);
+                messageListener.onMessage(k, v);
+
+            } catch (Exception e) {
+
+                exceptionMsg.append(System.getProperty("line.separator")).
+                        append(" topic: " + record.topic()).
+                        append(" offset: " + record.offset()).
+                        append(" partition: " + record.partition()).
+                        append(" Exception: " + e.getMessage());
+            }
         }
+
+        if (exceptionMsg.length() > 0)
+
+            throw new MQException(exceptionMsg.toString());
     }
 }
 

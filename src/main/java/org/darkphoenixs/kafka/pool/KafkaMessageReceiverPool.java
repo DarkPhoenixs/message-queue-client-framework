@@ -23,7 +23,10 @@ import kafka.message.MessageAndMetadata;
 import kafka.serializer.Decoder;
 import kafka.serializer.DefaultDecoder;
 import kafka.utils.VerifiableProperties;
-import org.darkphoenixs.kafka.core.*;
+import org.darkphoenixs.kafka.core.KafkaConstants;
+import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
+import org.darkphoenixs.kafka.core.KafkaMessageReceiver;
+import org.darkphoenixs.kafka.core.KafkaMessageReceiverImpl;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.util.RefleTool;
 import org.slf4j.Logger;
@@ -106,7 +109,6 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      */
     public KafkaMessageReceiverPool() {
 
-        this.threadFactory = new KafkaPoolThreadFactory(tagger);
     }
 
     /**
@@ -128,7 +130,6 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      */
     public void setPoolSize(int poolSize) {
         this.poolSize = poolSize;
-        this.pool = Executors.newFixedThreadPool(poolSize, threadFactory);
     }
 
     /**
@@ -292,6 +293,10 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
         if (poolSize == 0 || poolSize > defaultSize)
 
             setPoolSize(defaultSize);
+
+        this.threadFactory = new KafkaPoolThreadFactory(tagger + "-" + topic);
+
+        this.pool = Executors.newFixedThreadPool(poolSize, threadFactory);
 
         logger.info("Message receiver pool initializing. poolSize : "
                 + poolSize + " config : " + props.toString());

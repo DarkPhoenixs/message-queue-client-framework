@@ -105,7 +105,7 @@ public class KafkaMessageReceiverPoolTest {
 
 		pool.destroy();
 
-		Assert.assertNotNull(pool.getThreadFactory());
+		Assert.assertNull(pool.getThreadFactory());
 		pool.setThreadFactory(new KafkaPoolThreadFactory());
 
 		Assert.assertNotNull(pool.getProps());
