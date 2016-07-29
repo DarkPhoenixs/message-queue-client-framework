@@ -1,9 +1,5 @@
 package org.darkphoenixs.kafka.pool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import kafka.admin.TopicCommand;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
@@ -12,7 +8,6 @@ import kafka.utils.TestUtils;
 import kafka.utils.Time;
 import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
-
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
@@ -23,8 +18,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
-
 import scala.Option;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 public class KafkaMessageSenderPoolTest {
 
@@ -94,7 +92,7 @@ public class KafkaMessageSenderPoolTest {
 
 		KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
 
-		Assert.assertNotNull(pool.getThreadFactory());
+		Assert.assertNull(pool.getThreadFactory());
 		pool.setThreadFactory(new KafkaPoolThreadFactory());
 
 		Assert.assertNotNull(pool.getProps());
@@ -119,11 +117,11 @@ public class KafkaMessageSenderPoolTest {
 
 		pool.setZkhosts(new ZookeeperHosts(zkConnect, topic));
 
-		Assert.assertNotNull(pool.getSender());
-
-		Assert.assertNotNull(pool.getSender());
-
 		pool.init();
+
+		Assert.assertNotNull(pool.getSender());
+
+		Assert.assertNotNull(pool.getSender());
 
 		KafkaMessageSender<byte[], byte[]> sender = pool.getSender();
 

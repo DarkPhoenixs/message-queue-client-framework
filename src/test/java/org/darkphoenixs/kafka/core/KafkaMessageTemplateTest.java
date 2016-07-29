@@ -56,11 +56,6 @@ public class KafkaMessageTemplateTest {
 	private class KafkaMessageSenderPoolImpl extends
 			KafkaMessageSenderPool<byte[], byte[]> {
 
-		public KafkaMessageSenderPoolImpl() {
-
-			setPoolSize(1);
-		}
-
 		@Override
 		public KafkaMessageSender<byte[], byte[]> getSender() {
 
@@ -85,6 +80,12 @@ public class KafkaMessageTemplateTest {
 				}
 
 			};
+		}
+
+		@Override
+		public void returnSender(KafkaMessageSender<byte[], byte[]> sender) {
+
+			System.out.println("sender" + sender);
 		}
 	}
 
