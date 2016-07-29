@@ -33,291 +33,307 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * <p>Title: KafkaMessageSenderPool</p>
  * <p>Description: Kafka消息发送连接池</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
  * @version 1.0
+ * @since 2015-06-01
  */
 public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
 
-	private static final String tagger = "KafkaMessageSenderPool";
+    private static final String tagger = "KafkaMessageSenderPool";
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(KafkaMessageSenderPool.class);
+    private static final Logger logger = LoggerFactory
+            .getLogger(KafkaMessageSenderPool.class);
 
-	private static final int defaultSize = Runtime.getRuntime()
-			.availableProcessors() * 2 + 1;
+    private static final int defaultSize = Runtime.getRuntime()
+            .availableProcessors() * 2 + 1;
 
-	/** freeSender */
-	protected Semaphore freeSender;
-	/** queue */
-	protected LinkedBlockingQueue<KafkaMessageSender<K, V>> queue;
-	/** pool */
-	protected ExecutorService pool;
-	/** closingLock */
-	protected ReadWriteLock closingLock = new ReentrantReadWriteLock();
-	/** props */
-	protected Properties props = new Properties();
+    /**
+     * freeSender
+     */
+    protected Semaphore freeSender;
+    /**
+     * queue
+     */
+    protected LinkedBlockingQueue<KafkaMessageSender<K, V>> queue;
+    /**
+     * pool
+     */
+    protected ExecutorService pool;
+    /**
+     * closingLock
+     */
+    protected ReadWriteLock closingLock = new ReentrantReadWriteLock();
+    /**
+     * props
+     */
+    protected Properties props = new Properties();
 
-	/** poolSize */
-	private int poolSize;
-	/** config */
-	private Resource config;
-	
-	/** threadFactory */
-	private ThreadFactory threadFactory;
-	
-	/**
-	 * Init threadFactory.
-	 */
-	public KafkaMessageSenderPool() {
+    /**
+     * poolSize
+     */
+    private int poolSize;
+    /**
+     * config
+     */
+    private Resource config;
 
-		this.threadFactory = new KafkaPoolThreadFactory(tagger, true);
-	}
-	
-	/**
-	 * @return the threadFactory
-	 */
-	public ThreadFactory getThreadFactory() {
-		return threadFactory;
-	}
+    /**
+     * threadFactory
+     */
+    private ThreadFactory threadFactory;
 
-	/**
-	 * @param threadFactory the threadFactory to set
-	 */
-	public void setThreadFactory(ThreadFactory threadFactory) {
-		this.threadFactory = threadFactory;
-	}
+    /**
+     * Init threadFactory.
+     */
+    public KafkaMessageSenderPool() {
 
-	/**
-	 * @param poolSize
-	 *            the poolSize to set
-	 */
-	public void setPoolSize(int poolSize) {
-		if (poolSize < defaultSize)
-			poolSize = defaultSize;
-		this.poolSize = poolSize;
-		this.freeSender = new Semaphore(poolSize);
-		this.queue = new LinkedBlockingQueue<KafkaMessageSender<K, V>>(poolSize);
-		this.pool = Executors.newFixedThreadPool(poolSize, threadFactory);
-	}
-	
-	/**
-	 * @param zkhosts
-	 *            the zkhosts to set
-	 */
-	public void setZkhosts(ZookeeperHosts zkhosts) {
-		ZookeeperBrokers brokers = new ZookeeperBrokers(
-				zkhosts.getBrokerZkStr(), zkhosts.getBrokerZkPath(),
-				zkhosts.getTopic());
-		this.setBrokerStr(brokers.getBrokerInfo());
-		brokers.close();
-	}
+    }
 
-	/**
-	 * @param config
-	 *            the config to set
-	 */
-	public void setConfig(Resource config) {
-		this.config = config;
-		try {
-			PropertiesLoaderUtils.fillProperties(props, this.config);
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-	}
+    /**
+     * @return the threadFactory
+     */
+    public ThreadFactory getThreadFactory() {
+        return threadFactory;
+    }
 
-	/**
-	 * @param clientId the clientId to set
-	 */
-	public void setClientId(String clientId) {
-		props.setProperty(KafkaConstants.CLIENT_ID, clientId);
-	}
-	
-	/**
-	 * @param brokerStr
-	 *            the brokerStr to set
-	 */
-	public void setBrokerStr(String brokerStr) {
-		props.setProperty(KafkaConstants.BROKER_LIST, brokerStr);
-	}
+    /**
+     * @param threadFactory the threadFactory to set
+     */
+    public void setThreadFactory(ThreadFactory threadFactory) {
+        this.threadFactory = threadFactory;
+    }
 
-	/**
-	 * @return the clientId
-	 */
-	public String getClientId() {
-		return props.getProperty(KafkaConstants.CLIENT_ID);
-	}
-	
-	/**
-	 * @return the brokerStr
-	 */
-	public String getBrokerStr() {
-		return props.getProperty(KafkaConstants.BROKER_LIST);
-	}
+    /**
+     * @param poolSize the poolSize to set
+     */
+    public void setPoolSize(int poolSize) {
 
-	/**
-	 * @return the poolSize
-	 */
-	public int getPoolSize() {
-		return poolSize;
-	}
+        this.poolSize = poolSize;
+    }
 
-	/**
-	 * @return the config
-	 */
-	public Resource getConfig() {
-		return config;
-	}
+    /**
+     * @param zkhosts the zkhosts to set
+     */
+    public void setZkhosts(ZookeeperHosts zkhosts) {
+        ZookeeperBrokers brokers = new ZookeeperBrokers(
+                zkhosts.getBrokerZkStr(), zkhosts.getBrokerZkPath(),
+                zkhosts.getTopic());
+        this.setBrokerStr(brokers.getBrokerInfo());
+        brokers.close();
+    }
 
-	/**
-	 * @return the props
-	 */
-	public Properties getProps() {
-		return props;
-	}
+    /**
+     * @param config the config to set
+     */
+    public void setConfig(Resource config) {
+        this.config = config;
+        try {
+            PropertiesLoaderUtils.fillProperties(props, this.config);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
 
-	/**
-	 * @param props the props to set
-	 */
-	public void setProps(Properties props) {
-		this.props = props;
-	}
+    /**
+     * @param clientId the clientId to set
+     */
+    public void setClientId(String clientId) {
+        props.setProperty(KafkaConstants.CLIENT_ID, clientId);
+    }
 
-	@Override
-	public synchronized void init() {
-		
-		if(poolSize == 0)
-			this.setPoolSize(defaultSize);
-		
-		logger.info("Message sender pool initializing. poolSize : " + poolSize + " config : " + props.toString());
-		
-		List<Callable<Boolean>> taskList = new ArrayList<Callable<Boolean>>();
-		final CountDownLatch count = new CountDownLatch(poolSize);
-		for (int i = 0; i < poolSize; i++) {
-			taskList.add(new InitTask(count, this));
-		}
+    /**
+     * @param brokerStr the brokerStr to set
+     */
+    public void setBrokerStr(String brokerStr) {
+        props.setProperty(KafkaConstants.BROKER_LIST, brokerStr);
+    }
 
-		try {
-			pool.invokeAll(taskList);
-			count.await(KafkaConstants.INIT_TIMEOUT_MIN, TimeUnit.MINUTES);
-		} catch (InterruptedException e) {
-			logger.error("Failed to init the MessageSenderPool", e);
-		}
-	}
+    /**
+     * @return the clientId
+     */
+    public String getClientId() {
+        return props.getProperty(KafkaConstants.CLIENT_ID);
+    }
 
-	/**
-	 * Get a sender from the pool within the given timeout
-	 * 
-	 * @return a sender instance
-	 */
-	@Override
-	public KafkaMessageSender<K, V> getSender() {
-		try {
-			// how long should it wait for getting the sender instance
-			if (!freeSender.tryAcquire(KafkaConstants.WAIT_TIME_MS, TimeUnit.MILLISECONDS))
-				throw new RuntimeException(
-						"Timeout waiting for idle object in the pool.");
+    /**
+     * @return the brokerStr
+     */
+    public String getBrokerStr() {
+        return props.getProperty(KafkaConstants.BROKER_LIST);
+    }
 
-		} catch (InterruptedException e) {
-			throw new RuntimeException(
-					"Interrupted waiting for idle object in the pool .");
-		}
-		KafkaMessageSender<K, V> sender = null;
+    /**
+     * @return the poolSize
+     */
+    public int getPoolSize() {
+        return poolSize;
+    }
 
-		closingLock.readLock().lock();
-		try {
-			sender = queue.poll();
-			if (sender == null) {
-				sender = new KafkaMessageSenderImpl<K, V>(props);
-				logger.info("Add new sender to the pool.");
-				queue.offer(sender);
-			}
-		} catch (Exception e) {
-			logger.error("Failed to get the MessageSender", e);
-		} finally {
-			closingLock.readLock().unlock();
-		}
+    /**
+     * @return the config
+     */
+    public Resource getConfig() {
+        return config;
+    }
 
-		return sender;
-	}
+    /**
+     * @return the props
+     */
+    public Properties getProps() {
+        return props;
+    }
 
-	/**
-	 * Return a sender back to pool.
-	 */
-	@Override
-	public void returnSender(KafkaMessageSender<K, V> sender) {
-		if (this.queue.contains(sender))
-			return;
-		this.queue.offer(sender);
-		this.freeSender.release();
-	}
+    /**
+     * @param props the props to set
+     */
+    public void setProps(Properties props) {
+        this.props = props;
+    }
 
-	@Override
-	public synchronized void destroy() {
-		
-		logger.info("Message sender pool closing.");
-		
-		// lock the thread for closing
-		closingLock.writeLock().lock();
-		try {
-			List<Callable<Boolean>> taskList = new ArrayList<Callable<Boolean>>();
-			int size = queue.size();
-			final CountDownLatch count = new CountDownLatch(size);
-			for (int i = 0; i < size; i++) {
-				taskList.add(new DestroyTask(count));
-			}
+    @Override
+    public synchronized void init() {
 
-			pool.invokeAll(taskList);
-			count.await(KafkaConstants.INIT_TIMEOUT_MIN, TimeUnit.MINUTES);
-			pool.shutdownNow();
+        if (poolSize == 0 || poolSize < defaultSize)
 
-		} catch (Exception e) {
-			logger.error("Failed to close the MessageSenderPool", e);
-		} finally {
-			closingLock.writeLock().unlock();
-		}
-	}
+            this.setPoolSize(defaultSize);
 
-	/**
-	 * Init Task Call Back.
-	 */
-	class InitTask implements Callable<Boolean> {
-		
-		CountDownLatch count;
-		KafkaMessageSenderPool<K, V> pool;
+        this.freeSender = new Semaphore(poolSize);
 
-		public InitTask(CountDownLatch count, KafkaMessageSenderPool<K, V> pool) {
-			this.count = count;
-			this.pool = pool;
-		}
+        this.queue = new LinkedBlockingQueue<KafkaMessageSender<K, V>>(poolSize);
 
-		@Override
-		public Boolean call() throws Exception {
-			KafkaMessageSender<K, V> sender = new KafkaMessageSenderImpl<K, V>(props);
-			queue.offer(sender);
-			count.countDown();
-			return true;
-		}
-	}
-	
-	/**
-	 * Destroy Task Call Back.
-	 */
-	class DestroyTask implements Callable<Boolean> {
-		
-		CountDownLatch count;
+        this.threadFactory = new KafkaPoolThreadFactory(tagger + "-" + getBrokerStr(), true);
 
-		public DestroyTask(CountDownLatch count) {
-			this.count = count;
-		}
-		
-		@Override
-		public Boolean call() throws Exception {
-			KafkaMessageSender<K, V> sender = queue.poll();
-			sender.shutDown();
-			count.countDown();
-			return true;
-		}
-		
-	}
+        this.pool = Executors.newFixedThreadPool(poolSize, threadFactory);
+
+        logger.info("Message sender pool initializing. poolSize : " + poolSize + " config : " + props.toString());
+
+        List<Callable<Boolean>> taskList = new ArrayList<Callable<Boolean>>();
+        final CountDownLatch count = new CountDownLatch(poolSize);
+        for (int i = 0; i < poolSize; i++) {
+            taskList.add(new InitTask(count, this));
+        }
+
+        try {
+            pool.invokeAll(taskList);
+            count.await(KafkaConstants.INIT_TIMEOUT_MIN, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            logger.error("Failed to init the MessageSenderPool", e);
+        }
+    }
+
+    /**
+     * Get a sender from the pool within the given timeout
+     *
+     * @return a sender instance
+     */
+    @Override
+    public KafkaMessageSender<K, V> getSender() {
+        try {
+            // how long should it wait for getting the sender instance
+            if (!freeSender.tryAcquire(KafkaConstants.WAIT_TIME_MS, TimeUnit.MILLISECONDS))
+                throw new RuntimeException(
+                        "Timeout waiting for idle object in the pool.");
+
+        } catch (InterruptedException e) {
+            throw new RuntimeException(
+                    "Interrupted waiting for idle object in the pool .");
+        }
+        KafkaMessageSender<K, V> sender = null;
+
+        closingLock.readLock().lock();
+        try {
+            sender = queue.poll();
+            if (sender == null) {
+                sender = new KafkaMessageSenderImpl<K, V>(props);
+                logger.info("Add new sender to the pool.");
+                queue.offer(sender);
+            }
+        } catch (Exception e) {
+            logger.error("Failed to get the MessageSender", e);
+        } finally {
+            closingLock.readLock().unlock();
+        }
+
+        return sender;
+    }
+
+    /**
+     * Return a sender back to pool.
+     */
+    @Override
+    public void returnSender(KafkaMessageSender<K, V> sender) {
+        if (this.queue.contains(sender))
+            return;
+        this.queue.offer(sender);
+        this.freeSender.release();
+    }
+
+    @Override
+    public synchronized void destroy() {
+
+        logger.info("Message sender pool closing.");
+
+        // lock the thread for closing
+        closingLock.writeLock().lock();
+        try {
+            List<Callable<Boolean>> taskList = new ArrayList<Callable<Boolean>>();
+            int size = queue.size();
+            final CountDownLatch count = new CountDownLatch(size);
+            for (int i = 0; i < size; i++) {
+                taskList.add(new DestroyTask(count));
+            }
+
+            pool.invokeAll(taskList);
+            count.await(KafkaConstants.INIT_TIMEOUT_MIN, TimeUnit.MINUTES);
+            pool.shutdownNow();
+
+        } catch (Exception e) {
+            logger.error("Failed to close the MessageSenderPool", e);
+        } finally {
+            closingLock.writeLock().unlock();
+        }
+    }
+
+    /**
+     * Init Task Call Back.
+     */
+    class InitTask implements Callable<Boolean> {
+
+        CountDownLatch count;
+        KafkaMessageSenderPool<K, V> pool;
+
+        public InitTask(CountDownLatch count, KafkaMessageSenderPool<K, V> pool) {
+            this.count = count;
+            this.pool = pool;
+        }
+
+        @Override
+        public Boolean call() throws Exception {
+            KafkaMessageSender<K, V> sender = new KafkaMessageSenderImpl<K, V>(props);
+            queue.offer(sender);
+            count.countDown();
+            return true;
+        }
+    }
+
+    /**
+     * Destroy Task Call Back.
+     */
+    class DestroyTask implements Callable<Boolean> {
+
+        CountDownLatch count;
+
+        public DestroyTask(CountDownLatch count) {
+            this.count = count;
+        }
+
+        @Override
+        public Boolean call() throws Exception {
+            KafkaMessageSender<K, V> sender = queue.poll();
+            sender.shutDown();
+            count.countDown();
+            return true;
+        }
+
+    }
 }
