@@ -136,15 +136,31 @@ public class KafkaMessageSenderPoolTest {
 
 		final KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
 
-		Thread thread = new Thread(new Runnable() {
+		pool.returnSender(pool.getSender());
+
+		Thread thread1 = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
+				pool.setPoolSize(20);
 				pool.init();
 			}
 		});
 
-		thread.start();
+		thread1.start();
+
+
+		Thread thread2 = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+
+				pool.setPoolSize(0);
+				pool.init();
+			}
+		});
+
+		thread2.start();
 
 		pool.destroy();
 	}

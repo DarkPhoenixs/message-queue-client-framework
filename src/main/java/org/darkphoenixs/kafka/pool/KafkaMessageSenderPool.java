@@ -230,7 +230,7 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
     public KafkaMessageSender<K, V> getSender() {
         try {
             // how long should it wait for getting the sender instance
-            if (!freeSender.tryAcquire(KafkaConstants.WAIT_TIME_MS, TimeUnit.MILLISECONDS))
+            if (freeSender != null && !freeSender.tryAcquire(KafkaConstants.WAIT_TIME_MS, TimeUnit.MILLISECONDS))
                 throw new RuntimeException(
                         "Timeout waiting for idle object in the pool.");
 
