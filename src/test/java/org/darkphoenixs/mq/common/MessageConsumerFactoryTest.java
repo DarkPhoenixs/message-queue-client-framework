@@ -10,42 +10,46 @@ import org.junit.Test;
 @SuppressWarnings("deprecation")
 public class MessageConsumerFactoryTest {
 
-	@Test
-	public void test_0() throws Exception {
+    @Test
+    public void test_0() throws Exception {
 
-		MessageConsumerFactory factory = (MessageConsumerFactory) MessageConsumerFactory
-				.getInstance();
+        MessageConsumerFactory factory = (MessageConsumerFactory) MessageConsumerFactory
+                .getInstance();
 
-		factory = (MessageConsumerFactory) MessageConsumerFactory
-				.getInstance();
-		
-		factory.init();
+        factory.init();
 
-		factory.destroy();
+        factory.destroy();
 
-		ConsumerTest consumer1 = new ConsumerTest();
-		consumer1.setConsumerKey("ProtocolId1");
+        factory = (MessageConsumerFactory) MessageConsumerFactory
+                .getInstance();
 
-		ConsumerTest consumer2 = new ConsumerTest();
-		consumer2.setConsumerKey("ProtocolId2");
-		
-		factory.setConsumers(new Consumer[] { consumer1 });
-		factory.addConsumer(consumer2);
-		factory.init();
-		
-		Assert.assertEquals(consumer1, factory.getConsumer("ProtocolId1"));
-		Assert.assertEquals(consumer2, factory.getConsumer("ProtocolId2"));
-		Assert.assertNull(factory.getConsumer("ProtocolId3"));
-		
-		factory.destroy();
-	}
+        factory.init();
 
-	private class ConsumerTest extends AbstractConsumer<MessageBeanImpl> {
+        factory.destroy();
 
-		@Override
-		protected void doReceive(MessageBeanImpl message) throws MQException {
-			
-			System.out.println(message);
-		}
-	}
+        ConsumerTest consumer1 = new ConsumerTest();
+        consumer1.setConsumerKey("ProtocolId1");
+
+        ConsumerTest consumer2 = new ConsumerTest();
+        consumer2.setConsumerKey("ProtocolId2");
+
+        factory.setConsumers(new Consumer[]{consumer1});
+        factory.addConsumer(consumer2);
+        factory.init();
+
+        Assert.assertEquals(consumer1, factory.getConsumer("ProtocolId1"));
+        Assert.assertEquals(consumer2, factory.getConsumer("ProtocolId2"));
+        Assert.assertNull(factory.getConsumer("ProtocolId3"));
+
+        factory.destroy();
+    }
+
+    private class ConsumerTest extends AbstractConsumer<MessageBeanImpl> {
+
+        @Override
+        protected void doReceive(MessageBeanImpl message) throws MQException {
+
+            System.out.println(message);
+        }
+    }
 }
