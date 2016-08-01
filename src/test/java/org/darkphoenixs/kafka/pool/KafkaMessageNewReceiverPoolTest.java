@@ -27,9 +27,18 @@ import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
+import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
+import org.darkphoenixs.kafka.consumer.MessageConsumer;
+import org.darkphoenixs.kafka.core.KafkaDestination;
+import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
+import org.darkphoenixs.kafka.listener.KafkaMessageConsumerListener;
+import org.darkphoenixs.kafka.listener.KafkaMessageListener;
+import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.DefaultResourceLoader;
 import scala.Option;
 
 import java.io.File;
@@ -80,7 +89,7 @@ public class KafkaMessageNewReceiverPoolTest {
         // create topic
         TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
                 new String[]{"--create", "--topic", topic,
-                        "--replication-factor", "1", "--partitions", "1"});
+                        "--replication-factor", "1", "--partitions", "4"});
 
         TopicCommand.createTopic(zkUtils, options);
 
@@ -104,7 +113,56 @@ public class KafkaMessageNewReceiverPoolTest {
 
         KafkaMessageNewReceiverPool<byte[], byte[]> pool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
 
+        pool.returnReceiver(null);
 
+        try {
+            pool.returnReceiver(pool.getReceiver());
+        } catch (Exception e) {
+        }
+
+        pool.destroy();
+
+        Assert.assertNull(pool.getConfig());
+
+        Assert.assertEquals(pool.getPoolSize(), 0);
+
+        Assert.assertNotNull(pool.getProps());
+
+        Assert.assertNull(pool.getMessageAdapter());
+
+        Assert.assertEquals(pool.getModel(), "MODEL_1");
+
+        pool.setModel("MODEL_1");
+
+        pool.setPoolSize(10);
+
+        pool.setProps(new Properties());
+
+        pool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/newconsumer.properties"));
+
+        pool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/newconsumer1.properties"));
+
+        pool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
+
+        KafkaMessageAdapter<Integer, MessageBeanImpl> adapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
+
+        adapter.setDestination(new KafkaDestination(topic));
+
+        adapter.setDecoder(new KafkaMessageDecoderImpl());
+
+        KafkaMessageConsumerListener<Integer, MessageBeanImpl> listener = new KafkaMessageConsumerListener<Integer, MessageBeanImpl>();
+
+        listener.setConsumer(new MessageConsumer<Integer, MessageBeanImpl>());
+
+        adapter.setMessageListener(listener);
+
+        pool.setMessageAdapter(adapter);
+
+        pool.init();
+
+        pool.destroy();
 
     }
 }

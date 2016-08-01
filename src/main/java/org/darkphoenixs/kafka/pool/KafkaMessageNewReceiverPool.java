@@ -255,9 +255,14 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                 logger.info("Message Receiver Pool initializing. poolSize : " + poolSize);
 
-                for (int i = 0; i < poolSize; i++)
+                for (int i = 0; i < poolSize; i++) {
 
-                    receivPool.submit(new ReceiverThread(props, topic, messageAdapter));
+                    ReceiverThread receiverThread = new ReceiverThread(props, topic, messageAdapter);
+
+                    threads.add(receiverThread);
+
+                    receivPool.submit(receiverThread);
+                }
 
                 break;
 
@@ -273,9 +278,14 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                 logger.info("Message Handler Pool initializing poolSize : " + poolSize);
 
-                for (int i = 0; i < partSize; i++)
+                for (int i = 0; i < partSize; i++) {
 
-                    receivPool.submit(new ReceiverThread(props, topic, messageAdapter));
+                    ReceiverThread receiverThread = new ReceiverThread(props, topic, messageAdapter);
+
+                    threads.add(receiverThread);
+
+                    receivPool.submit(receiverThread);
+                }
 
                 break;
         }
