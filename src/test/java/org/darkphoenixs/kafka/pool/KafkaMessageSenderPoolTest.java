@@ -136,7 +136,7 @@ public class KafkaMessageSenderPoolTest {
 
 		final KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
 
-		pool.returnSender(pool.getSender());
+		pool.getSender();
 
 		Thread thread1 = new Thread(new Runnable() {
 
