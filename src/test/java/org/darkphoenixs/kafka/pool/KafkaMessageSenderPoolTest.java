@@ -140,12 +140,20 @@ public class KafkaMessageSenderPoolTest {
 
         pool1.getSender();
 
+        pool1.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/producer.properties"));
+
+        pool1.setProps(TestUtils.getProducerConfig("localhost:" + port));
         pool1.setPoolSize(2);
         pool1.init();
         pool1.destroy();
 
         KafkaMessageSenderPool<byte[], byte[]> pool2 = new KafkaMessageSenderPool<byte[], byte[]>();
 
+        pool2.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/producer.properties"));
+
+        pool2.setProps(TestUtils.getProducerConfig("localhost:" + port));
         pool2.setPoolSize(0);
         pool2.init();
         pool2.destroy();
