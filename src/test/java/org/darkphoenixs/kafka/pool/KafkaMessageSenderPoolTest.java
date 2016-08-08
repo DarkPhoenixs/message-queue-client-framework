@@ -101,7 +101,7 @@ public class KafkaMessageSenderPoolTest {
         pool.setProps(new Properties());
 
         Assert.assertEquals(0, pool.getPoolSize());
-        pool.setPoolSize(25);
+        pool.setPoolSize(70);
 
         Assert.assertNull(pool.getClientId());
         pool.setClientId("test");
@@ -146,8 +146,6 @@ public class KafkaMessageSenderPoolTest {
 
         KafkaMessageSenderPool<byte[], byte[]> pool2 = new KafkaMessageSenderPool<byte[], byte[]>();
 
-        pool2.getSender();
-
         pool2.setPoolSize(0);
         pool2.init();
         pool2.destroy();
@@ -168,7 +166,7 @@ public class KafkaMessageSenderPoolTest {
 
         pool.init();
 
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 70; i++) {
 
             try {
                 pool.getSender();
