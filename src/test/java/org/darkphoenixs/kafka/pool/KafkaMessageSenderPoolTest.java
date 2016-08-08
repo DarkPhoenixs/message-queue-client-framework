@@ -136,35 +136,29 @@ public class KafkaMessageSenderPoolTest {
     @Test
     public void test_1() throws Exception {
 
-        final KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
+        KafkaMessageSenderPool<byte[], byte[]> pool1 = new KafkaMessageSenderPool<byte[], byte[]>();
 
-        pool.getSender();
+        pool1.getSender();
 
-        Thread thread1 = new Thread(new Runnable() {
+        pool1.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/producer.properties"));
 
-            @Override
-            public void run() {
-                pool.setPoolSize(20);
-                pool.init();
-                pool.destroy();
-            }
-        });
+        pool1.setProps(TestUtils.getProducerConfig("localhost:" + port));
 
-        thread1.start();
+        pool1.setPoolSize(20);
+        pool1.init();
+        pool1.destroy();
 
+        KafkaMessageSenderPool<byte[], byte[]> pool2 = new KafkaMessageSenderPool<byte[], byte[]>();
 
-        Thread thread2 = new Thread(new Runnable() {
+        pool2.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/producer.properties"));
 
-            @Override
-            public void run() {
+        pool2.setProps(TestUtils.getProducerConfig("localhost:" + port));
 
-                pool.setPoolSize(0);
-                pool.init();
-                pool.destroy();
-            }
-        });
-
-        thread2.start();
+        pool2.setPoolSize(0);
+        pool2.init();
+        pool2.destroy();
     }
 
     @Test
@@ -214,6 +208,13 @@ public class KafkaMessageSenderPoolTest {
             this.queue = new LinkedBlockingQueue<KafkaMessageSender<byte[], byte[]>>(1);
 
             this.pool = Executors.newFixedThreadPool(1, new KafkaPoolThreadFactory());
+
+            this.setConfig(new DefaultResourceLoader()
+                    .getResource("kafka/producer.properties"));
+
+            this.setProps(TestUtils.getProducerConfig("localhost:" + port));
+
+            this.setZkhosts(new ZookeeperHosts(zkConnect, topic));
         }
     }
 }
