@@ -101,7 +101,7 @@ public class KafkaMessageSenderPoolTest {
         pool.setProps(new Properties());
 
         Assert.assertEquals(0, pool.getPoolSize());
-        pool.setPoolSize(10);
+        pool.setPoolSize(2);
 
         Assert.assertNull(pool.getClientId());
         pool.setClientId("test");
@@ -144,14 +144,12 @@ public class KafkaMessageSenderPoolTest {
 
             @Override
             public void run() {
-                pool.setPoolSize(20);
+                pool.setPoolSize(10);
                 pool.init();
-                pool.destroy();
             }
         });
 
         thread1.start();
-
 
         Thread thread2 = new Thread(new Runnable() {
 
@@ -160,11 +158,13 @@ public class KafkaMessageSenderPoolTest {
 
                 pool.setPoolSize(0);
                 pool.init();
-                pool.destroy();
+
             }
         });
 
         thread2.start();
+
+        pool.destroy();
     }
 
     @Test
