@@ -101,7 +101,7 @@ public class KafkaMessageSenderPoolTest {
         pool.setProps(new Properties());
 
         Assert.assertEquals(0, pool.getPoolSize());
-        pool.setPoolSize(2);
+        pool.setPoolSize(25);
 
         Assert.assertNull(pool.getClientId());
         pool.setClientId("test");
@@ -136,35 +136,22 @@ public class KafkaMessageSenderPoolTest {
     @Test
     public void test_1() throws Exception {
 
-        final KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
+        KafkaMessageSenderPool<byte[], byte[]> pool1 = new KafkaMessageSenderPool<byte[], byte[]>();
 
-        pool.getSender();
+        pool1.getSender();
 
-        Thread thread1 = new Thread(new Runnable() {
+        pool1.setPoolSize(2);
+        pool1.init();
+        pool1.destroy();
 
-            @Override
-            public void run() {
-                pool.setPoolSize(10);
-                pool.init();
-            }
-        });
+        KafkaMessageSenderPool<byte[], byte[]> pool2 = new KafkaMessageSenderPool<byte[], byte[]>();
 
-        thread1.start();
+        pool2.getSender();
 
-        Thread thread2 = new Thread(new Runnable() {
+        pool2.setPoolSize(0);
+        pool2.init();
+        pool2.destroy();
 
-            @Override
-            public void run() {
-
-                pool.setPoolSize(0);
-                pool.init();
-
-            }
-        });
-
-        thread2.start();
-
-        pool.destroy();
     }
 
     @Test
@@ -181,7 +168,7 @@ public class KafkaMessageSenderPoolTest {
 
         pool.init();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 25; i++) {
 
             try {
                 pool.getSender();
@@ -190,7 +177,6 @@ public class KafkaMessageSenderPoolTest {
             }
         }
         pool.destroy();
-
 
         KafkaMessageSenderPoolDemo poolDemo = new KafkaMessageSenderPoolDemo();
 
