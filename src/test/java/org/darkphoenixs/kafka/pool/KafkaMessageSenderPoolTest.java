@@ -136,29 +136,35 @@ public class KafkaMessageSenderPoolTest {
     @Test
     public void test_1() throws Exception {
 
-        KafkaMessageSenderPool<byte[], byte[]> pool1 = new KafkaMessageSenderPool<byte[], byte[]>();
+        final KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
 
-        pool1.getSender();
+        pool.getSender();
 
-        pool1.setConfig(new DefaultResourceLoader()
-                .getResource("kafka/producer.properties"));
+        Thread thread1 = new Thread(new Runnable() {
 
-        pool1.setProps(TestUtils.getProducerConfig("localhost:" + port));
+            @Override
+            public void run() {
+                pool.setPoolSize(20);
+                pool.init();
+                pool.destroy();
+            }
+        });
 
-        pool1.setPoolSize(20);
-        pool1.init();
-        pool1.destroy();
+        thread1.start();
 
-        KafkaMessageSenderPool<byte[], byte[]> pool2 = new KafkaMessageSenderPool<byte[], byte[]>();
 
-        pool2.setConfig(new DefaultResourceLoader()
-                .getResource("kafka/producer.properties"));
+        Thread thread2 = new Thread(new Runnable() {
 
-        pool2.setProps(TestUtils.getProducerConfig("localhost:" + port));
+            @Override
+            public void run() {
 
-        pool2.setPoolSize(0);
-        pool2.init();
-        pool2.destroy();
+                pool.setPoolSize(0);
+                pool.init();
+                pool.destroy();
+            }
+        });
+
+        thread2.start();
     }
 
     @Test
