@@ -28,7 +28,7 @@ import java.util.Properties;
 
 /**
  * <p>Title: KafkaMessageNewSenderPool</p>
- * <p>Description: 新Kafka消息发送连接池/p>
+ * <p>Description: 新Kafka消息发送连接池</p>
  * <p>
  * <p>连接采用线程安全单例模式</p>
  *
