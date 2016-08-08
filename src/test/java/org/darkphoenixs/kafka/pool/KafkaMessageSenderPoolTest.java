@@ -146,6 +146,7 @@ public class KafkaMessageSenderPoolTest {
             public void run() {
                 pool.setPoolSize(20);
                 pool.init();
+                pool.destroy();
             }
         });
 
@@ -159,12 +160,11 @@ public class KafkaMessageSenderPoolTest {
 
                 pool.setPoolSize(0);
                 pool.init();
+                pool.destroy();
             }
         });
 
         thread2.start();
-
-        pool.destroy();
     }
 
     @Test
