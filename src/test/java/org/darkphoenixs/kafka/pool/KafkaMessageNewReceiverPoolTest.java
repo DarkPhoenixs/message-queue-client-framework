@@ -32,7 +32,6 @@ import org.darkphoenixs.kafka.consumer.MessageConsumer;
 import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.kafka.listener.KafkaMessageConsumerListener;
-import org.darkphoenixs.kafka.listener.KafkaMessageListener;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.After;
 import org.junit.Assert;
@@ -164,5 +163,22 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.destroy();
 
+        pool.setPoolSize(70);
+
+        pool.init();
+
+        pool.destroy();
+
+        pool.setPoolSize(0);
+
+        pool.init();
+
+        pool.destroy();
+
+        pool.setModel("MODEL_2");
+
+        pool.init();
+
+        pool.destroy();
     }
 }
