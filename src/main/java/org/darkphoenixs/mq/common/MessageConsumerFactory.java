@@ -15,112 +15,117 @@
  */
 package org.darkphoenixs.mq.common;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.factory.ConsumerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * <p>Title: MessageConsumerFactory</p>
  * <p>Description: 消息消费者工厂</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see ConsumerFactory
  * @version 1.0
+ * @see ConsumerFactory
+ * @since 2015-06-01
  */
 public class MessageConsumerFactory implements ConsumerFactory {
 
-	/** logger */
-	protected Logger logger = LoggerFactory.getLogger(MessageConsumerFactory.class);
+    /**
+     * instance
+     */
+    private static MessageConsumerFactory instance;
+    /**
+     * logger
+     */
+    protected Logger logger = LoggerFactory.getLogger(MessageConsumerFactory.class);
+    /**
+     * consumers
+     */
+    private Consumer<?>[] consumers;
 
-	/** instance */
-	private static MessageConsumerFactory instance;
+    /**
+     * consumerCache
+     */
+    private ConcurrentHashMap<String, Consumer<?>> consumerCache = new ConcurrentHashMap<String, Consumer<?>>();
 
-	/** consumers */
-	private Consumer<?>[] consumers;
+    /**
+     * private construction method
+     */
+    private MessageConsumerFactory() {
+    }
 
-	/** consumerCache */
-	private ConcurrentHashMap<String, Consumer<?>> consumerCache = new ConcurrentHashMap<String, Consumer<?>>();
+    /**
+     * get singleton instance method
+     */
+    public synchronized static ConsumerFactory getInstance() {
 
-	/**
-	 * @param consumers
-	 *            the consumers to set
-	 */
-	public void setConsumers(Consumer<?>[] consumers) {
-		this.consumers = consumers;
-	}
+        if (instance == null)
+            instance = new MessageConsumerFactory();
+        return instance;
+    }
 
-	/**
-	 * private construction method
-	 */
-	private MessageConsumerFactory() {
-	}
+    /**
+     * @param consumers the consumers to set
+     */
+    public void setConsumers(Consumer<?>[] consumers) {
+        this.consumers = consumers;
+    }
 
-	/**
-	 * get singleton instance method
-	 */
-	public synchronized static ConsumerFactory getInstance() {
+    @Override
+    public <T> void addConsumer(Consumer<T> consumer) throws MQException {
 
-		if (instance == null)
-			instance = new MessageConsumerFactory();
-		return instance;
-	}
+        consumerCache.put(consumer.getConsumerKey(), consumer);
 
-	@Override
-	public <T> void addConsumer(Consumer<T> consumer) throws MQException {
+        logger.debug("Add Consumer : " + consumer.getConsumerKey());
+    }
 
-		consumerCache.put(consumer.getConsumerKey(), consumer);
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> Consumer<T> getConsumer(String consumerKey) throws MQException {
 
-		logger.debug("Add Consumer : " + consumer.getConsumerKey());
-	}
+        if (consumerCache.containsKey(consumerKey)) {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> Consumer<T> getConsumer(String consumerKey) throws MQException {
-		
-		if (consumerCache.containsKey(consumerKey)) {
-			
-			logger.debug("Get Consumer : " + consumerKey);
-			
-			return (Consumer<T>) consumerCache.get(consumerKey);
-			
-		} else {
-			
-			logger.warn("Unknown ConsumerKey : " + consumerKey);
+            logger.debug("Get Consumer : " + consumerKey);
 
-			return null;
-		}
-	}
+            return (Consumer<T>) consumerCache.get(consumerKey);
 
-	@Override
-	public void init() throws MQException {
+        } else {
 
-		if (consumers != null)
+            logger.warn("Unknown ConsumerKey : " + consumerKey);
 
-			for (int i = 0; i < consumers.length; i++)
+            return null;
+        }
+    }
 
-				consumerCache.put(consumers[i].getConsumerKey(), consumers[i]);
+    @Override
+    public void init() throws MQException {
 
-		logger.debug("Initialized!");
+        if (consumers != null)
 
-	}
+            for (int i = 0; i < consumers.length; i++)
 
-	@Override
-	public void destroy() throws MQException {
+                consumerCache.put(consumers[i].getConsumerKey(), consumers[i]);
 
-		if (consumers != null)
-			consumers = null;
+        logger.debug("Initialized!");
 
-		if (instance != null)
-			instance = null;
+    }
 
-		consumerCache.clear();
-		
-		logger.debug("Destroyed!");
-	}
+    @Override
+    public void destroy() throws MQException {
+
+        if (consumers != null)
+            consumers = null;
+
+        if (instance != null)
+            instance = null;
+
+        consumerCache.clear();
+
+        logger.debug("Destroyed!");
+    }
 
 }

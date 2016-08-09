@@ -24,71 +24,73 @@ import org.darkphoenixs.mq.util.RefleTool;
  * <p>Title: MessageFactoryConsumerListener</p>
  * <p>Description: 消费者工厂监听器</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see KafkaMessageListener
  * @version 1.0
+ * @see KafkaMessageListener
+ * @since 2015-06-01
  */
 public class MessageFactoryConsumerListener<K, V> extends KafkaMessageListener<K, V> {
 
-	/** consumerKeyField */
-	private String consumerKeyField;
-	
-	/** consumerFactory */
-	private ConsumerFactory consumerFactory;
+    /**
+     * consumerKeyField
+     */
+    private String consumerKeyField;
 
-	/**
-	 * @return the consumerKeyField
-	 */
-	public String getConsumerKeyField() {
-		return consumerKeyField;
-	}
+    /**
+     * consumerFactory
+     */
+    private ConsumerFactory consumerFactory;
 
-	/**
-	 * @param consumerKeyField
-	 *            the consumerKeyField to set
-	 */
-	public void setConsumerKeyField(String consumerKeyField) {
-		this.consumerKeyField = consumerKeyField;
-	}
-	
-	/**
-	 * @return the consumerFactory
-	 */
-	public ConsumerFactory getConsumerFactory() {
-		return consumerFactory;
-	}
+    /**
+     * @return the consumerKeyField
+     */
+    public String getConsumerKeyField() {
+        return consumerKeyField;
+    }
 
-	/**
-	 * @param consumerFactory
-	 *            the consumerFactory to set
-	 */
-	public void setConsumerFactory(ConsumerFactory consumerFactory) {
-		this.consumerFactory = consumerFactory;
-	}
+    /**
+     * @param consumerKeyField the consumerKeyField to set
+     */
+    public void setConsumerKeyField(String consumerKeyField) {
+        this.consumerKeyField = consumerKeyField;
+    }
 
-	@Override
-	public void onMessage(V message) throws MQException {
+    /**
+     * @return the consumerFactory
+     */
+    public ConsumerFactory getConsumerFactory() {
+        return consumerFactory;
+    }
 
-		if (consumerFactory == null)	
-			throw new MQException("ConsumerFactory is null !");
+    /**
+     * @param consumerFactory the consumerFactory to set
+     */
+    public void setConsumerFactory(ConsumerFactory consumerFactory) {
+        this.consumerFactory = consumerFactory;
+    }
 
-		if (consumerKeyField == null)	
-			throw new MQException("ConsumerKeyField is null !");
-		
-		if (message == null)	
-			throw new MQException("Message is null !");
-		
-		String consumerKey = RefleTool.getFieldValue(message, consumerKeyField, String.class);
-		
-		if (consumerKey == null)	
-			throw new MQException("Consumer Key is null !");
-		
-		Consumer<V> consumer = consumerFactory.getConsumer(consumerKey);
-		
-		if (consumer == null)
-			throw new MQException("Consumer is null !");
-		
-		consumer.receive(message);
-	}
+    @Override
+    public void onMessage(V message) throws MQException {
+
+        if (consumerFactory == null)
+            throw new MQException("ConsumerFactory is null !");
+
+        if (consumerKeyField == null)
+            throw new MQException("ConsumerKeyField is null !");
+
+        if (message == null)
+            throw new MQException("Message is null !");
+
+        String consumerKey = RefleTool.getFieldValue(message, consumerKeyField, String.class);
+
+        if (consumerKey == null)
+            throw new MQException("Consumer Key is null !");
+
+        Consumer<V> consumer = consumerFactory.getConsumer(consumerKey);
+
+        if (consumer == null)
+            throw new MQException("Consumer is null !");
+
+        consumer.receive(message);
+    }
 }

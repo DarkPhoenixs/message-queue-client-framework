@@ -15,78 +15,78 @@
  */
 package org.darkphoenixs.kafka.codec;
 
+import org.darkphoenixs.mq.exception.MQException;
+import org.darkphoenixs.mq.message.MessageBeanImpl;
+
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.message.MessageBeanImpl;
-
 public class KafkaMessageDecoderImpl extends
-		KafkaMessageDecoder<Integer, MessageBeanImpl> {
+        KafkaMessageDecoder<Integer, MessageBeanImpl> {
 
-	@Override
-	public Integer decodeKey(byte[] bytes) throws MQException {
+    @Override
+    public Integer decodeKey(byte[] bytes) throws MQException {
 
-		if (bytes != null)
+        if (bytes != null)
 
-			return Integer.valueOf(new String(bytes));
+            return Integer.valueOf(new String(bytes));
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public MessageBeanImpl decodeVal(byte[] bytes) throws MQException {
+    @Override
+    public MessageBeanImpl decodeVal(byte[] bytes) throws MQException {
 
-		MessageBeanImpl message = null;
+        MessageBeanImpl message = null;
 
-		ByteArrayInputStream bis = null;
+        ByteArrayInputStream bis = null;
 
-		ObjectInputStream ois = null;
+        ObjectInputStream ois = null;
 
-		try {
-			bis = new ByteArrayInputStream(bytes);
+        try {
+            bis = new ByteArrayInputStream(bytes);
 
-			ois = new ObjectInputStream(bis);
+            ois = new ObjectInputStream(bis);
 
-			message = (MessageBeanImpl) ois.readObject();
+            message = (MessageBeanImpl) ois.readObject();
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			throw new MQException(e);
+            throw new MQException(e);
 
-		} finally {
+        } finally {
 
-			try {
-				if (ois != null)
-					ois.close();
+            try {
+                if (ois != null)
+                    ois.close();
 
-				if (bis != null)
-					bis.close();
+                if (bis != null)
+                    bis.close();
 
-			} catch (Exception e) {
-				throw new MQException(e);
-			}
-		}
+            } catch (Exception e) {
+                throw new MQException(e);
+            }
+        }
 
-		return message;
-	}
+        return message;
+    }
 
-	@Override
-	public Map<Integer, MessageBeanImpl> batchDecode(Map<byte[], byte[]> bytes)
-			throws MQException {
+    @Override
+    public Map<Integer, MessageBeanImpl> batchDecode(Map<byte[], byte[]> bytes)
+            throws MQException {
 
-		Map<Integer, MessageBeanImpl> map = new HashMap<Integer, MessageBeanImpl>();
+        Map<Integer, MessageBeanImpl> map = new HashMap<Integer, MessageBeanImpl>();
 
-		if (bytes != null)
+        if (bytes != null)
 
-			for (Entry<byte[], byte[]> entry : bytes.entrySet())
+            for (Entry<byte[], byte[]> entry : bytes.entrySet())
 
-				map.put(decodeKey(entry.getKey()), decodeVal(entry.getValue()));
+                map.put(decodeKey(entry.getKey()), decodeVal(entry.getValue()));
 
-		return map;
-	}
+        return map;
+    }
 
 }

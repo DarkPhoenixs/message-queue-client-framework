@@ -22,28 +22,28 @@ import org.darkphoenixs.mq.listener.MessageListener;
  * <p>KafkaMessageListener</p>
  * <p>Kafka消息监听器基类</p>
  *
- * @since 2016年7月21日
  * @author Victor.Zxy
- * @see MessageListener
  * @version 1.3.0
+ * @see MessageListener
+ * @since 2016年7月21日
  */
 public abstract class KafkaMessageListener<K, V> implements MessageListener<V> {
 
-	/**
-	 * <p>onMessage</p>
-	 * <p>监听方法</p>
-	 *
-	 * @param key 标识
-	 * @param val 消息
-	 * @throws MQException
-	 */
-	public void onMessage(final K key, final V val) throws MQException {
-		
-		onMessage(val);
-	}
-	
-	@Override
-	public void onMessage(V message) throws MQException {
-		// For compatible without Key. 
-	}
+    /**
+     * <p>onMessage</p>
+     * <p>监听方法</p>
+     *
+     * @param key 标识
+     * @param val 消息
+     * @throws MQException
+     */
+    public void onMessage(final K key, final V val) throws MQException {
+
+        onMessage(val);
+    }
+
+    @Override
+    public void onMessage(V message) throws MQException {
+        // For compatible without Key.
+    }
 }

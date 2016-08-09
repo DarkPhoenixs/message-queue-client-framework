@@ -55,6 +55,10 @@ public class NewSenderWithSpringTest {
     private KafkaServer kafkaServer;
     private int port = 9999;
     private Properties kafkaProps;
+    @Autowired
+    private KafkaMessageNewSenderPool<byte[], byte[]> pool;
+    @Autowired
+    private AbstractProducer<Integer, MessageBeanImpl> producer;
 
     @Before
     public void before() {
@@ -107,12 +111,6 @@ public class NewSenderWithSpringTest {
         zkClient.close();
         zkServer.shutdown();
     }
-
-    @Autowired
-    private KafkaMessageNewSenderPool<byte[], byte[]> pool;
-
-    @Autowired
-    private AbstractProducer<Integer, MessageBeanImpl> producer;
 
     @Test
     public void test() throws Exception {

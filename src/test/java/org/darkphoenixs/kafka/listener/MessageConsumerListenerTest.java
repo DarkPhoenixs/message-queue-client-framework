@@ -8,25 +8,25 @@ import org.junit.Test;
 
 public class MessageConsumerListenerTest {
 
-	@Test
-	public void test() throws Exception {
-		
-		MessageConsumerListener<Integer, String> listener = new MessageConsumerListener<Integer, String>();
-		
-		try {
-			listener.onMessage("test");
-		} catch (Exception e) {
-			Assert.assertTrue(e instanceof MQException);
-		}
+    @Test
+    public void test() throws Exception {
 
-		MessageConsumer<Integer, String> consumer = new MessageConsumer<Integer, String>();
+        MessageConsumerListener<Integer, String> listener = new MessageConsumerListener<Integer, String>();
 
-		consumer.setConsumerKey("ProtocolId");
-		
-		Assert.assertNull(listener.getConsumer());
-		listener.setConsumer(consumer);
-		
-		listener.onMessage("test");
-	}
-	
+        try {
+            listener.onMessage("test");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof MQException);
+        }
+
+        MessageConsumer<Integer, String> consumer = new MessageConsumer<Integer, String>();
+
+        consumer.setConsumerKey("ProtocolId");
+
+        Assert.assertNull(listener.getConsumer());
+        listener.setConsumer(consumer);
+
+        listener.onMessage("test");
+    }
+
 }

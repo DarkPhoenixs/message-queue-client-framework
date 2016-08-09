@@ -24,79 +24,83 @@ import org.slf4j.LoggerFactory;
  * <p>AbstractConsumer</p>
  * <p>消费者抽象类</p>
  *
- * @since 2016年7月21日
  * @author Victor.Zxy
- * @see Consumer
  * @version 1.3.0
+ * @see Consumer
+ * @since 2016年7月21日
  */
 public abstract class AbstractConsumer<K, V> implements Consumer<V> {
-	
-	/** logger */
-	protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	/** consumerKey */
-	private String consumerKey;
-	
-	/**
-	 * @param consumerKey the consumerKey to set
-	 */
-	public void setConsumerKey(String consumerKey) {
-		this.consumerKey = consumerKey;
-	}
-	
-	@Override
-	public String getConsumerKey() throws MQException {
-		return this.consumerKey;
-	}
-	
-	/**
-	 * <p>receive</p>
-	 * <p>接收消息</p>
-	 *
-	 * @param key 标识
-	 * @param Val 消息
-	 * @throws MQException
-	 */
-	public void receive(K key, V Val) throws MQException {
+    /**
+     * logger
+     */
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 
-		try {
-			doReceive(key, Val);
+    /**
+     * consumerKey
+     */
+    private String consumerKey;
 
-		} catch (Exception e) {
+    @Override
+    public String getConsumerKey() throws MQException {
+        return this.consumerKey;
+    }
 
-			throw new MQException(e);
-		}
+    /**
+     * @param consumerKey the consumerKey to set
+     */
+    public void setConsumerKey(String consumerKey) {
+        this.consumerKey = consumerKey;
+    }
 
-		logger.debug("Receive Success, ConsumerKey : " + this.getConsumerKey()
-				+ " , MessageKey : " + key + " , Message : " + Val);
-	}
-	
-	@Override
-	public void receive(V message) throws MQException {
+    /**
+     * <p>receive</p>
+     * <p>接收消息</p>
+     *
+     * @param key 标识
+     * @param Val 消息
+     * @throws MQException
+     */
+    public void receive(K key, V Val) throws MQException {
 
-		try {
-			doReceive(message);
+        try {
+            doReceive(key, Val);
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			throw new MQException(e);
-		}
+            throw new MQException(e);
+        }
 
-		logger.debug("Receive Success, ConsumerKey : " + this.getConsumerKey()
-				+ " , Message : " + message);
-	}
-	
-	protected void doReceive(V message) throws MQException {
-		// For compatible without Key. 
-	}
-	
-	/**
-	 * <p>doReceive</p>
-	 * <p>消息接收方法</p>
-	 * 
-	 * @param key 标识
-	 * @param val 消息
-	 * @throws MQException MQ异常
-	 */
-	protected abstract void doReceive(K key, V val) throws MQException;
+        logger.debug("Receive Success, ConsumerKey : " + this.getConsumerKey()
+                + " , MessageKey : " + key + " , Message : " + Val);
+    }
+
+    @Override
+    public void receive(V message) throws MQException {
+
+        try {
+            doReceive(message);
+
+        } catch (Exception e) {
+
+            throw new MQException(e);
+        }
+
+        logger.debug("Receive Success, ConsumerKey : " + this.getConsumerKey()
+                + " , Message : " + message);
+    }
+
+    protected void doReceive(V message) throws MQException {
+        // For compatible without Key.
+    }
+
+    /**
+     * <p>doReceive</p>
+     * <p>消息接收方法</p>
+     *
+     * @param key 标识
+     * @param val 消息
+     * @throws MQException MQ异常
+     */
+    protected abstract void doReceive(K key, V val) throws MQException;
 }

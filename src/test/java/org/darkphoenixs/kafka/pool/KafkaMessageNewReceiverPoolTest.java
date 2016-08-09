@@ -163,7 +163,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.destroy();
 
-        pool.setPoolSize(70);
+        pool.setPoolSize(2);
 
         pool.init();
 

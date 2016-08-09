@@ -15,69 +15,69 @@
  */
 package org.darkphoenixs.kafka.codec;
 
+import org.darkphoenixs.mq.codec.MessageDecoder;
+import org.darkphoenixs.mq.exception.MQException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.darkphoenixs.mq.codec.MessageDecoder;
-import org.darkphoenixs.mq.exception.MQException;
 
 /**
  * <p>KafkaMessageDecoder</p>
  * <p>Kafka消息解码器基类</p>
  *
- * @since 2016年7月21日
  * @author Victor.Zxy
- * @see MessageDecoder
  * @version 1.3.0
+ * @see MessageDecoder
+ * @since 2016年7月21日
  */
 public abstract class KafkaMessageDecoder<K, V> implements MessageDecoder<V> {
 
-	@Override
-	public V decode(byte[] bytes) throws MQException {
+    @Override
+    public V decode(byte[] bytes) throws MQException {
 
-		return decodeVal(bytes);
-	}
-	
-	@Override
-	public List<V> batchDecode(List<byte[]> bytes) throws MQException {
+        return decodeVal(bytes);
+    }
 
-		List<V> list = new ArrayList<V>();
+    @Override
+    public List<V> batchDecode(List<byte[]> bytes) throws MQException {
 
-		for (byte[] bs : bytes)
+        List<V> list = new ArrayList<V>();
 
-			list.add(this.decode(bs));
+        for (byte[] bs : bytes)
 
-		return list;
-	}
-	
-	/**
-	 * <p>decodeKey</p>
-	 * <p>标识反序列化</p>
-	 *
-	 * @param bytes 标识
-	 * @return 反序列化标识
-	 * @throws MQException
-	 */
-	public abstract K decodeKey(byte[] bytes) throws MQException;
-	
-	/**
-	 * <p>decodeVal</p>
-	 * <p>消息反序列化</p>
-	 *
-	 * @param bytes 消息
-	 * @return 反序列化消息
-	 * @throws MQException
-	 */
-	public abstract V decodeVal(byte[] bytes) throws MQException;
-	
-	/**
-	 * <p>batchDecode</p>
-	 * <p>批量反序列化</p>
-	 *
-	 * @param bytes 标识&消息列表
-	 * @return 反序列化标识&消息列表
-	 * @throws MQException
-	 */
-	public abstract Map<K, V> batchDecode(Map<byte[], byte[]> bytes) throws MQException;
+            list.add(this.decode(bs));
+
+        return list;
+    }
+
+    /**
+     * <p>decodeKey</p>
+     * <p>标识反序列化</p>
+     *
+     * @param bytes 标识
+     * @return 反序列化标识
+     * @throws MQException
+     */
+    public abstract K decodeKey(byte[] bytes) throws MQException;
+
+    /**
+     * <p>decodeVal</p>
+     * <p>消息反序列化</p>
+     *
+     * @param bytes 消息
+     * @return 反序列化消息
+     * @throws MQException
+     */
+    public abstract V decodeVal(byte[] bytes) throws MQException;
+
+    /**
+     * <p>batchDecode</p>
+     * <p>批量反序列化</p>
+     *
+     * @param bytes 标识&消息列表
+     * @return 反序列化标识&消息列表
+     * @throws MQException
+     */
+    public abstract Map<K, V> batchDecode(Map<byte[], byte[]> bytes) throws MQException;
 }

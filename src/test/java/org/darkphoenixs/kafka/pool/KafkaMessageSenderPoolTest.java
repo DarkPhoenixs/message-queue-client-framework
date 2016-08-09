@@ -11,7 +11,6 @@ import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
-import org.darkphoenixs.kafka.core.KafkaConstants;
 import org.darkphoenixs.kafka.core.KafkaMessageSender;
 import org.darkphoenixs.kafka.core.ZookeeperHosts;
 import org.junit.After;
@@ -24,7 +23,9 @@ import scala.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 
 public class KafkaMessageSenderPoolTest {
 

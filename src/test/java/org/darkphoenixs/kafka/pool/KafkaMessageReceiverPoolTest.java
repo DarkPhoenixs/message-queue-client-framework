@@ -37,307 +37,307 @@ import java.util.Properties;
 
 public class KafkaMessageReceiverPoolTest {
 
-	private int brokerId = 0;
-	private String topic = "QUEUE.TEST";
-	private String zkConnect;
-	private EmbeddedZookeeper zkServer;
-	private ZkClient zkClient;
-	private KafkaServer kafkaServer;
-	private int port = 9999;
-	private Properties kafkaProps;
+    private int brokerId = 0;
+    private String topic = "QUEUE.TEST";
+    private String zkConnect;
+    private EmbeddedZookeeper zkServer;
+    private ZkClient zkClient;
+    private KafkaServer kafkaServer;
+    private int port = 9999;
+    private Properties kafkaProps;
 
-	@Before
-	public void before() {
+    @Before
+    public void before() {
 
-		zkServer = new EmbeddedZookeeper();
-		zkConnect = String.format("localhost:%d", zkServer.port());
-		ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
-				JaasUtils.isZkSecurityEnabled());
-		zkClient = zkUtils.zkClient();
-
-		final Option<java.io.File> noFile = scala.Option.apply(null);
-		final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option
-				.apply(null);
+        zkServer = new EmbeddedZookeeper();
+        zkConnect = String.format("localhost:%d", zkServer.port());
+        ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
+                JaasUtils.isZkSecurityEnabled());
+        zkClient = zkUtils.zkClient();
+
+        final Option<java.io.File> noFile = scala.Option.apply(null);
+        final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option
+                .apply(null);
 
-		kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
-				false, port, noInterBrokerSecurityProtocol, noFile, true,
-				false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
-				false, TestUtils.RandomPort());
+        kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
+                false, port, noInterBrokerSecurityProtocol, noFile, true,
+                false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
+                false, TestUtils.RandomPort());
 
-		kafkaProps.setProperty("auto.create.topics.enable", "true");
-		kafkaProps.setProperty("num.partitions", "1");
-		// We *must* override this to use the port we allocated (Kafka currently
-		// allocates one port
-		// that it always uses for ZK
-		kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
-		kafkaProps.setProperty("host.name", "localhost");
-		kafkaProps.setProperty("port", port + "");
+        kafkaProps.setProperty("auto.create.topics.enable", "true");
+        kafkaProps.setProperty("num.partitions", "1");
+        // We *must* override this to use the port we allocated (Kafka currently
+        // allocates one port
+        // that it always uses for ZK
+        kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
+        kafkaProps.setProperty("host.name", "localhost");
+        kafkaProps.setProperty("port", port + "");
 
-		KafkaConfig config = new KafkaConfig(kafkaProps);
-		Time mock = new MockTime();
-		kafkaServer = TestUtils.createServer(config, mock);
+        KafkaConfig config = new KafkaConfig(kafkaProps);
+        Time mock = new MockTime();
+        kafkaServer = TestUtils.createServer(config, mock);
 
-		// create topic
-		TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
-				new String[] { "--create", "--topic", topic,
-						"--replication-factor", "1", "--partitions", "1" });
+        // create topic
+        TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
+                new String[]{"--create", "--topic", topic,
+                        "--replication-factor", "1", "--partitions", "1"});
 
-		TopicCommand.createTopic(zkUtils, options);
+        TopicCommand.createTopic(zkUtils, options);
 
-		List<KafkaServer> servers = new ArrayList<KafkaServer>();
-		servers.add(kafkaServer);
-		TestUtils.waitUntilMetadataIsPropagated(
-				scala.collection.JavaConversions.asScalaBuffer(servers), topic,
-				0, 5000);
-	}
+        List<KafkaServer> servers = new ArrayList<KafkaServer>();
+        servers.add(kafkaServer);
+        TestUtils.waitUntilMetadataIsPropagated(
+                scala.collection.JavaConversions.asScalaBuffer(servers), topic,
+                0, 5000);
+    }
 
-	@After
-	public void after() {
-		kafkaServer.shutdown();
-		zkClient.close();
-		zkServer.shutdown();
-	}
+    @After
+    public void after() {
+        kafkaServer.shutdown();
+        zkClient.close();
+        zkServer.shutdown();
+    }
 
-	@Test
-	public void test() throws Exception {
+    @Test
+    public void test() throws Exception {
 
-		final KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
+        final KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
-		pool.destroy();
+        pool.destroy();
 
-		Assert.assertNull(pool.getThreadFactory());
-		pool.setThreadFactory(new KafkaPoolThreadFactory());
+        Assert.assertNull(pool.getThreadFactory());
+        pool.setThreadFactory(new KafkaPoolThreadFactory());
 
-		Assert.assertNotNull(pool.getProps());
-		pool.setProps(new Properties());
+        Assert.assertNotNull(pool.getProps());
+        pool.setProps(new Properties());
 
-		Assert.assertEquals(0, pool.getPoolSize());
-		pool.setPoolSize(1);
+        Assert.assertEquals(0, pool.getPoolSize());
+        pool.setPoolSize(1);
 
-		Assert.assertNull(pool.getZookeeperStr());
-		pool.setZookeeperStr("");
+        Assert.assertNull(pool.getZookeeperStr());
+        pool.setZookeeperStr("");
 
-		Assert.assertNull(pool.getClientId());
-		pool.setClientId("test");
+        Assert.assertNull(pool.getClientId());
+        pool.setClientId("test");
 
-		Assert.assertTrue(pool.getAutoCommit());
-		pool.setAutoCommit(false);
+        Assert.assertTrue(pool.getAutoCommit());
+        pool.setAutoCommit(false);
 
-		Assert.assertNull(pool.getConfig());
-		pool.setConfig(new DefaultResourceLoader()
-				.getResource("kafka/consumer1.properties"));
-		pool.setConfig(new DefaultResourceLoader()
-				.getResource("kafka/consumer.properties"));
+        Assert.assertNull(pool.getConfig());
+        pool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/consumer1.properties"));
+        pool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/consumer.properties"));
 
-		pool.setProps(TestUtils.createConsumerProperties(zkConnect, "group_1",
-				"consumer_id", 1000));
+        pool.setProps(TestUtils.createConsumerProperties(zkConnect, "group_1",
+                "consumer_id", 1000));
 
-		Assert.assertSame(DefaultDecoder.class, pool.getKeyDecoderClass());
-		pool.setKeyDecoderClass(DefaultDecoder.class);
+        Assert.assertSame(DefaultDecoder.class, pool.getKeyDecoderClass());
+        pool.setKeyDecoderClass(DefaultDecoder.class);
 
-		Assert.assertSame(DefaultDecoder.class, pool.getValDecoderClass());
-		pool.setValDecoderClass(DefaultDecoder.class);
+        Assert.assertSame(DefaultDecoder.class, pool.getValDecoderClass());
+        pool.setValDecoderClass(DefaultDecoder.class);
 
-		Assert.assertNull(pool.getMessageAdapter());
-		pool.setMessageAdapter(getAdapter());
+        Assert.assertNull(pool.getMessageAdapter());
+        pool.setMessageAdapter(getAdapter());
 
-		Assert.assertNotNull(pool.getReceiver());
+        Assert.assertNotNull(pool.getReceiver());
 
-		pool.init();
+        pool.init();
 
-		Thread.sleep(5000);
+        Thread.sleep(5000);
 
-		Thread thread = new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				pool.destroy();
-			}
-		});
+            @Override
+            public void run() {
+                pool.destroy();
+            }
+        });
 
-		thread.start();
+        thread.start();
 
-		pool.destroy();
-		
-		pool.returnReceiver(null);
-	}
+        pool.destroy();
 
-	@Test
-	public void test1() throws Exception {
+        pool.returnReceiver(null);
+    }
 
-		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
+    @Test
+    public void test1() throws Exception {
 
-		recePool.setProps(TestUtils.createConsumerProperties(zkConnect,
-				"group_1", "consumer_id", 1000));
+        KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
-		recePool.setMessageAdapter(getAdapter());
+        recePool.setProps(TestUtils.createConsumerProperties(zkConnect,
+                "group_1", "consumer_id", 1000));
 
-		recePool.setAutoCommit(false);
+        recePool.setMessageAdapter(getAdapter());
 
-		recePool.init();
+        recePool.setAutoCommit(false);
 
-		KafkaMessageEncoderImpl messageEncoder = new KafkaMessageEncoderImpl();
+        recePool.init();
 
-		KafkaDestination kafkaDestination = new KafkaDestination(topic);
+        KafkaMessageEncoderImpl messageEncoder = new KafkaMessageEncoderImpl();
 
-		KafkaMessageSenderPool<byte[], byte[]> sendPool = new KafkaMessageSenderPool<byte[], byte[]>();
+        KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
-		sendPool.setProps(TestUtils.getProducerConfig("localhost:" + port));
+        KafkaMessageSenderPool<byte[], byte[]> sendPool = new KafkaMessageSenderPool<byte[], byte[]>();
 
-		sendPool.init();
+        sendPool.setProps(TestUtils.getProducerConfig("localhost:" + port));
 
-		KafkaMessageTemplate<Integer, MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
+        sendPool.init();
 
-		messageTemplate.setEncoder(messageEncoder);
+        KafkaMessageTemplate<Integer, MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
 
-		messageTemplate.setMessageSenderPool(sendPool);
+        messageTemplate.setEncoder(messageEncoder);
 
-		MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
+        messageTemplate.setMessageSenderPool(sendPool);
 
-		messageProducer.setMessageTemplate(messageTemplate);
+        MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
 
-		messageProducer.setDestination(kafkaDestination);
+        messageProducer.setMessageTemplate(messageTemplate);
 
-		messageProducer.send(getMessage());
+        messageProducer.setDestination(kafkaDestination);
 
-		Thread.sleep(5000);
+        messageProducer.send(getMessage());
 
-		sendPool.destroy();
+        Thread.sleep(5000);
 
-		recePool.destroy();
-	}
+        sendPool.destroy();
 
-	@Test
-	public void test2() throws Exception {
+        recePool.destroy();
+    }
 
-		KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
+    @Test
+    public void test2() throws Exception {
 
-		recePool.setProps(TestUtils.createConsumerProperties(zkConnect,
-				"group_1", "consumer_id", 1000));
+        KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
-		recePool.setMessageAdapter(getAdapterWishErr());
+        recePool.setProps(TestUtils.createConsumerProperties(zkConnect,
+                "group_1", "consumer_id", 1000));
 
-		recePool.setAutoCommit(true);
+        recePool.setMessageAdapter(getAdapterWishErr());
 
-		recePool.init();
+        recePool.setAutoCommit(true);
 
-		KafkaMessageEncoderImpl messageEncoder = new KafkaMessageEncoderImpl();
+        recePool.init();
 
-		KafkaDestination kafkaDestination = new KafkaDestination(topic);
+        KafkaMessageEncoderImpl messageEncoder = new KafkaMessageEncoderImpl();
 
-		KafkaMessageSenderPool<byte[], byte[]> sendPool = new KafkaMessageSenderPool<byte[], byte[]>();
+        KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
-		sendPool.setProps(TestUtils.getProducerConfig("localhost:" + port));
+        KafkaMessageSenderPool<byte[], byte[]> sendPool = new KafkaMessageSenderPool<byte[], byte[]>();
 
-		sendPool.init();
+        sendPool.setProps(TestUtils.getProducerConfig("localhost:" + port));
 
-		KafkaMessageTemplate<Integer, MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
+        sendPool.init();
 
-		messageTemplate.setEncoder(messageEncoder);
+        KafkaMessageTemplate<Integer, MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
 
-		messageTemplate.setMessageSenderPool(sendPool);
+        messageTemplate.setEncoder(messageEncoder);
 
-		MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
+        messageTemplate.setMessageSenderPool(sendPool);
 
-		messageProducer.setMessageTemplate(messageTemplate);
+        MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
 
-		messageProducer.setDestination(kafkaDestination);
+        messageProducer.setMessageTemplate(messageTemplate);
 
-		messageProducer.send(getMessage());
+        messageProducer.setDestination(kafkaDestination);
 
-		Thread.sleep(5000);
+        messageProducer.send(getMessage());
 
-		sendPool.destroy();
+        Thread.sleep(5000);
 
-		recePool.destroy();
-	}
+        sendPool.destroy();
 
-	private KafkaMessageAdapter<Integer, MessageBeanImpl> getAdapter() {
+        recePool.destroy();
+    }
 
-		KafkaMessageDecoderImpl messageDecoder = new KafkaMessageDecoderImpl();
+    private KafkaMessageAdapter<Integer, MessageBeanImpl> getAdapter() {
 
-		KafkaDestination kafkaDestination = new KafkaDestination(topic);
+        KafkaMessageDecoderImpl messageDecoder = new KafkaMessageDecoderImpl();
 
-		MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
+        KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
-		MessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<Integer, MessageBeanImpl>();
+        MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
 
-		messageConsumerListener.setConsumer(MessageConsumer);
+        MessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<Integer, MessageBeanImpl>();
 
-		KafkaMessageAdapter<Integer, MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
+        messageConsumerListener.setConsumer(MessageConsumer);
 
-		messageAdapter.setDecoder(messageDecoder);
+        KafkaMessageAdapter<Integer, MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
 
-		messageAdapter.setDestination(kafkaDestination);
+        messageAdapter.setDecoder(messageDecoder);
 
-		messageAdapter.setMessageListener(messageConsumerListener);
+        messageAdapter.setDestination(kafkaDestination);
 
-		return messageAdapter;
-	}
+        messageAdapter.setMessageListener(messageConsumerListener);
 
-	private KafkaMessageAdapter<Integer, MessageBeanImpl> getAdapterWishErr() {
+        return messageAdapter;
+    }
 
-		KafkaMessageDecoder<Integer, MessageBeanImpl> messageDecoder = new KafkaMessageDecoder<Integer, MessageBeanImpl>() {
+    private KafkaMessageAdapter<Integer, MessageBeanImpl> getAdapterWishErr() {
 
-			@Override
-			public MessageBeanImpl decode(byte[] bytes) throws MQException {
+        KafkaMessageDecoder<Integer, MessageBeanImpl> messageDecoder = new KafkaMessageDecoder<Integer, MessageBeanImpl>() {
 
-				throw new MQException("Test");
-			}
+            @Override
+            public MessageBeanImpl decode(byte[] bytes) throws MQException {
 
-			@Override
-			public List<MessageBeanImpl> batchDecode(List<byte[]> bytes)
-					throws MQException {
-				throw new MQException("Test");
-			}
+                throw new MQException("Test");
+            }
 
-			@Override
-			public Integer decodeKey(byte[] bytes) throws MQException {
-				throw new MQException("Test");
-			}
+            @Override
+            public List<MessageBeanImpl> batchDecode(List<byte[]> bytes)
+                    throws MQException {
+                throw new MQException("Test");
+            }
 
-			@Override
-			public MessageBeanImpl decodeVal(byte[] bytes) throws MQException {
-				throw new MQException("Test");
-			}
+            @Override
+            public Integer decodeKey(byte[] bytes) throws MQException {
+                throw new MQException("Test");
+            }
 
-			@Override
-			public Map<Integer, MessageBeanImpl> batchDecode(
-					Map<byte[], byte[]> bytes) throws MQException {
-				throw new MQException("Test");
-			}
-		};
+            @Override
+            public MessageBeanImpl decodeVal(byte[] bytes) throws MQException {
+                throw new MQException("Test");
+            }
 
-		KafkaDestination kafkaDestination = new KafkaDestination(topic);
+            @Override
+            public Map<Integer, MessageBeanImpl> batchDecode(
+                    Map<byte[], byte[]> bytes) throws MQException {
+                throw new MQException("Test");
+            }
+        };
 
-		MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
+        KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
-		MessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<Integer, MessageBeanImpl>();
+        MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
 
-		messageConsumerListener.setConsumer(MessageConsumer);
+        MessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new MessageConsumerListener<Integer, MessageBeanImpl>();
 
-		KafkaMessageAdapter<Integer, MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
+        messageConsumerListener.setConsumer(MessageConsumer);
 
-		messageAdapter.setDecoder(messageDecoder);
+        KafkaMessageAdapter<Integer, MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
 
-		messageAdapter.setDestination(kafkaDestination);
+        messageAdapter.setDecoder(messageDecoder);
 
-		messageAdapter.setMessageListener(messageConsumerListener);
+        messageAdapter.setDestination(kafkaDestination);
 
-		return messageAdapter;
-	}
+        messageAdapter.setMessageListener(messageConsumerListener);
 
-	private MessageBeanImpl getMessage() {
+        return messageAdapter;
+    }
 
-		MessageBeanImpl messageBean = new MessageBeanImpl();
+    private MessageBeanImpl getMessage() {
 
-		long date = System.currentTimeMillis();
-		messageBean.setMessageNo("MessageNo");
-		messageBean.setMessageType("MessageType");
-		messageBean.setMessageAckNo("MessageAckNo");
-		messageBean.setMessageDate(date);
-		messageBean.setMessageContent("MessageContent".getBytes());
+        MessageBeanImpl messageBean = new MessageBeanImpl();
 
-		return messageBean;
-	}
+        long date = System.currentTimeMillis();
+        messageBean.setMessageNo("MessageNo");
+        messageBean.setMessageType("MessageType");
+        messageBean.setMessageAckNo("MessageAckNo");
+        messageBean.setMessageDate(date);
+        messageBean.setMessageContent("MessageContent".getBytes());
+
+        return messageBean;
+    }
 }

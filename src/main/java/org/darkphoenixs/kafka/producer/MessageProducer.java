@@ -21,16 +21,16 @@ import org.darkphoenixs.mq.exception.MQException;
  * <p>Title: MessageProducer</p>
  * <p>Description: 消息生产者</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see AbstractProducer
  * @version 1.0
+ * @see AbstractProducer
+ * @since 2015-06-01
  */
 public class MessageProducer<K, V> extends AbstractProducer<K, V> {
 
-	@Override
-	protected V doSend(V message) throws MQException {
+    @Override
+    protected V doSend(V message) throws MQException {
 
-		return message;
-	}
+        return message;
+    }
 }

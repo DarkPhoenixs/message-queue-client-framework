@@ -26,120 +26,128 @@ import org.slf4j.LoggerFactory;
  * <p>Title: AbstractProducer</p>
  * <p>Description: 生产者抽象类</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see Producer
  * @version 1.0
+ * @see Producer
+ * @since 2015-06-01
  */
-public abstract class AbstractProducer<K, V> implements Producer<V>  {
+public abstract class AbstractProducer<K, V> implements Producer<V> {
 
-	/** logger */
-	protected Logger logger = LoggerFactory.getLogger(getClass());
-	
-	/** messageTemplate */
-	private KafkaMessageTemplate<K, V> messageTemplate;
-	
-	/** destination */
-	private KafkaDestination destination;
-	
-	/** @since 1.2.3 producerKey */
-	private String producerKey;
-	
-	/**
-	 * @return the messageTemplate
-	 */
-	public KafkaMessageTemplate<K, V> getMessageTemplate() {
-		return messageTemplate;
-	}
+    /**
+     * logger
+     */
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	/**
-	 * @param messageTemplate the messageTemplate to set
-	 */
-	public void setMessageTemplate(KafkaMessageTemplate<K, V> messageTemplate) {
-		this.messageTemplate = messageTemplate;
-	}
-	
-	/**
-	 * @return the destination
-	 */
-	public KafkaDestination getDestination() {
-		return destination;
-	}
+    /**
+     * messageTemplate
+     */
+    private KafkaMessageTemplate<K, V> messageTemplate;
 
-	/**
-	 * @param destination the destination to set
-	 */
-	public void setDestination(KafkaDestination destination) {
-		this.destination = destination;
-	}
+    /**
+     * destination
+     */
+    private KafkaDestination destination;
 
-	/**
-	 * @since 1.2.3
-	 * @param producerKey the producerKey to set
-	 */
-	public void setProducerKey(String producerKey) {
-		this.producerKey = producerKey;
-	}
-	
-	@Override
-	public void send(V message) throws MQException {
+    /**
+     * @since 1.2.3 producerKey
+     */
+    private String producerKey;
 
-		try {
-			V obj = doSend(message);
+    /**
+     * @return the messageTemplate
+     */
+    public KafkaMessageTemplate<K, V> getMessageTemplate() {
+        return messageTemplate;
+    }
 
-			messageTemplate.convertAndSend(destination, obj);
+    /**
+     * @param messageTemplate the messageTemplate to set
+     */
+    public void setMessageTemplate(KafkaMessageTemplate<K, V> messageTemplate) {
+        this.messageTemplate = messageTemplate;
+    }
 
-		} catch (Exception e) {
+    /**
+     * @return the destination
+     */
+    public KafkaDestination getDestination() {
+        return destination;
+    }
 
-			throw new MQException(e);
-		}
+    /**
+     * @param destination the destination to set
+     */
+    public void setDestination(KafkaDestination destination) {
+        this.destination = destination;
+    }
 
-		logger.debug("Send Success, ProducerKey : " + this.getProducerKey()
-				+ " , Message : " + message);
+    @Override
+    public void send(V message) throws MQException {
 
-	}
-	
-	/**
-	 * <p>sendWithKey</p>
-	 * <p>发送消息带标识</p>
-	 *
-	 * @param key 标识
-	 * @param message 消息
-	 * @throws MQException
-	 * @since 1.3.0
-	 */
-	public void sendWithKey(K key, V message) throws MQException {
+        try {
+            V obj = doSend(message);
 
-		try {
-			messageTemplate.convertAndSendWithKey(destination, key, message);
+            messageTemplate.convertAndSend(destination, obj);
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			throw new MQException(e);
-		}
+            throw new MQException(e);
+        }
 
-		logger.debug("Send Success, ProducerKey : " + this.getProducerKey()
-				+ " , MessageKey : " + key + " , Message : " + message);
-	}
-	
-	@Override
-	public String getProducerKey() throws MQException {
+        logger.debug("Send Success, ProducerKey : " + this.getProducerKey()
+                + " , Message : " + message);
 
-		if (this.producerKey != null)
-			
-			return this.producerKey;
-		
-		return destination.getDestinationName();
-	}
-	
-	/**
-	 * <p>Title: doSend</p>
-	 * <p>Description: 消息发送方法</p>
-	 *
-	 * @param message 消息
-	 * @return 消息
-	 * @throws MQException MQ异常
-	 */
-	protected abstract V doSend(V message) throws MQException;
+    }
+
+    /**
+     * <p>sendWithKey</p>
+     * <p>发送消息带标识</p>
+     *
+     * @param key     标识
+     * @param message 消息
+     * @throws MQException
+     * @since 1.3.0
+     */
+    public void sendWithKey(K key, V message) throws MQException {
+
+        try {
+            messageTemplate.convertAndSendWithKey(destination, key, message);
+
+        } catch (Exception e) {
+
+            throw new MQException(e);
+        }
+
+        logger.debug("Send Success, ProducerKey : " + this.getProducerKey()
+                + " , MessageKey : " + key + " , Message : " + message);
+    }
+
+    @Override
+    public String getProducerKey() throws MQException {
+
+        if (this.producerKey != null)
+
+            return this.producerKey;
+
+        return destination.getDestinationName();
+    }
+
+    /**
+     * @param producerKey the producerKey to set
+     * @since 1.2.3
+     */
+    public void setProducerKey(String producerKey) {
+        this.producerKey = producerKey;
+    }
+
+    /**
+     * <p>Title: doSend</p>
+     * <p>Description: 消息发送方法</p>
+     *
+     * @param message 消息
+     * @return 消息
+     * @throws MQException MQ异常
+     */
+    protected abstract V doSend(V message) throws MQException;
 
 }

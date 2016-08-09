@@ -51,31 +51,26 @@ public class KafkaMessageReceiverImpl<K, V> implements
      * consumer
      */
     private final AtomicReference<SimpleConsumer> consumer = new AtomicReference<SimpleConsumer>();
-
-    /**
-     * pool
-     */
-    private KafkaMessageReceiverPool<K, V> pool;
-
-    /**
-     * props
-     */
-    private VerifiableProperties props;
-
     /**
      * replicaBrokers
      */
     protected Map<String, Integer> replicaBrokers;
-
     /**
      * metadata
      */
     protected PartitionMetadata metadata;
-
     /**
      * fetchResponse
      */
     protected FetchResponse fetchResponse;
+    /**
+     * pool
+     */
+    private KafkaMessageReceiverPool<K, V> pool;
+    /**
+     * props
+     */
+    private VerifiableProperties props;
 
     /**
      * Construction method.

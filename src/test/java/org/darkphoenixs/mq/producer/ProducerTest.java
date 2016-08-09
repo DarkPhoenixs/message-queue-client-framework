@@ -6,29 +6,29 @@ import org.junit.Test;
 
 public class ProducerTest {
 
-	@Test
-	public void test() throws Exception {
-		
-		ProducerImpl producer = new ProducerImpl();
-		
-		producer.send(producer.getProducerKey());
-		
-		Assert.assertEquals("ProducerKey", producer.getProducerKey());
+    @Test
+    public void test() throws Exception {
 
-	}
-	
-	private class ProducerImpl implements Producer<String> {
-		
-		@Override
-		public void send(String message) throws MQException {
+        ProducerImpl producer = new ProducerImpl();
 
-			System.out.println(message);
-		}
+        producer.send(producer.getProducerKey());
 
-		@Override
-		public String getProducerKey() throws MQException {
+        Assert.assertEquals("ProducerKey", producer.getProducerKey());
 
-			return "ProducerKey";
-		}
-	}
+    }
+
+    private class ProducerImpl implements Producer<String> {
+
+        @Override
+        public void send(String message) throws MQException {
+
+            System.out.println(message);
+        }
+
+        @Override
+        public String getProducerKey() throws MQException {
+
+            return "ProducerKey";
+        }
+    }
 }

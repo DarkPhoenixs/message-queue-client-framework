@@ -22,37 +22,39 @@ import org.darkphoenixs.mq.exception.MQException;
  * <p>KafkaMessageConsumerListener</p>
  * <p>Kafka消费者监听器</p>
  *
- * @since 2016年7月21日
  * @author Victor.Zxy
- * @see KafkaMessageListener
  * @version 1.3.0
+ * @see KafkaMessageListener
+ * @since 2016年7月21日
  */
 public class KafkaMessageConsumerListener<K, V> extends KafkaMessageListener<K, V> {
 
-	/** abstractConsumer */
-	private AbstractConsumer<K, V> consumer;
-	
-	/**
-	 * @return the consumer
-	 */
-	public AbstractConsumer<K, V> getConsumer() {
-		return consumer;
-	}
+    /**
+     * abstractConsumer
+     */
+    private AbstractConsumer<K, V> consumer;
 
-	/**
-	 * @param consumer the consumer to set
-	 */
-	public void setConsumer(AbstractConsumer<K, V> consumer) {
-		this.consumer = consumer;
-	}
+    /**
+     * @return the consumer
+     */
+    public AbstractConsumer<K, V> getConsumer() {
+        return consumer;
+    }
 
-	@Override
-	public void onMessage(K key, V val) throws MQException {
+    /**
+     * @param consumer the consumer to set
+     */
+    public void setConsumer(AbstractConsumer<K, V> consumer) {
+        this.consumer = consumer;
+    }
 
-		if (consumer != null)
-			
-			consumer.receive(key, val);
-		else
-			throw new MQException("Consumer is null !");
-	}
+    @Override
+    public void onMessage(K key, V val) throws MQException {
+
+        if (consumer != null)
+
+            consumer.receive(key, val);
+        else
+            throw new MQException("Consumer is null !");
+    }
 }

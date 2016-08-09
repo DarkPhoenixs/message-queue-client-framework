@@ -1,47 +1,46 @@
 package org.darkphoenixs.kafka.codec;
 
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
 
 public class KafkaMessageDecoderImplTest {
 
-	@Test
-	public void test() throws Exception {
-		
-		KafkaMessageEncoderImpl encoder = new KafkaMessageEncoderImpl();
+    @Test
+    public void test() throws Exception {
 
-		KafkaMessageDecoderImpl decoder = new KafkaMessageDecoderImpl();
+        KafkaMessageEncoderImpl encoder = new KafkaMessageEncoderImpl();
 
-		MessageBeanImpl messageBean = new MessageBeanImpl();
+        KafkaMessageDecoderImpl decoder = new KafkaMessageDecoderImpl();
 
-		long date = System.currentTimeMillis();
-		messageBean.setMessageNo("MessageNo");
-		messageBean.setMessageType("MessageType");
-		messageBean.setMessageAckNo("MessageAckNo");
-		messageBean.setMessageDate(date);
-		messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
+        MessageBeanImpl messageBean = new MessageBeanImpl();
 
-		byte[] bytes = encoder.encode(messageBean);
+        long date = System.currentTimeMillis();
+        messageBean.setMessageNo("MessageNo");
+        messageBean.setMessageType("MessageType");
+        messageBean.setMessageAckNo("MessageAckNo");
+        messageBean.setMessageDate(date);
+        messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
 
-		
-		decoder.decode(bytes);
-		decoder.decodeKey("1".getBytes());
-		decoder.decodeVal(bytes);
-		
-		List<byte[]> list = Lists.newArrayList(bytes);
-				
-		decoder.batchDecode(list);
-		
-		Map<byte[], byte[]> map = Maps.newHashMap();
-		
-		map.put("1".getBytes(), bytes);
-		
-		decoder.batchDecode(map);
-	}
+        byte[] bytes = encoder.encode(messageBean);
+
+
+        decoder.decode(bytes);
+        decoder.decodeKey("1".getBytes());
+        decoder.decodeVal(bytes);
+
+        List<byte[]> list = Lists.newArrayList(bytes);
+
+        decoder.batchDecode(list);
+
+        Map<byte[], byte[]> map = Maps.newHashMap();
+
+        map.put("1".getBytes(), bytes);
+
+        decoder.batchDecode(map);
+    }
 }

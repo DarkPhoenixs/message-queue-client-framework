@@ -56,39 +56,32 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K, V> {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaMessageNewReceiverPool.class);
-
     /**
-     * The enum Model.
+     * The Receiver pool.
      */
-    public enum MODEL {
-
-        /**
-         * Model 1 model.
-         */
-        MODEL_1,
-        /**
-         * Model 2 model.
-         */
-        MODEL_2;
-    }
-
+    protected ExecutorService receivPool;
+    /**
+     * The Handler pool.
+     */
+    protected ExecutorService handlePool;
+    /**
+     * The Threads.
+     */
+    protected List<ReceiverThread> threads = new ArrayList<ReceiverThread>();
     /**
      * The Model.
      * <p>
      * Default MODEL_1.
      */
     private MODEL model = MODEL.MODEL_1;
-
     /**
      * The Props.
      */
     private Properties props = new Properties();
-
     /**
      * The Config.
      */
     private Resource config;
-
     /**
      * The Pool size.
      * <p>
@@ -98,26 +91,10 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      * the consumer thread pool size as same as the topic partition number.
      */
     private int poolSize;
-
     /**
      * messageAdapter
      */
     private KafkaMessageAdapter<?, ?> messageAdapter;
-
-    /**
-     * The Receiver pool.
-     */
-    protected ExecutorService receivPool;
-
-    /**
-     * The Handler pool.
-     */
-    protected ExecutorService handlePool;
-
-    /**
-     * The Threads.
-     */
-    protected List<ReceiverThread> threads = new ArrayList<ReceiverThread>();
 
     /**
      * Gets props.
@@ -235,7 +212,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
         String topic = messageAdapter.getDestination().getDestinationName();
 
-        KafkaMessageReceiver receiver = getReceiver();
+        KafkaMessageReceiver<K, V> receiver = getReceiver();
 
         int partSize = receiver.getPartitionCount(topic);
 
@@ -308,6 +285,20 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
             receivPool.shutdown();
     }
 
+    /**
+     * The enum Model.
+     */
+    public enum MODEL {
+
+        /**
+         * Model 1 model.
+         */
+        MODEL_1,
+        /**
+         * Model 2 model.
+         */
+        MODEL_2;
+    }
 
     /**
      * The type Receiver thread.
@@ -325,8 +316,6 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
         private final KafkaMessageAdapter<?, ?> adapter;
 
-        private final Properties props;
-
         private final String topic;
 
         /**
@@ -337,8 +326,6 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
          * @param adapter the adapter
          */
         public ReceiverThread(Properties props, String topic, KafkaMessageAdapter<?, ?> adapter) {
-
-            this.props = props;
 
             this.topic = topic;
 

@@ -21,18 +21,18 @@ import org.darkphoenixs.mq.exception.MQException;
  * <p>Title: MessageListener</p>
  * <p>Description: 消息监听器接口</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
  * @version 1.0
+ * @since 2015-06-01
  */
 public interface MessageListener<T> {
-	
-	/**
-	 * <p>Title: onMessage</p>
-	 * <p>Description: 监听方法</p>
-	 *
-	 * @param message 消息
-	 * @throws MQException MQ异常
-	 */
-	public abstract void onMessage(final T message) throws MQException;
+
+    /**
+     * <p>Title: onMessage</p>
+     * <p>Description: 监听方法</p>
+     *
+     * @param message 消息
+     * @throws MQException MQ异常
+     */
+    public abstract void onMessage(final T message) throws MQException;
 }

@@ -15,134 +15,139 @@
  */
 package org.darkphoenixs.activemq.producer;
 
-import javax.jms.Destination;
-import javax.jms.Queue;
-import javax.jms.Topic;
-
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.producer.Producer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 
+import javax.jms.Destination;
+import javax.jms.Queue;
+import javax.jms.Topic;
+
 /**
  * <p>Title: AbstractProducer</p>
  * <p>Description: 生产者抽象类</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see Producer
  * @version 1.0
+ * @see Producer
+ * @since 2015-06-01
  */
 public abstract class AbstractProducer<T> implements Producer<T> {
 
-	/** logger */
-	protected Logger logger = LoggerFactory.getLogger(getClass());
-	
-	/** jmsTemplate */
-	private JmsTemplate jmsTemplate;
+    /**
+     * logger
+     */
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	/** destination */
-	private Destination destination;
-	
-	/** @since 1.2.3 producerKey */
-	private String producerKey;
+    /**
+     * jmsTemplate
+     */
+    private JmsTemplate jmsTemplate;
 
-	/**
-	 * @return the jmsTemplate
-	 */
-	public JmsTemplate getJmsTemplate() {
-		return jmsTemplate;
-	}
+    /**
+     * destination
+     */
+    private Destination destination;
 
-	/**
-	 * @param jmsTemplate
-	 *            the jmsTemplate to set
-	 */
-	public void setJmsTemplate(JmsTemplate jmsTemplate) {
-		this.jmsTemplate = jmsTemplate;
-	}
+    /**
+     * @since 1.2.3 producerKey
+     */
+    private String producerKey;
 
-	/**
-	 * @return the destination
-	 */
-	public Destination getDestination() {
-		return destination;
-	}
+    /**
+     * @return the jmsTemplate
+     */
+    public JmsTemplate getJmsTemplate() {
+        return jmsTemplate;
+    }
 
-	/**
-	 * @param destination
-	 *            the destination to set
-	 */
-	public void setDestination(Destination destination) {
-		this.destination = destination;
-	}
+    /**
+     * @param jmsTemplate the jmsTemplate to set
+     */
+    public void setJmsTemplate(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
+    }
 
-	/**
-	 * @since 1.2.3
-	 * @param producerKey
-	 *            the producerKey to set
-	 */
-	public void setProducerKey(String producerKey) {
-		this.producerKey = producerKey;
-	}
-	
-	@Override
-	public void send(T message) throws MQException {
+    /**
+     * @return the destination
+     */
+    public Destination getDestination() {
+        return destination;
+    }
 
-		try {
-			Object obj = doSend(message);
+    /**
+     * @param destination the destination to set
+     */
+    public void setDestination(Destination destination) {
+        this.destination = destination;
+    }
 
-			jmsTemplate.convertAndSend(destination, obj);
+    @Override
+    public void send(T message) throws MQException {
 
-		} catch (Exception e) {
+        try {
+            Object obj = doSend(message);
 
-			throw new MQException(e);
-		}
+            jmsTemplate.convertAndSend(destination, obj);
 
-		logger.debug("Send Success, ProducerKey : " + this.getProducerKey()
-				+ " , Message : " + message);
+        } catch (Exception e) {
 
-	}
+            throw new MQException(e);
+        }
 
-	@Override
-	public String getProducerKey() throws MQException {
+        logger.debug("Send Success, ProducerKey : " + this.getProducerKey()
+                + " , Message : " + message);
 
-		if (this.producerKey != null)
-			
-			return this.producerKey;
-		
-		if (destination instanceof Queue)
+    }
 
-			try {
-				return ((Queue) destination).getQueueName();
+    @Override
+    public String getProducerKey() throws MQException {
 
-			} catch (Exception e) {
+        if (this.producerKey != null)
 
-				throw new MQException(e);
-			}
+            return this.producerKey;
 
-		else if (destination instanceof Topic)
+        if (destination instanceof Queue)
 
-			try {
-				return ((Topic) destination).getTopicName();
+            try {
+                return ((Queue) destination).getQueueName();
 
-			} catch (Exception e) {
+            } catch (Exception e) {
 
-				throw new MQException(e);
-			}
+                throw new MQException(e);
+            }
 
-		else
-			return destination.toString();
-	}
+        else if (destination instanceof Topic)
 
-	/**
-	 * <p>Title: doSend</p>
-	 * <p>Description: 消息发送方法</p>
-	 *
-	 * @param message 消息
-	 * @return 消息
-	 * @throws MQException MQ异常
-	 */
-	protected abstract Object doSend(T message) throws MQException;
+            try {
+                return ((Topic) destination).getTopicName();
+
+            } catch (Exception e) {
+
+                throw new MQException(e);
+            }
+
+        else
+            return destination.toString();
+    }
+
+    /**
+     * @param producerKey the producerKey to set
+     * @since 1.2.3
+     */
+    public void setProducerKey(String producerKey) {
+        this.producerKey = producerKey;
+    }
+
+    /**
+     * <p>Title: doSend</p>
+     * <p>Description: 消息发送方法</p>
+     *
+     * @param message 消息
+     * @return 消息
+     * @throws MQException MQ异常
+     */
+    protected abstract Object doSend(T message) throws MQException;
 }

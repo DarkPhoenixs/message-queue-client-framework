@@ -1,10 +1,6 @@
 package org.darkphoenixs.kafka.core;
 
-import java.util.HashMap;
-import java.util.List;
-
 import kafka.message.MessageAndMetadata;
-
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.TopicPartition;
@@ -15,6 +11,9 @@ import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class KafkaMessageAdapterTest {
 

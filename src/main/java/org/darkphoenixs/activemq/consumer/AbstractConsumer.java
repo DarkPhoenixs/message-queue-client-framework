@@ -24,54 +24,58 @@ import org.slf4j.LoggerFactory;
  * <p>Title: AbstractConsumer</p>
  * <p>Description: 消费者抽象类</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see Consumer
  * @version 1.3.1
+ * @see Consumer
+ * @since 2015-06-01
  */
 public abstract class AbstractConsumer<T> implements Consumer<T> {
 
-	/** logger */
-	protected Logger logger = LoggerFactory.getLogger(getClass());
+    /**
+     * logger
+     */
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	/** consumerKey */
-	private String consumerKey;
-	
-	/**
-	 * @param consumerKey the consumerKey to set
-	 */
-	public void setConsumerKey(String consumerKey) {
-		this.consumerKey = consumerKey;
-	}
-	
-	@Override
-	public void receive(T message) throws MQException {
+    /**
+     * consumerKey
+     */
+    private String consumerKey;
 
-		try {
-			doReceive(message);
+    @Override
+    public void receive(T message) throws MQException {
 
-		} catch (Exception e) {
+        try {
+            doReceive(message);
 
-			throw new MQException(e);
-		}
+        } catch (Exception e) {
 
-		logger.debug("Receive Success, ConsumerKey : " + this.getConsumerKey()
-				+ " , Message : " + message);
-	}
+            throw new MQException(e);
+        }
 
-	@Override
-	public String getConsumerKey() throws MQException {
+        logger.debug("Receive Success, ConsumerKey : " + this.getConsumerKey()
+                + " , Message : " + message);
+    }
 
-		return this.consumerKey;
-	}
+    @Override
+    public String getConsumerKey() throws MQException {
 
-	/**
-	 * <p>Title: doReceive</p>
-	 * <p>Description: 消息接收方法</p>
-	 * 
-	 * @param message 消息
-	 * @throws MQException MQ异常
-	 */
-	protected abstract void doReceive(T message) throws MQException;
+        return this.consumerKey;
+    }
+
+    /**
+     * @param consumerKey the consumerKey to set
+     */
+    public void setConsumerKey(String consumerKey) {
+        this.consumerKey = consumerKey;
+    }
+
+    /**
+     * <p>Title: doReceive</p>
+     * <p>Description: 消息接收方法</p>
+     *
+     * @param message 消息
+     * @throws MQException MQ异常
+     */
+    protected abstract void doReceive(T message) throws MQException;
 
 }

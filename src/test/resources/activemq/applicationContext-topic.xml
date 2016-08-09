@@ -1,65 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<description>Topic Configuration</description>
+    <description>Topic Configuration</description>
 
-	<!-- Topic Pool Connection Factory -->
-	<bean id="topicConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
-		destroy-method="stop">
-		<property name="connectionFactory" ref="connectionFactory"></property>
-		<property name="maximumActiveSessionPerConnection" value="200" />
-		<property name="maxConnections" value="100"></property>
-	</bean>
+    <!-- Topic Pool Connection Factory -->
+    <bean id="topicConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+          destroy-method="stop">
+        <property name="connectionFactory" ref="connectionFactory"></property>
+        <property name="maximumActiveSessionPerConnection" value="200"/>
+        <property name="maxConnections" value="100"></property>
+    </bean>
 
-	<!-- Topic Destination -->
-	<bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
-		<constructor-arg value="${mq.topicDestinationName}" />
-	</bean>
+    <!-- Topic Destination -->
+    <bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="${mq.topicDestinationName}"/>
+    </bean>
 
-	<!-- Topic Jms Template -->
-	<bean id="topicJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<property name="connectionFactory" ref="topicConnectionFactory" />
-		<property name="messageConverter" ref="messageConverter" />
-		<property name="sessionTransacted" value="true" />
-		<property name="pubSubDomain" value="true" />
-	</bean>
+    <!-- Topic Jms Template -->
+    <bean id="topicJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="topicConnectionFactory"/>
+        <property name="messageConverter" ref="messageConverter"/>
+        <property name="sessionTransacted" value="true"/>
+        <property name="pubSubDomain" value="true"/>
+    </bean>
 
-	<!-- Message Publisher -->
-	<bean id="messagePublisher" class="org.darkphoenixs.activemq.producer.MessageProducer">
-		<property name="jmsTemplate" ref="topicJmsTemplate" />
-		<property name="destination" ref="topicDestination" />
-	</bean>
+    <!-- Message Publisher -->
+    <bean id="messagePublisher" class="org.darkphoenixs.activemq.producer.MessageProducer">
+        <property name="jmsTemplate" ref="topicJmsTemplate"/>
+        <property name="destination" ref="topicDestination"/>
+    </bean>
 
-	<!-- Message Subscriber -->
-	<bean id="messageSubscriber" class="org.darkphoenixs.activemq.consumer.MessageConsumer">
-	</bean>
+    <!-- Message Subscriber -->
+    <bean id="messageSubscriber" class="org.darkphoenixs.activemq.consumer.MessageConsumer">
+    </bean>
 
-	<!-- Subscriber Listener -->
-	<bean id="subscriberListener"
-		class="org.darkphoenixs.activemq.listener.MessageConsumerListener">
-		<property name="consumer" ref="messageSubscriber" />
-	</bean>
+    <!-- Subscriber Listener -->
+    <bean id="subscriberListener"
+          class="org.darkphoenixs.activemq.listener.MessageConsumerListener">
+        <property name="consumer" ref="messageSubscriber"/>
+    </bean>
 
-	<!-- Listener Adapter -->
-	<bean id="topicMessageListener"
-		class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
-		<property name="delegate" ref="subscriberListener" />
-		<property name="messageConverter" ref="messageConverter" />
-		<property name="defaultListenerMethod" value="onListening" />
-	</bean>
+    <!-- Listener Adapter -->
+    <bean id="topicMessageListener"
+          class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+        <property name="delegate" ref="subscriberListener"/>
+        <property name="messageConverter" ref="messageConverter"/>
+        <property name="defaultListenerMethod" value="onListening"/>
+    </bean>
 
-	<!-- Listener Container -->
-	<bean id="topicMessageContainer"
-		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-		<property name="connectionFactory" ref="topicConnectionFactory" />
-		<property name="destination" ref="topicDestination" />
-		<property name="messageListener" ref="topicMessageListener" />
-		<property name="pubSubDomain" value="true"></property>
-		<property name="sessionTransacted" value="true" />
-		<property name="subscriptionDurable" value="true"></property>
-		<property name="clientId" value="${mq.clientID}"></property>
-		<property name="durableSubscriptionName" value="${mq.clientID}"></property>
-	</bean>
+    <!-- Listener Container -->
+    <bean id="topicMessageContainer"
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="topicConnectionFactory"/>
+        <property name="destination" ref="topicDestination"/>
+        <property name="messageListener" ref="topicMessageListener"/>
+        <property name="pubSubDomain" value="true"></property>
+        <property name="sessionTransacted" value="true"/>
+        <property name="subscriptionDurable" value="true"></property>
+        <property name="clientId" value="${mq.clientID}"></property>
+        <property name="durableSubscriptionName" value="${mq.clientID}"></property>
+    </bean>
 </beans>

@@ -55,17 +55,17 @@ public class KafkaMessageTemplate<K, V> {
     private KafkaMessageDecoder<K, V> decoder;
 
     /**
-     * @param messageSenderPool the messageSenderPool to set
-     */
-    public void setMessageSenderPool(MessageSenderPool<byte[], byte[]> messageSenderPool) {
-        this.messageSenderPool = messageSenderPool;
-    }
-
-    /**
      * @return the messageSenderPool
      */
     public MessageSenderPool<byte[], byte[]> getMessageSenderPool() {
         return messageSenderPool;
+    }
+
+    /**
+     * @param messageSenderPool the messageSenderPool to set
+     */
+    public void setMessageSenderPool(MessageSenderPool<byte[], byte[]> messageSenderPool) {
+        this.messageSenderPool = messageSenderPool;
     }
 
     /**
@@ -83,17 +83,17 @@ public class KafkaMessageTemplate<K, V> {
     }
 
     /**
-     * @param encoder the encoder to set
-     */
-    public void setEncoder(KafkaMessageEncoder<K, V> encoder) {
-        this.encoder = encoder;
-    }
-
-    /**
      * @return the encoder
      */
     public KafkaMessageEncoder<K, V> getEncoder() {
         return encoder;
+    }
+
+    /**
+     * @param encoder the encoder to set
+     */
+    public void setEncoder(KafkaMessageEncoder<K, V> encoder) {
+        this.encoder = encoder;
     }
 
     /**

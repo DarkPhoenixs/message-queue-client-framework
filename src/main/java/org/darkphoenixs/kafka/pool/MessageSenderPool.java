@@ -21,37 +21,37 @@ import org.darkphoenixs.kafka.core.KafkaMessageSender;
  * <p>MessageSenderPool</p>
  * <p>消息发送器池接口</p>
  *
- * @since 2016年7月21日
  * @author Victor.Zxy
  * @version 1.3.0
+ * @since 2016年7月21日
  */
 public interface MessageSenderPool<K, V> {
 
-	/**
-	 * <p>init</p>
-	 * <p>初始化池</p>
-	 */
-	public void init();
-	
-	/**
-	 * <p>destroy</p>
-	 * <p>销毁池</p>
-	 */
-	public void destroy();
-	
-	/**
-	 * <p>getSender</p>
-	 * <p>获得发送器</p>
-	 *
-	 * @return 发送器
-	 */
-	public KafkaMessageSender<K, V> getSender();
-	
-	/**
-	 * <p>returnSender</p>
-	 * <p>释放发送器</p>
-	 *
-	 * @param sender 发送器
-	 */
-	public void returnSender(KafkaMessageSender<K, V> sender);
+    /**
+     * <p>init</p>
+     * <p>初始化池</p>
+     */
+    public void init();
+
+    /**
+     * <p>destroy</p>
+     * <p>销毁池</p>
+     */
+    public void destroy();
+
+    /**
+     * <p>getSender</p>
+     * <p>获得发送器</p>
+     *
+     * @return 发送器
+     */
+    public KafkaMessageSender<K, V> getSender();
+
+    /**
+     * <p>returnSender</p>
+     * <p>释放发送器</p>
+     *
+     * @param sender 发送器
+     */
+    public void returnSender(KafkaMessageSender<K, V> sender);
 }

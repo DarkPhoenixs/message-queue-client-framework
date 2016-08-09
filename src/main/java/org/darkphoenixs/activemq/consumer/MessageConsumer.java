@@ -21,17 +21,17 @@ import org.darkphoenixs.mq.exception.MQException;
  * <p>Title: MessageConsumer</p>
  * <p>Description: 消息消费者</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see AbstractConsumer
  * @version 1.0
+ * @see AbstractConsumer
+ * @since 2015-06-01
  */
 public class MessageConsumer<T> extends AbstractConsumer<T> {
 
-	@Override
-	protected void doReceive(T message) throws MQException {
-		
-		System.out.println(message);
-	}
+    @Override
+    protected void doReceive(T message) throws MQException {
+
+        System.out.println(message);
+    }
 
 }

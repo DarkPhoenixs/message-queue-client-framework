@@ -8,54 +8,54 @@ import org.junit.Test;
 
 public class MessageProducerFactoryTest {
 
-	@Test
-	public void test_0() throws Exception {
+    @Test
+    public void test_0() throws Exception {
 
-		MessageProducerFactory factory = (MessageProducerFactory) MessageProducerFactory
-				.getInstance();
-		
-		factory = (MessageProducerFactory) MessageProducerFactory
-				.getInstance();
+        MessageProducerFactory factory = (MessageProducerFactory) MessageProducerFactory
+                .getInstance();
 
-		factory.init();
+        factory = (MessageProducerFactory) MessageProducerFactory
+                .getInstance();
 
-		factory.destroy();
+        factory.init();
 
-		ProducerTest producer1 = new ProducerTest();
-		producer1.setProducerKey("ProducerKey1");
+        factory.destroy();
 
-		ProducerTest producer2 = new ProducerTest();
-		producer2.setProducerKey("ProducerKey2");
+        ProducerTest producer1 = new ProducerTest();
+        producer1.setProducerKey("ProducerKey1");
 
-		factory.setProducers(new Producer[] { producer1 });
-		factory.addProducer(producer2);
-		
-		factory.init();
-		
-		Assert.assertEquals(producer1, factory.getProducer("ProducerKey1"));
-		Assert.assertEquals(producer2, factory.getProducer("ProducerKey2"));
-		Assert.assertNull(factory.getProducer("ProducerKey3"));
+        ProducerTest producer2 = new ProducerTest();
+        producer2.setProducerKey("ProducerKey2");
 
-		factory.destroy();
-	}
+        factory.setProducers(new Producer[]{producer1});
+        factory.addProducer(producer2);
 
-	private class ProducerTest implements Producer<MessageBeanImpl> {
+        factory.init();
 
-		private String producerKey;
+        Assert.assertEquals(producer1, factory.getProducer("ProducerKey1"));
+        Assert.assertEquals(producer2, factory.getProducer("ProducerKey2"));
+        Assert.assertNull(factory.getProducer("ProducerKey3"));
 
-		public void setProducerKey(String producerKey) {
-			this.producerKey = producerKey;
-		}
+        factory.destroy();
+    }
 
-		@Override
-		public String getProducerKey() throws MQException {
+    private class ProducerTest implements Producer<MessageBeanImpl> {
 
-			return this.producerKey;
-		}
+        private String producerKey;
 
-		@Override
-		public void send(MessageBeanImpl message) throws MQException {
-			System.out.println(message);
-		}
-	}
+        @Override
+        public String getProducerKey() throws MQException {
+
+            return this.producerKey;
+        }
+
+        public void setProducerKey(String producerKey) {
+            this.producerKey = producerKey;
+        }
+
+        @Override
+        public void send(MessageBeanImpl message) throws MQException {
+            System.out.println(message);
+        }
+    }
 }

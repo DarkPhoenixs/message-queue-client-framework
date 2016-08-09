@@ -1,56 +1,56 @@
 package org.darkphoenixs.mq.codec;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.darkphoenixs.mq.exception.MQException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MessageEncoderTest {
 
-	@Test
-	public void test() throws Exception {
-		
-		MessageEncoderImpl encoder = new MessageEncoderImpl();
+    @Test
+    public void test() throws Exception {
 
-		Assert.assertArrayEquals("abc".getBytes("UTF-8"), encoder.encode("abc"));
-		Assert.assertArrayEquals("哈哈".getBytes("UTF-8"), encoder.encode("哈哈"));
+        MessageEncoderImpl encoder = new MessageEncoderImpl();
 
-		List<String> list = new ArrayList<String>();
-		list.add("啦啦");
-		list.add("哈哈");
-		
-		Assert.assertArrayEquals("啦啦".getBytes("UTF-8"), encoder.batchEncode(list).get(0));
-		Assert.assertArrayEquals("哈哈".getBytes("UTF-8"), encoder.batchEncode(list).get(1));
-	}
-		
-	private class MessageEncoderImpl implements MessageEncoder<String> {
+        Assert.assertArrayEquals("abc".getBytes("UTF-8"), encoder.encode("abc"));
+        Assert.assertArrayEquals("哈哈".getBytes("UTF-8"), encoder.encode("哈哈"));
 
-		@Override
-		public byte[] encode(String message) throws MQException {
+        List<String> list = new ArrayList<String>();
+        list.add("啦啦");
+        list.add("哈哈");
 
-			try {
-				return message.getBytes("UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
+        Assert.assertArrayEquals("啦啦".getBytes("UTF-8"), encoder.batchEncode(list).get(0));
+        Assert.assertArrayEquals("哈哈".getBytes("UTF-8"), encoder.batchEncode(list).get(1));
+    }
 
-		@Override
-		public List<byte[]> batchEncode(List<String> message)
-				throws MQException {
+    private class MessageEncoderImpl implements MessageEncoder<String> {
 
-			List<byte[]> bytes = new ArrayList<byte[]>();
+        @Override
+        public byte[] encode(String message) throws MQException {
 
-			for (String string : message) {
-				
-				bytes.add(encode(string));
-			}
+            try {
+                return message.getBytes("UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
-			return bytes;
-		}
-	}
+        @Override
+        public List<byte[]> batchEncode(List<String> message)
+                throws MQException {
+
+            List<byte[]> bytes = new ArrayList<byte[]>();
+
+            for (String string : message) {
+
+                bytes.add(encode(string));
+            }
+
+            return bytes;
+        }
+    }
 }

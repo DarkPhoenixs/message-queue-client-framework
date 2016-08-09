@@ -24,7 +24,6 @@ import kafka.utils.TestUtils;
 import kafka.utils.Time;
 import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
-
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
@@ -32,7 +31,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import scala.Option;
 
 import java.io.File;
@@ -111,7 +109,7 @@ public class KafkaMessageNewReceiverTest {
         sendProperties.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
 
         @SuppressWarnings("unchecked")
-		KafkaMessageNewSender<byte[], byte[]> sender = KafkaMessageNewSender.getOrCreateInstance(sendProperties);
+        KafkaMessageNewSender<byte[], byte[]> sender = KafkaMessageNewSender.getOrCreateInstance(sendProperties);
 
         for (int i = 0; i < 10; i++) {
 

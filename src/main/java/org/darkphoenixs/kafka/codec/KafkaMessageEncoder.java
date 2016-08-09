@@ -15,69 +15,69 @@
  */
 package org.darkphoenixs.kafka.codec;
 
+import org.darkphoenixs.mq.codec.MessageEncoder;
+import org.darkphoenixs.mq.exception.MQException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.darkphoenixs.mq.codec.MessageEncoder;
-import org.darkphoenixs.mq.exception.MQException;
 
 /**
  * <p>KafkaMessageEncoder</p>
  * <p>Kafka消息编码器基类</p>
  *
- * @since 2016年7月21日
  * @author Victor.Zxy
- * @see MessageEncoder
  * @version 1.3.0
+ * @see MessageEncoder
+ * @since 2016年7月21日
  */
 public abstract class KafkaMessageEncoder<K, V> implements MessageEncoder<V> {
 
-	@Override
-	public byte[] encode(V message) throws MQException {
+    @Override
+    public byte[] encode(V message) throws MQException {
 
-		return encodeVal(message);
-	}
+        return encodeVal(message);
+    }
 
-	@Override
-	public List<byte[]> batchEncode(List<V> message) throws MQException {
-		
-		List<byte[]> list = new ArrayList<byte[]>();
+    @Override
+    public List<byte[]> batchEncode(List<V> message) throws MQException {
 
-		for (V v : message)
+        List<byte[]> list = new ArrayList<byte[]>();
 
-			list.add(this.encode(v));
+        for (V v : message)
 
-		return list;
-	}
-	
-	/**
-	 * <p>encodeKey</p>
-	 * <p>标识序列化</p>
-	 *
-	 * @param key 标识
-	 * @return 序列化标识
-	 * @throws MQException
-	 */
-	public abstract byte[] encodeKey(K key) throws MQException;
-	
-	/**
-	 * <p>encodeVal</p>
-	 * <p>消息序列化</p>
-	 *
-	 * @param val 消息
-	 * @return 序列化消息
-	 * @throws MQException
-	 */
-	public abstract byte[] encodeVal(V val) throws MQException;
+            list.add(this.encode(v));
 
-	/**
-	 * <p>batchEncode</p>
-	 * <p>批量序列化</p>
-	 *
-	 * @param messages 标识&消息列表
-	 * @return 序列化标识&消息列表
-	 * @throws MQException
-	 */
-	public abstract Map<byte[], byte[]> batchEncode(Map<K, V> messages) throws MQException;
+        return list;
+    }
+
+    /**
+     * <p>encodeKey</p>
+     * <p>标识序列化</p>
+     *
+     * @param key 标识
+     * @return 序列化标识
+     * @throws MQException
+     */
+    public abstract byte[] encodeKey(K key) throws MQException;
+
+    /**
+     * <p>encodeVal</p>
+     * <p>消息序列化</p>
+     *
+     * @param val 消息
+     * @return 序列化消息
+     * @throws MQException
+     */
+    public abstract byte[] encodeVal(V val) throws MQException;
+
+    /**
+     * <p>batchEncode</p>
+     * <p>批量序列化</p>
+     *
+     * @param messages 标识&消息列表
+     * @return 序列化标识&消息列表
+     * @throws MQException
+     */
+    public abstract Map<byte[], byte[]> batchEncode(Map<K, V> messages) throws MQException;
 }

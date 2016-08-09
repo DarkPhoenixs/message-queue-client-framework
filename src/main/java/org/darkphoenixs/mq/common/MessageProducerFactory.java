@@ -15,110 +15,115 @@
  */
 package org.darkphoenixs.mq.common;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.factory.ProducerFactory;
 import org.darkphoenixs.mq.producer.Producer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * <p>Title: MessageProducerFactory</p>
  * <p>Description: 消息生产者工厂</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see ProducerFactory
  * @version 1.0
+ * @see ProducerFactory
+ * @since 2015-06-01
  */
 public class MessageProducerFactory implements ProducerFactory {
 
-	/** logger */
-	protected Logger logger = LoggerFactory.getLogger(MessageProducerFactory.class);
+    /**
+     * instance
+     */
+    private static MessageProducerFactory instance;
+    /**
+     * logger
+     */
+    protected Logger logger = LoggerFactory.getLogger(MessageProducerFactory.class);
+    /**
+     * producers
+     */
+    private Producer<?>[] producers;
 
-	/** instance */
-	private static MessageProducerFactory instance;
+    /**
+     * producerCache
+     */
+    private ConcurrentHashMap<String, Producer<?>> producerCache = new ConcurrentHashMap<String, Producer<?>>();
 
-	/** producers */
-	private Producer<?>[] producers;
+    /**
+     * private construction method
+     */
+    private MessageProducerFactory() {
+    }
 
-	/** producerCache */
-	private ConcurrentHashMap<String, Producer<?>> producerCache = new ConcurrentHashMap<String, Producer<?>>();
+    /**
+     * get singleton instance method
+     */
+    public synchronized static ProducerFactory getInstance() {
 
-	/**
-	 * @param producers
-	 *            the producers to set
-	 */
-	public void setProducers(Producer<?>[] producers) {
-		this.producers = producers;
-	}
+        if (instance == null)
+            instance = new MessageProducerFactory();
+        return instance;
+    }
 
-	/**
-	 * private construction method
-	 */
-	private MessageProducerFactory() {
-	}
+    /**
+     * @param producers the producers to set
+     */
+    public void setProducers(Producer<?>[] producers) {
+        this.producers = producers;
+    }
 
-	/**
-	 * get singleton instance method
-	 */
-	public synchronized static ProducerFactory getInstance() {
+    @Override
+    public <T> void addProducer(Producer<T> producer) throws MQException {
 
-		if (instance == null)
-			instance = new MessageProducerFactory();
-		return instance;
-	}
+        producerCache.put(producer.getProducerKey(), producer);
 
-	@Override
-	public <T> void addProducer(Producer<T> producer) throws MQException {
+        logger.debug("Add Producer : " + producer.getProducerKey());
 
-		producerCache.put(producer.getProducerKey(), producer);
+    }
 
-		logger.debug("Add Producer : " + producer.getProducerKey());
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> Producer<T> getProducer(String producerKey) throws MQException {
 
-	}
+        if (producerCache.containsKey(producerKey)) {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> Producer<T> getProducer(String producerKey) throws MQException {
+            logger.debug("Get Producer : " + producerKey);
 
-		if (producerCache.containsKey(producerKey)) {
+            return (Producer<T>) producerCache.get(producerKey);
 
-			logger.debug("Get Producer : " + producerKey);
+        } else {
 
-			return (Producer<T>) producerCache.get(producerKey);
+            logger.warn("Unknown ProducerKey : " + producerKey);
 
-		} else {
+            return null;
+        }
+    }
 
-			logger.warn("Unknown ProducerKey : " + producerKey);
+    @Override
+    public void init() throws MQException {
 
-			return null;
-		}
-	}
+        if (producers != null)
 
-	@Override
-	public void init() throws MQException {
+            for (int i = 0; i < producers.length; i++)
 
-		if (producers != null)
+                producerCache.put(producers[i].getProducerKey(), producers[i]);
 
-			for (int i = 0; i < producers.length; i++)
+    }
 
-				producerCache.put(producers[i].getProducerKey(), producers[i]);
+    @Override
+    public void destroy() throws MQException {
 
-	}
+        if (producers != null)
+            producers = null;
 
-	@Override
-	public void destroy() throws MQException {
+        if (instance != null)
+            instance = null;
 
-		if (producers != null)
-			producers = null;
+        producerCache.clear();
 
-		if (instance != null)
-			instance = null;
-
-		producerCache.clear();
-
-		logger.debug("Destroyed!");
-	}
+        logger.debug("Destroyed!");
+    }
 }

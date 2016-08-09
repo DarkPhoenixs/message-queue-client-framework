@@ -15,79 +15,79 @@
  */
 package org.darkphoenixs.kafka.codec;
 
+import org.darkphoenixs.mq.exception.MQException;
+import org.darkphoenixs.mq.message.MessageBeanImpl;
+
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.message.MessageBeanImpl;
-
 public class KafkaMessageEncoderImpl extends
-		KafkaMessageEncoder<Integer, MessageBeanImpl> {
+        KafkaMessageEncoder<Integer, MessageBeanImpl> {
 
-	@Override
-	public byte[] encodeKey(Integer key) throws MQException {
+    @Override
+    public byte[] encodeKey(Integer key) throws MQException {
 
-		if (key != null)
+        if (key != null)
 
-			return String.valueOf(key).getBytes();
+            return String.valueOf(key).getBytes();
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public byte[] encodeVal(MessageBeanImpl val) throws MQException {
+    @Override
+    public byte[] encodeVal(MessageBeanImpl val) throws MQException {
 
-		ByteArrayOutputStream bos = null;
+        ByteArrayOutputStream bos = null;
 
-		ObjectOutputStream oos = null;
+        ObjectOutputStream oos = null;
 
-		byte[] bytes = null;
+        byte[] bytes = null;
 
-		try {
-			bos = new ByteArrayOutputStream();
+        try {
+            bos = new ByteArrayOutputStream();
 
-			oos = new ObjectOutputStream(bos);
+            oos = new ObjectOutputStream(bos);
 
-			oos.writeObject(val);
+            oos.writeObject(val);
 
-			bytes = bos.toByteArray();
+            bytes = bos.toByteArray();
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			throw new MQException(e);
+            throw new MQException(e);
 
-		} finally {
+        } finally {
 
-			try {
-				if (oos != null)
-					oos.close();
+            try {
+                if (oos != null)
+                    oos.close();
 
-				if (bos != null)
-					bos.close();
+                if (bos != null)
+                    bos.close();
 
-			} catch (Exception e) {
-				throw new MQException(e);
-			}
-		}
+            } catch (Exception e) {
+                throw new MQException(e);
+            }
+        }
 
-		return bytes;
-	}
+        return bytes;
+    }
 
-	@Override
-	public Map<byte[], byte[]> batchEncode(
-			Map<Integer, MessageBeanImpl> messages) throws MQException {
+    @Override
+    public Map<byte[], byte[]> batchEncode(
+            Map<Integer, MessageBeanImpl> messages) throws MQException {
 
-		Map<byte[], byte[]> map = new HashMap<byte[], byte[]>();
+        Map<byte[], byte[]> map = new HashMap<byte[], byte[]>();
 
-		if (messages != null)
+        if (messages != null)
 
-			for (Entry<Integer, MessageBeanImpl> entry : messages.entrySet())
+            for (Entry<Integer, MessageBeanImpl> entry : messages.entrySet())
 
-				map.put(encodeKey(entry.getKey()), encodeVal(entry.getValue()));
+                map.put(encodeKey(entry.getKey()), encodeVal(entry.getValue()));
 
-		return map;
-	}
+        return map;
+    }
 }

@@ -104,14 +104,6 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
     }
 
     /**
-     * @param poolSize the poolSize to set
-     */
-    public void setPoolSize(int poolSize) {
-
-        this.poolSize = poolSize;
-    }
-
-    /**
      * @param zkhosts the zkhosts to set
      */
     public void setZkhosts(ZookeeperHosts zkhosts) {
@@ -120,6 +112,56 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
                 zkhosts.getTopic());
         this.setBrokerStr(brokers.getBrokerInfo());
         brokers.close();
+    }
+
+    /**
+     * @return the clientId
+     */
+    public String getClientId() {
+        return props.getProperty(KafkaConstants.CLIENT_ID);
+    }
+
+    /**
+     * @param clientId the clientId to set
+     */
+    public void setClientId(String clientId) {
+        props.setProperty(KafkaConstants.CLIENT_ID, clientId);
+    }
+
+    /**
+     * @return the brokerStr
+     */
+    public String getBrokerStr() {
+        return props.getProperty(KafkaConstants.BROKER_LIST);
+    }
+
+    /**
+     * @param brokerStr the brokerStr to set
+     */
+    public void setBrokerStr(String brokerStr) {
+        props.setProperty(KafkaConstants.BROKER_LIST, brokerStr);
+    }
+
+    /**
+     * @return the poolSize
+     */
+    public int getPoolSize() {
+        return poolSize;
+    }
+
+    /**
+     * @param poolSize the poolSize to set
+     */
+    public void setPoolSize(int poolSize) {
+
+        this.poolSize = poolSize;
+    }
+
+    /**
+     * @return the config
+     */
+    public Resource getConfig() {
+        return config;
     }
 
     /**
@@ -132,48 +174,6 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    /**
-     * @param clientId the clientId to set
-     */
-    public void setClientId(String clientId) {
-        props.setProperty(KafkaConstants.CLIENT_ID, clientId);
-    }
-
-    /**
-     * @param brokerStr the brokerStr to set
-     */
-    public void setBrokerStr(String brokerStr) {
-        props.setProperty(KafkaConstants.BROKER_LIST, brokerStr);
-    }
-
-    /**
-     * @return the clientId
-     */
-    public String getClientId() {
-        return props.getProperty(KafkaConstants.CLIENT_ID);
-    }
-
-    /**
-     * @return the brokerStr
-     */
-    public String getBrokerStr() {
-        return props.getProperty(KafkaConstants.BROKER_LIST);
-    }
-
-    /**
-     * @return the poolSize
-     */
-    public int getPoolSize() {
-        return poolSize;
-    }
-
-    /**
-     * @return the config
-     */
-    public Resource getConfig() {
-        return config;
     }
 
     /**

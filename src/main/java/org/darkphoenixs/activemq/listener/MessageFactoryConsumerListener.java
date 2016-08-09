@@ -15,8 +15,6 @@
  */
 package org.darkphoenixs.activemq.listener;
 
-import java.util.concurrent.ExecutorService;
-
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.factory.ConsumerFactory;
@@ -25,112 +23,119 @@ import org.darkphoenixs.mq.util.RefleTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ExecutorService;
+
 /**
  * <p>Title: MessageFactoryConsumerListener</p>
  * <p>Description: 消费者工厂监听器</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see MessageListener
  * @version 1.0
+ * @see MessageListener
+ * @since 2015-06-01
  */
 public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
 
-	/** logger */
-	protected Logger logger = LoggerFactory.getLogger(MessageFactoryConsumerListener.class);
-	
-	/** consumerKeyField */
-	private String consumerKeyField;
-	
-	/** consumerFactory */
-	private ConsumerFactory consumerFactory;
+    /**
+     * logger
+     */
+    protected Logger logger = LoggerFactory.getLogger(MessageFactoryConsumerListener.class);
 
-	/** threadPool */
-	private ExecutorService threadPool;
+    /**
+     * consumerKeyField
+     */
+    private String consumerKeyField;
 
-	/**
-	 * @return the consumerKeyField
-	 */
-	public String getConsumerKeyField() {
-		return consumerKeyField;
-	}
+    /**
+     * consumerFactory
+     */
+    private ConsumerFactory consumerFactory;
 
-	/**
-	 * @param consumerKeyField
-	 *            the consumerKeyField to set
-	 */
-	public void setConsumerKeyField(String consumerKeyField) {
-		this.consumerKeyField = consumerKeyField;
-	}
+    /**
+     * threadPool
+     */
+    private ExecutorService threadPool;
 
-	/**
-	 * @return the consumerFactory
-	 */
-	public ConsumerFactory getConsumerFactory() {
-		return consumerFactory;
-	}
+    /**
+     * @return the consumerKeyField
+     */
+    public String getConsumerKeyField() {
+        return consumerKeyField;
+    }
 
-	/**
-	 * @param consumerFactory
-	 *            the consumerFactory to set
-	 */
-	public void setConsumerFactory(ConsumerFactory consumerFactory) {
-		this.consumerFactory = consumerFactory;
-	}
+    /**
+     * @param consumerKeyField the consumerKeyField to set
+     */
+    public void setConsumerKeyField(String consumerKeyField) {
+        this.consumerKeyField = consumerKeyField;
+    }
 
-	/**
-	 * @return the threadPool
-	 */
-	public ExecutorService getThreadPool() {
-		return threadPool;
-	}
+    /**
+     * @return the consumerFactory
+     */
+    public ConsumerFactory getConsumerFactory() {
+        return consumerFactory;
+    }
 
-	/**
-	 * @param threadPool
-	 *            the threadPool to set
-	 */
-	public void setThreadPool(ExecutorService threadPool) {
-		this.threadPool = threadPool;
-	}
+    /**
+     * @param consumerFactory the consumerFactory to set
+     */
+    public void setConsumerFactory(ConsumerFactory consumerFactory) {
+        this.consumerFactory = consumerFactory;
+    }
 
-	@Override
-	public void onMessage(final T message) throws MQException {
+    /**
+     * @return the threadPool
+     */
+    public ExecutorService getThreadPool() {
+        return threadPool;
+    }
 
-		if (consumerFactory == null)	
-			throw new MQException("ConsumerFactory is null !");
+    /**
+     * @param threadPool the threadPool to set
+     */
+    public void setThreadPool(ExecutorService threadPool) {
+        this.threadPool = threadPool;
+    }
 
-		if (consumerKeyField == null)	
-			throw new MQException("ConsumerKeyField is null !");
-		
-		if (message == null)	
-			throw new MQException("Message is null !");
-		
-		final String consumerKey = RefleTool.getFieldValue(message, consumerKeyField, String.class);
-		
-		if (consumerKey == null)	
-			throw new MQException("Consumer Key is null !");
-		
-		final Consumer<T> consumer = consumerFactory.getConsumer(consumerKey);
-		
-		if (consumer == null)
-			throw new MQException("Consumer is null !");
-			
-		if (threadPool == null)
+    @Override
+    public void onMessage(final T message) throws MQException {
 
-			consumer.receive(message);
-		
-		else
-			threadPool.execute(new Runnable() {
+        if (consumerFactory == null)
+            throw new MQException("ConsumerFactory is null !");
 
-				@Override
-				public void run() {
+        if (consumerKeyField == null)
+            throw new MQException("ConsumerKeyField is null !");
 
-					try {
-						consumer.receive(message);
-					} catch (MQException e) {
-						logger.error(e.getMessage());
-					}
-				}
-			});
-	}
+        if (message == null)
+            throw new MQException("Message is null !");
+
+        final String consumerKey = RefleTool.getFieldValue(message, consumerKeyField, String.class);
+
+        if (consumerKey == null)
+            throw new MQException("Consumer Key is null !");
+
+        final Consumer<T> consumer = consumerFactory.getConsumer(consumerKey);
+
+        if (consumer == null)
+            throw new MQException("Consumer is null !");
+
+        if (threadPool == null)
+
+            consumer.receive(message);
+
+        else
+            threadPool.execute(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    try {
+                        consumer.receive(message);
+                    } catch (MQException e) {
+                        logger.error(e.getMessage());
+                    }
+                }
+            });
+    }
 }

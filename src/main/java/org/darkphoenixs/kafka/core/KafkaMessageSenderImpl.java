@@ -40,6 +40,18 @@ public class KafkaMessageSenderImpl<K, V> implements KafkaMessageSender<K, V> {
     private Producer<K, V> producer;
 
     /**
+     * Construction method.
+     *
+     * @param props param props
+     */
+    public KafkaMessageSenderImpl(Properties props) {
+
+        ProducerConfig config = new ProducerConfig(props);
+
+        this.producer = new Producer<K, V>(config);
+    }
+
+    /**
      * Gets producer.
      *
      * @return the producer
@@ -55,18 +67,6 @@ public class KafkaMessageSenderImpl<K, V> implements KafkaMessageSender<K, V> {
      */
     public void setProducer(Producer<K, V> producer) {
         this.producer = producer;
-    }
-
-    /**
-     * Construction method.
-     *
-     * @param props param props
-     */
-    public KafkaMessageSenderImpl(Properties props) {
-
-        ProducerConfig config = new ProducerConfig(props);
-
-        this.producer = new Producer<K, V>(config);
     }
 
     @Override

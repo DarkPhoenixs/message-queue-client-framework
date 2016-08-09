@@ -126,17 +126,10 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
     }
 
     /**
-     * @param poolSize the poolSize to set
+     * @return the clientId
      */
-    public void setPoolSize(int poolSize) {
-        this.poolSize = poolSize;
-    }
-
-    /**
-     * @param zookeeperStr the zookeeperStr to set
-     */
-    public void setZookeeperStr(String zookeeperStr) {
-        props.setProperty(KafkaConstants.ZOOKEEPER_LIST, zookeeperStr);
+    public String getClientId() {
+        return props.getProperty(KafkaConstants.CLIENT_ID);
     }
 
     /**
@@ -147,34 +140,6 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
     }
 
     /**
-     * @param autoCommit the autoCommit to set
-     */
-    public void setAutoCommit(boolean autoCommit) {
-        this.autoCommit = autoCommit;
-        props.setProperty(KafkaConstants.AUTO_COMMIT_ENABLE,
-                String.valueOf(autoCommit));
-    }
-
-    /**
-     * @param config the config to set
-     */
-    public void setConfig(Resource config) {
-        this.config = config;
-        try {
-            PropertiesLoaderUtils.fillProperties(props, this.config);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    /**
-     * @return the clientId
-     */
-    public String getClientId() {
-        return props.getProperty(KafkaConstants.CLIENT_ID);
-    }
-
-    /**
      * @return the zookeeperStr
      */
     public String getZookeeperStr() {
@@ -182,10 +147,26 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
     }
 
     /**
+     * @param zookeeperStr the zookeeperStr to set
+     */
+    public void setZookeeperStr(String zookeeperStr) {
+        props.setProperty(KafkaConstants.ZOOKEEPER_LIST, zookeeperStr);
+    }
+
+    /**
      * @return the autoCommit
      */
     public Boolean getAutoCommit() {
         return autoCommit;
+    }
+
+    /**
+     * @param autoCommit the autoCommit to set
+     */
+    public void setAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
+        props.setProperty(KafkaConstants.AUTO_COMMIT_ENABLE,
+                String.valueOf(autoCommit));
     }
 
     /**
@@ -210,10 +191,29 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
     }
 
     /**
+     * @param poolSize the poolSize to set
+     */
+    public void setPoolSize(int poolSize) {
+        this.poolSize = poolSize;
+    }
+
+    /**
      * @return the config
      */
     public Resource getConfig() {
         return config;
+    }
+
+    /**
+     * @param config the config to set
+     */
+    public void setConfig(Resource config) {
+        this.config = config;
+        try {
+            PropertiesLoaderUtils.fillProperties(props, this.config);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
@@ -329,6 +329,28 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
         }
     }
 
+    @Override
+    public synchronized void destroy() {
+
+        logger.info("Message receiver pool closing.");
+
+        if (consumer != null)
+            consumer.shutdown();
+
+        if (pool != null) {
+            pool.shutdown();
+
+            try {
+                if (!pool.awaitTermination(KafkaConstants.INIT_TIMEOUT_MS,
+                        TimeUnit.MILLISECONDS)) {
+                    logger.warn("Timed out waiting for consumer threads to shut down, exiting uncleanly");
+                }
+            } catch (InterruptedException e) {
+                logger.error("Interrupted during shutdown, exiting uncleanly");
+            }
+        }
+    }
+
     /**
      * Receiver thread to receive message.
      */
@@ -379,28 +401,6 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
                     + stream.clientId() + " end.");
         }
 
-    }
-
-    @Override
-    public synchronized void destroy() {
-
-        logger.info("Message receiver pool closing.");
-
-        if (consumer != null)
-            consumer.shutdown();
-
-        if (pool != null) {
-            pool.shutdown();
-
-            try {
-                if (!pool.awaitTermination(KafkaConstants.INIT_TIMEOUT_MS,
-                        TimeUnit.MILLISECONDS)) {
-                    logger.warn("Timed out waiting for consumer threads to shut down, exiting uncleanly");
-                }
-            } catch (InterruptedException e) {
-                logger.error("Interrupted during shutdown, exiting uncleanly");
-            }
-        }
     }
 
 }

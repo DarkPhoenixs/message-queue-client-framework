@@ -8,77 +8,77 @@ import org.junit.Test;
 
 public class MessageProducerTest {
 
-	@Test
-	public void test() throws Exception {
+    @Test
+    public void test() throws Exception {
 
-		MessageProducer<Integer, String> producer = new MessageProducer<Integer, String>();
+        MessageProducer<Integer, String> producer = new MessageProducer<Integer, String>();
 
-		Assert.assertNull(producer.getDestination());
-		KafkaDestination destination = new KafkaDestination("TempQueue");
-		producer.setDestination(destination);
+        Assert.assertNull(producer.getDestination());
+        KafkaDestination destination = new KafkaDestination("TempQueue");
+        producer.setDestination(destination);
 
-		Assert.assertNull(producer.getMessageTemplate());
-		KafkaMessageTemplateImpl messageTemplate = new KafkaMessageTemplateImpl();
-		producer.setMessageTemplate(messageTemplate);
+        Assert.assertNull(producer.getMessageTemplate());
+        KafkaMessageTemplateImpl messageTemplate = new KafkaMessageTemplateImpl();
+        producer.setMessageTemplate(messageTemplate);
 
-		Assert.assertEquals("TempQueue", producer.getProducerKey());
+        Assert.assertEquals("TempQueue", producer.getProducerKey());
 
-		producer.send("test");
+        producer.send("test");
 
-		producer.sendWithKey(1, "test");
+        producer.sendWithKey(1, "test");
 
-		KafkaMessageTemplateImpl2 messageTemplate2 = new KafkaMessageTemplateImpl2();
-		producer.setMessageTemplate(messageTemplate2);
+        KafkaMessageTemplateImpl2 messageTemplate2 = new KafkaMessageTemplateImpl2();
+        producer.setMessageTemplate(messageTemplate2);
 
-		try {
-			producer.send("err");
-		} catch (Exception e) {
-			Assert.assertTrue(e instanceof MQException);
-		}
+        try {
+            producer.send("err");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof MQException);
+        }
 
-		try {
-			producer.sendWithKey(2, "err");
-		} catch (Exception e) {
-			Assert.assertTrue(e instanceof MQException);
-		}
+        try {
+            producer.sendWithKey(2, "err");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof MQException);
+        }
 
-		producer.setProducerKey("QUEUE.TEST");
+        producer.setProducerKey("QUEUE.TEST");
 
-		Assert.assertEquals("QUEUE.TEST", producer.getProducerKey());
-	}
+        Assert.assertEquals("QUEUE.TEST", producer.getProducerKey());
+    }
 
-	private class KafkaMessageTemplateImpl extends
-			KafkaMessageTemplate<Integer, String> {
+    private class KafkaMessageTemplateImpl extends
+            KafkaMessageTemplate<Integer, String> {
 
-		@Override
-		public void convertAndSend(KafkaDestination destination, String message)
-				throws MQException {
-			System.out.println(destination + ":" + message);
-		}
+        @Override
+        public void convertAndSend(KafkaDestination destination, String message)
+                throws MQException {
+            System.out.println(destination + ":" + message);
+        }
 
-		@Override
-		public void convertAndSendWithKey(KafkaDestination destination,
-				Integer key, String message) throws MQException {
+        @Override
+        public void convertAndSendWithKey(KafkaDestination destination,
+                                          Integer key, String message) throws MQException {
 
-			System.out.println(destination + ":" + key + ":" + message);
-		}
-	}
+            System.out.println(destination + ":" + key + ":" + message);
+        }
+    }
 
-	private class KafkaMessageTemplateImpl2 extends
-			KafkaMessageTemplate<Integer, String> {
+    private class KafkaMessageTemplateImpl2 extends
+            KafkaMessageTemplate<Integer, String> {
 
-		@Override
-		public void convertAndSend(KafkaDestination destination, String message)
-				throws MQException {
+        @Override
+        public void convertAndSend(KafkaDestination destination, String message)
+                throws MQException {
 
-			throw new MQException("test");
-		}
+            throw new MQException("test");
+        }
 
-		@Override
-		public void convertAndSendWithKey(KafkaDestination destination,
-				Integer key, String message) throws MQException {
+        @Override
+        public void convertAndSendWithKey(KafkaDestination destination,
+                                          Integer key, String message) throws MQException {
 
-			throw new MQException("test");
-		}
-	}
+            throw new MQException("test");
+        }
+    }
 }

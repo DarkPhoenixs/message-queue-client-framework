@@ -15,74 +15,74 @@
  */
 package org.darkphoenixs.kafka.codec;
 
+import org.darkphoenixs.mq.codec.MessageDecoder;
+import org.darkphoenixs.mq.exception.MQException;
+import org.darkphoenixs.mq.message.MessageBeanImpl;
+
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.darkphoenixs.mq.codec.MessageDecoder;
-import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.message.MessageBeanImpl;
-
 /**
  * <p>Title: MessageDecoderImpl</p>
  * <p>Description: 消息解码器</p>
  *
- * @since 2015-06-01
  * @author Victor.Zxy
- * @see MessageDecoder
  * @version 1.0
+ * @see MessageDecoder
+ * @since 2015-06-01
  */
 public class MessageDecoderImpl implements MessageDecoder<MessageBeanImpl> {
 
-	@Override
-	public MessageBeanImpl decode(byte[] bytes) throws MQException {
+    @Override
+    public MessageBeanImpl decode(byte[] bytes) throws MQException {
 
-		MessageBeanImpl message = null;
+        MessageBeanImpl message = null;
 
-		ByteArrayInputStream bis = null;
+        ByteArrayInputStream bis = null;
 
-		ObjectInputStream ois = null;
+        ObjectInputStream ois = null;
 
-		try {
-			bis = new ByteArrayInputStream(bytes);
+        try {
+            bis = new ByteArrayInputStream(bytes);
 
-			ois = new ObjectInputStream(bis);
+            ois = new ObjectInputStream(bis);
 
-			message = (MessageBeanImpl) ois.readObject();
+            message = (MessageBeanImpl) ois.readObject();
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			throw new MQException(e);
+            throw new MQException(e);
 
-		} finally {
+        } finally {
 
-			try {
-				if (ois != null)
-					ois.close();
-				
-				if (bis != null)
-					bis.close();
-			
-			} catch (Exception e) {
-				throw new MQException(e);
-			}
-		}
+            try {
+                if (ois != null)
+                    ois.close();
 
-		return message;
-	}
+                if (bis != null)
+                    bis.close();
 
-	@Override
-	public List<MessageBeanImpl> batchDecode(List<byte[]> bytes)
-			throws MQException {
+            } catch (Exception e) {
+                throw new MQException(e);
+            }
+        }
 
-		List<MessageBeanImpl> list = new ArrayList<MessageBeanImpl>();
+        return message;
+    }
 
-		for (byte[] bs : bytes)
+    @Override
+    public List<MessageBeanImpl> batchDecode(List<byte[]> bytes)
+            throws MQException {
 
-			list.add(this.decode(bs));
+        List<MessageBeanImpl> list = new ArrayList<MessageBeanImpl>();
 
-		return list;
-	}
+        for (byte[] bs : bytes)
+
+            list.add(this.decode(bs));
+
+        return list;
+    }
 
 }

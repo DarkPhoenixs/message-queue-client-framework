@@ -16,146 +16,146 @@ import java.util.Map;
 
 public class KafkaMessageTemplateTest {
 
-	@Test
-	public void test() throws Exception {
+    @Test
+    public void test() throws Exception {
 
-		KafkaMessageTemplate<Integer, MessageBeanImpl> template = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
+        KafkaMessageTemplate<Integer, MessageBeanImpl> template = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
 
-		Assert.assertNull(template.getDecoder());
-		template.setDecoder(new KafkaMessageDecoderImpl());
+        Assert.assertNull(template.getDecoder());
+        template.setDecoder(new KafkaMessageDecoderImpl());
 
-		Assert.assertNull(template.getEncoder());
-		template.setEncoder(new KafkaMessageEncoderImpl());
+        Assert.assertNull(template.getEncoder());
+        template.setEncoder(new KafkaMessageEncoderImpl());
 
-		Assert.assertNull(template.getMessageSenderPool());
-		template.setMessageSenderPool(new KafkaMessageSenderPoolImpl());
+        Assert.assertNull(template.getMessageSenderPool());
+        template.setMessageSenderPool(new KafkaMessageSenderPoolImpl());
 
-		MessageBeanImpl messageBean = new MessageBeanImpl();
-		long date = System.currentTimeMillis();
-		messageBean.setMessageNo("MessageNo");
-		messageBean.setMessageType("MessageType");
-		messageBean.setMessageAckNo("MessageAckNo");
-		messageBean.setMessageDate(date);
-		messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
+        MessageBeanImpl messageBean = new MessageBeanImpl();
+        long date = System.currentTimeMillis();
+        messageBean.setMessageNo("MessageNo");
+        messageBean.setMessageType("MessageType");
+        messageBean.setMessageAckNo("MessageAckNo");
+        messageBean.setMessageDate(date);
+        messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
 
-		template.convertAndSend(new KafkaDestination("QUEUE.TEST"), messageBean);
+        template.convertAndSend(new KafkaDestination("QUEUE.TEST"), messageBean);
 
-		template.convertAndSendWithKey(new KafkaDestination("QUEUE.TEST"), 1,
-				messageBean);
+        template.convertAndSendWithKey(new KafkaDestination("QUEUE.TEST"), 1,
+                messageBean);
 
-		Assert.assertNull(template.getMessageReceiverPool());
-		template.setMessageReceiverPool(new KafkaMessageReceiverPoolImpl());
+        Assert.assertNull(template.getMessageReceiverPool());
+        template.setMessageReceiverPool(new KafkaMessageReceiverPoolImpl());
 
-		template.receiveAndConvert(new KafkaDestination("QUEUE.TEST"), 1, 0, 1);
+        template.receiveAndConvert(new KafkaDestination("QUEUE.TEST"), 1, 0, 1);
 
-		template.receiveWithKeyAndConvert(new KafkaDestination("QUEUE.TEST"),
-				0, 0, 0);
+        template.receiveWithKeyAndConvert(new KafkaDestination("QUEUE.TEST"),
+                0, 0, 0);
 
-	}
+    }
 
-	private class KafkaMessageSenderPoolImpl extends
-			KafkaMessageSenderPool<byte[], byte[]> {
+    private class KafkaMessageSenderPoolImpl extends
+            KafkaMessageSenderPool<byte[], byte[]> {
 
-		@Override
-		public KafkaMessageSender<byte[], byte[]> getSender() {
+        @Override
+        public KafkaMessageSender<byte[], byte[]> getSender() {
 
-			return new KafkaMessageSender<byte[], byte[]>() {
+            return new KafkaMessageSender<byte[], byte[]>() {
 
-				@Override
-				public void shutDown() {
+                @Override
+                public void shutDown() {
 
-					System.out.println("shutDown");
-				}
+                    System.out.println("shutDown");
+                }
 
-				@Override
-				public void sendWithKey(String topic, byte[] key, byte[] value) {
+                @Override
+                public void sendWithKey(String topic, byte[] key, byte[] value) {
 
-					System.out.println("sendWithKey" + topic);
-				}
+                    System.out.println("sendWithKey" + topic);
+                }
 
-				@Override
-				public void send(String topic, byte[] value) {
+                @Override
+                public void send(String topic, byte[] value) {
 
-					System.out.println("send" + topic);
-				}
+                    System.out.println("send" + topic);
+                }
 
-			};
-		}
+            };
+        }
 
-		@Override
-		public void returnSender(KafkaMessageSender<byte[], byte[]> sender) {
+        @Override
+        public void returnSender(KafkaMessageSender<byte[], byte[]> sender) {
 
-			System.out.println("sender" + sender);
-		}
-	}
+            System.out.println("sender" + sender);
+        }
+    }
 
-	private class KafkaMessageReceiverPoolImpl extends
-			KafkaMessageReceiverPool<byte[], byte[]> {
+    private class KafkaMessageReceiverPoolImpl extends
+            KafkaMessageReceiverPool<byte[], byte[]> {
 
-		@Override
-		public KafkaMessageReceiver<byte[], byte[]> getReceiver() {
+        @Override
+        public KafkaMessageReceiver<byte[], byte[]> getReceiver() {
 
-			return new KafkaMessageReceiver<byte[], byte[]>() {
+            return new KafkaMessageReceiver<byte[], byte[]>() {
 
-				@Override
-				public Map<byte[], byte[]> receiveWithKey(String topic,
-						int partition, long beginOffset, long readOffset) {
+                @Override
+                public Map<byte[], byte[]> receiveWithKey(String topic,
+                                                          int partition, long beginOffset, long readOffset) {
 
-					System.out.println("receiveWithKey" + topic);
+                    System.out.println("receiveWithKey" + topic);
 
-					return null;
-				}
+                    return null;
+                }
 
-				@Override
-				public List<byte[]> receive(String topic, int partition,
-						long beginOffset, long readOffset) {
+                @Override
+                public List<byte[]> receive(String topic, int partition,
+                                            long beginOffset, long readOffset) {
 
-					System.out.println("receive" + topic);
+                    System.out.println("receive" + topic);
 
-					MessageBeanImpl messageBean = new MessageBeanImpl();
+                    MessageBeanImpl messageBean = new MessageBeanImpl();
 
-					try {
-						return Arrays.asList(new MessageEncoderImpl()
-								.encode(messageBean));
-					} catch (MQException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+                    try {
+                        return Arrays.asList(new MessageEncoderImpl()
+                                .encode(messageBean));
+                    } catch (MQException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
 
-					return null;
-				}
+                    return null;
+                }
 
-				@Override
-				public long getLatestOffset(String topic, int partition) {
+                @Override
+                public long getLatestOffset(String topic, int partition) {
 
-					System.out.println("getLatestOffset" + topic);
+                    System.out.println("getLatestOffset" + topic);
 
-					return 0;
-				}
+                    return 0;
+                }
 
-				@Override
-				public long getEarliestOffset(String topic, int partition) {
+                @Override
+                public long getEarliestOffset(String topic, int partition) {
 
-					System.out.println("getEarliestOffset" + topic);
+                    System.out.println("getEarliestOffset" + topic);
 
-					return 0;
-				}
+                    return 0;
+                }
 
-				@Override
-				public int getPartitionCount(String topic) {
+                @Override
+                public int getPartitionCount(String topic) {
 
-					System.out.println("getPartitionCount" + topic);
+                    System.out.println("getPartitionCount" + topic);
 
-					return 0;
-				}
+                    return 0;
+                }
 
-				@Override
-				public void shutDown() {
-					System.out.println("shutDown");
-				}
+                @Override
+                public void shutDown() {
+                    System.out.println("shutDown");
+                }
 
-			};
-		}
+            };
+        }
 
-	}
+    }
 }
