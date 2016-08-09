@@ -214,16 +214,18 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
         KafkaMessageReceiver<K, V> receiver = getReceiver();
 
+        // partition size
         int partSize = receiver.getPartitionCount(topic);
 
         returnReceiver(receiver);
 
         switch (model) {
 
-            case MODEL_1:
+            case MODEL_1: // MODEL_1
 
                 if (poolSize == 0 || poolSize > partSize)
 
+                    // default partition size
                     setPoolSize(partSize);
 
                 receivPool = Executors.newFixedThreadPool(poolSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
@@ -243,7 +245,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                 break;
 
-            case MODEL_2:
+            case MODEL_2: // MODEL_2
 
                 receivPool = Executors.newFixedThreadPool(partSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
 
