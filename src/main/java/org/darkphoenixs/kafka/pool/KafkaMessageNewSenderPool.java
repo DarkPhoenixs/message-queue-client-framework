@@ -130,7 +130,7 @@ public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> 
     @Override
     public synchronized void init() {
 
-        logger.info("Message sender pool initializing. KafkaProducer config : " + props.toString());
+        logger.info("Message sender pool initializing. ");
 
         sender = KafkaMessageNewSender.getOrCreateInstance(props);
     }
