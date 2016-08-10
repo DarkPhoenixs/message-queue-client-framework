@@ -127,6 +127,27 @@ public class KafkaMessageAdapter<K, V> {
      * <p>Title: messageAdapter</p>
      * <p>Description: 消息适配方法</p>
      *
+     * @param consumerRecord the record
+     * @throws MQException the mq exception
+     * @since 1.4.0
+     */
+    public void messageAdapter(ConsumerRecord<?, ?> consumerRecord) throws MQException {
+
+        byte[] keyBytes = (byte[]) consumerRecord.key();
+
+        byte[] valBytes = (byte[]) consumerRecord.value();
+
+        K k = decoder.decodeKey(keyBytes);
+
+        V v = decoder.decodeVal(valBytes);
+
+        messageListener.onMessage(k, v);
+    }
+
+    /**
+     * <p>Title: messageAdapter</p>
+     * <p>Description: 消息适配方法</p>
+     *
      * @param records the records
      * @throws MQException the mq exception
      * @since 1.4.0
@@ -135,18 +156,10 @@ public class KafkaMessageAdapter<K, V> {
 
         StringBuffer exceptionMsg = new StringBuffer();
 
-        for (ConsumerRecord<?, ?> record : records) {
+        for (ConsumerRecord<?, ?> record : records)
 
             try {
-                byte[] keyBytes = (byte[]) record.key();
-
-                byte[] valBytes = (byte[]) record.value();
-
-                K k = decoder.decodeKey(keyBytes);
-
-                V v = decoder.decodeVal(valBytes);
-
-                messageListener.onMessage(k, v);
+                messageAdapter(record);
 
             } catch (Exception e) {
 
@@ -156,7 +169,6 @@ public class KafkaMessageAdapter<K, V> {
                         append(" partition: " + record.partition()).
                         append(" Exception: " + e.getMessage());
             }
-        }
 
         if (exceptionMsg.length() > 0)
 
