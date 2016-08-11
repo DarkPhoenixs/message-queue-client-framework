@@ -95,7 +95,7 @@ public class KafkaMessageNewReceiverPoolTest {
         // create topic
         TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
                 new String[]{"--create", "--topic", topic,
-                        "--replication-factor", "1", "--partitions", "1"});
+                        "--replication-factor", "1", "--partitions", "2"});
 
         TopicCommand.createTopic(zkUtils, options);
 
@@ -234,54 +234,6 @@ public class KafkaMessageNewReceiverPoolTest {
 
             messageProducer.send(getMessage());
         }
-
-        sendPool.destroy();
-
-        Thread.sleep(2000);
-
-        recePool.destroy();
-    }
-
-    @Test
-    public void test2() throws Exception {
-
-        KafkaMessageNewReceiverPool<byte[], byte[]> recePool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
-
-        recePool.setConfig(new DefaultResourceLoader()
-                .getResource("kafka/newconsumer.properties"));
-
-        recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
-
-        recePool.setPoolSize(4);
-
-        recePool.setModel(KafkaMessageNewReceiverPool.MODEL.MODEL_2.name());
-
-        recePool.setMessageAdapter(getAdapter());
-
-        recePool.init();
-
-        KafkaMessageNewSenderPool<byte[], byte[]> sendPool = new KafkaMessageNewSenderPool<byte[], byte[]>();
-
-        sendPool.setConfig(new DefaultResourceLoader()
-                .getResource("kafka/newproducer.properties"));
-
-        sendPool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
-
-        sendPool.init();
-
-        KafkaMessageTemplate<Integer, MessageBeanImpl> kafkaMessageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
-
-        kafkaMessageTemplate.setMessageSenderPool(sendPool);
-
-        kafkaMessageTemplate.setEncoder(new KafkaMessageEncoderImpl());
-
-        MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
-
-        messageProducer.setMessageTemplate(kafkaMessageTemplate);
-
-        messageProducer.setDestination(new KafkaDestination(topic));
-
-        messageProducer.sendWithKey(0, getMessage());
 
         sendPool.destroy();
 
