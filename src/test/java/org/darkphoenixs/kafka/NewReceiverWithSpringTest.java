@@ -127,6 +127,8 @@ public class NewReceiverWithSpringTest {
 
         sendPool.init();
 
+        Thread.sleep(2000);
+
         KafkaMessageTemplate<Integer, MessageBeanImpl> kafkaMessageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
 
         kafkaMessageTemplate.setMessageSenderPool(sendPool);
@@ -141,11 +143,10 @@ public class NewReceiverWithSpringTest {
 
         for (int i = 0; i < 10; i++)
 
-            messageProducer.send(getMessage());
+            messageProducer.sendWithKey(i, getMessage());
 
         sendPool.destroy();
 
-        Thread.sleep(2000);
 
         recePool.destroy();
     }
