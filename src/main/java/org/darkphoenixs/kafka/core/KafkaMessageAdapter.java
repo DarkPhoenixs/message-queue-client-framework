@@ -17,7 +17,6 @@ package org.darkphoenixs.kafka.core;
 
 import kafka.message.MessageAndMetadata;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoder;
 import org.darkphoenixs.kafka.listener.KafkaMessageListener;
 import org.darkphoenixs.mq.exception.MQException;
@@ -152,27 +151,27 @@ public class KafkaMessageAdapter<K, V> {
      * @throws MQException the mq exception
      * @since 1.4.0
      */
-    public void messageAdapter(ConsumerRecords<?, ?> records) throws MQException {
-
-        StringBuffer exceptionMsg = new StringBuffer();
-
-        for (ConsumerRecord<?, ?> record : records)
-
-            try {
-                messageAdapter(record);
-
-            } catch (Exception e) {
-
-                exceptionMsg.append(System.getProperty("line.separator")).
-                        append(" topic: " + record.topic()).
-                        append(" offset: " + record.offset()).
-                        append(" partition: " + record.partition()).
-                        append(" Exception: " + e.getMessage());
-            }
-
-        if (exceptionMsg.length() > 0)
-
-            throw new MQException(exceptionMsg.toString());
-    }
+//    public void messageAdapter(ConsumerRecords<?, ?> records) throws MQException {
+//
+//        StringBuffer exceptionMsg = new StringBuffer();
+//
+//        for (ConsumerRecord<?, ?> record : records)
+//
+//            try {
+//                messageAdapter(record);
+//
+//            } catch (Exception e) {
+//
+//                exceptionMsg.append(System.getProperty("line.separator")).
+//                        append(" topic: " + record.topic()).
+//                        append(" offset: " + record.offset()).
+//                        append(" partition: " + record.partition()).
+//                        append(" Exception: " + e.getMessage());
+//            }
+//
+//        if (exceptionMsg.length() > 0)
+//
+//            throw new MQException(exceptionMsg.toString());
+//    }
 }
 

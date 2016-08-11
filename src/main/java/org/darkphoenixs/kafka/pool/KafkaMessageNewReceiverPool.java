@@ -16,6 +16,7 @@
 
 package org.darkphoenixs.kafka.pool;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
@@ -193,10 +194,34 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
         this.messageAdapter = messageAdapter;
     }
 
+    /**
+     * Gets client id.
+     *
+     * @return the client id
+     */
+    public String getClientId() {
+        return this.props.getProperty(KafkaConstants.CLIENT_ID, "client_new_consumer");
+    }
+
+    /**
+     * Gets group id.
+     *
+     * @return the group id
+     */
+    public String getGroupId() {
+        return this.props.getProperty(KafkaConstants.GROUP_ID, "group_new_consumer");
+    }
+
     @Override
     public KafkaMessageReceiver<K, V> getReceiver() {
 
-        return new KafkaMessageNewReceiver<K, V>(props);
+        Properties properties = (Properties) props.clone();
+
+        properties.setProperty(KafkaConstants.GROUP_ID, "group_new_consumer");
+
+        properties.setProperty(KafkaConstants.CLIENT_ID, "client_new_consumer");
+
+        return new KafkaMessageNewReceiver<K, V>(properties);
     }
 
     @Override
@@ -224,24 +249,12 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
             case MODEL_1: // MODEL_1
 
                 if (poolSize == 0 || poolSize > partSize)
-
-                    // default partition size
+                    // pool size default partition size
                     setPoolSize(partSize);
 
-                receivPool = Executors.newFixedThreadPool(poolSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
+                receivPool = Executors.newFixedThreadPool(partSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
 
-                logger.info("Kafka Consumer config : " + props.toString());
-
-                logger.info("Message Receiver Pool initializing. poolSize : " + poolSize);
-
-                for (int i = 0; i < poolSize; i++) {
-
-                    ReceiverThread receiverThread = new ReceiverThread(props, topic, messageAdapter);
-
-                    threads.add(receiverThread);
-
-                    receivPool.submit(receiverThread);
-                }
+                logger.info("Message Receiver Pool initializing. poolSize : " + partSize);
 
                 break;
 
@@ -251,24 +264,25 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                 handlePool = Executors.newFixedThreadPool(poolSize, new KafkaPoolThreadFactory(HandlerThread.tagger + "-" + topic));
 
-                logger.info("Kafka Consumer config : " + props.toString());
-
                 logger.info("Message Receiver Pool initializing poolSize : " + partSize);
 
                 logger.info("Message Handler Pool initializing poolSize : " + poolSize);
 
-                for (int i = 0; i < partSize; i++) {
-
-                    ReceiverThread receiverThread = new ReceiverThread(props, topic, messageAdapter);
-
-                    threads.add(receiverThread);
-
-                    receivPool.submit(receiverThread);
-                }
-
                 break;
         }
 
+        for (int i = 0; i < partSize; i++) {
+
+            Properties properties = (Properties) props.clone();
+
+            properties.setProperty(KafkaConstants.CLIENT_ID, getClientId() + "-" + i);
+
+            ReceiverThread receiverThread = new ReceiverThread(properties, topic, messageAdapter);
+
+            threads.add(receiverThread);
+
+            receivPool.submit(receiverThread);
+        }
     }
 
     @Override
@@ -299,7 +313,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
         /**
          * Model 2 model.
          */
-        MODEL_2;
+        MODEL_2
     }
 
     /**
@@ -353,13 +367,17 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                         case MODEL_1:
 
-                            try {
-                                adapter.messageAdapter(records);
+                            for (ConsumerRecord<K, V> record : records)
 
-                            } catch (MQException e) {
+                                try {
+                                    adapter.messageAdapter(record);
 
-                                logger.error(Thread.currentThread().getName() + " Exception: " + e.getMessage());
-                            }
+                                } catch (MQException e) {
+
+                                    logger.error(Thread.currentThread().getName() + " topic: "
+                                            + record.topic() + " offset: " + record.offset() + " partition: "
+                                            + record.partition() + " Exception: " + e.getMessage());
+                                }
 
                             break;
 
@@ -426,13 +444,17 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             logger.info(Thread.currentThread().getName() + " start.");
 
-            try {
-                adapter.messageAdapter(records);
+            for (ConsumerRecord<K, V> record : records)
 
-            } catch (MQException e) {
+                try {
+                    adapter.messageAdapter(record);
 
-                logger.error(Thread.currentThread().getName() + " Exception: " + e.getMessage());
-            }
+                } catch (MQException e) {
+
+                    logger.error(Thread.currentThread().getName() + " topic: "
+                            + record.topic() + " offset: " + record.offset() + " partition: "
+                            + record.partition() + " Exception: " + e.getMessage());
+                }
 
             logger.info(Thread.currentThread().getName() + " end.");
         }

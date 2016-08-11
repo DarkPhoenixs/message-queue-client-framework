@@ -2,8 +2,6 @@ package org.darkphoenixs.kafka.core;
 
 import kafka.message.MessageAndMetadata;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.common.TopicPartition;
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
 import org.darkphoenixs.kafka.listener.MessageConsumerListener;
 import org.darkphoenixs.mq.consumer.Consumer;
@@ -11,9 +9,6 @@ import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.List;
 
 public class KafkaMessageAdapterTest {
 
@@ -63,7 +58,7 @@ public class KafkaMessageAdapterTest {
         }
 
         try {
-            adapter.messageAdapter(new ConsumerRecords<Object, Object>(new HashMap<TopicPartition, List<ConsumerRecord<Object, Object>>>()));
+            adapter.messageAdapter(new ConsumerRecord<Object, Object>("QUEUE.TEST", 0, 1, null, null));
         } catch (Exception e) {
 
         }

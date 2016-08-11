@@ -30,6 +30,7 @@ public interface KafkaConstants {
     String ZOOKEEPER_LIST = "zookeeper.connect";
     String PRODUCER_TYPE = "producer.type";
     String CLIENT_ID = "client.id";
+    String GROUP_ID = "group.id";
     String SERIALIZER_CLASS = "serializer.class";
     String KEY_SERIALIZER_CLASS = "key.serializer.class";
     String AUTO_COMMIT_ENABLE = "auto.commit.enable";
