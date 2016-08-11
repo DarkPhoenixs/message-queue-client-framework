@@ -109,9 +109,9 @@ public class KafkaMessageNewReceiverPoolTest {
     @After
     public void tearDown() throws Exception {
 
-//        kafkaServer.shutdown();
-//        zkClient.close();
-//        zkServer.shutdown();
+        kafkaServer.shutdown();
+        zkClient.close();
+        zkServer.shutdown();
     }
 
     @Test
