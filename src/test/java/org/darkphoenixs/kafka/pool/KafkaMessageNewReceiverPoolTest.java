@@ -237,7 +237,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         sendPool.destroy();
 
-        Thread.sleep(5000);
+        Thread.sleep(2000);
 
         recePool.destroy();
     }
@@ -285,7 +285,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         sendPool.destroy();
 
-        Thread.sleep(5000);
+        Thread.sleep(2000);
 
         recePool.destroy();
     }

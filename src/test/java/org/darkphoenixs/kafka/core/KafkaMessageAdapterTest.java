@@ -3,6 +3,7 @@ package org.darkphoenixs.kafka.core;
 import kafka.message.MessageAndMetadata;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
+import org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl;
 import org.darkphoenixs.kafka.listener.MessageConsumerListener;
 import org.darkphoenixs.mq.consumer.Consumer;
 import org.darkphoenixs.mq.exception.MQException;
@@ -57,8 +58,11 @@ public class KafkaMessageAdapterTest {
             Assert.assertTrue(e instanceof NullPointerException);
         }
 
+        KafkaMessageEncoderImpl encoder = new KafkaMessageEncoderImpl();
+
+
         try {
-            adapter.messageAdapter(new ConsumerRecord<Object, Object>("QUEUE.TEST", 0, 1, null, null));
+            adapter.messageAdapter(new ConsumerRecord<Object, Object>("QUEUE.TEST", 0, 1, encoder.encodeKey(1), encoder.encodeVal(new MessageBeanImpl())));
         } catch (Exception e) {
 
         }
