@@ -275,7 +275,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             Properties properties = (Properties) props.clone();
 
-            properties.setProperty(KafkaConstants.CLIENT_ID, getClientId() + "-" + i);
+            properties.setProperty(KafkaConstants.CLIENT_ID, getClientId() + "-" + topic + "-" + i);
 
             ReceiverThread receiverThread = new ReceiverThread(properties, topic, messageAdapter);
 
