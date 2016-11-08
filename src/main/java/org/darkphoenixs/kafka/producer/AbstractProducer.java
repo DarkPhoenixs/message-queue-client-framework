@@ -96,7 +96,6 @@ public abstract class AbstractProducer<K, V> implements Producer<V> {
 
         logger.debug("Send Success, ProducerKey : " + this.getProducerKey()
                 + " , Message : " + message);
-
     }
 
     /**
@@ -111,7 +110,10 @@ public abstract class AbstractProducer<K, V> implements Producer<V> {
     public void sendWithKey(K key, V message) throws MQException {
 
         try {
-            messageTemplate.convertAndSendWithKey(destination, key, message);
+
+            V obj = doSend(message);
+
+            messageTemplate.convertAndSendWithKey(destination, key, obj);
 
         } catch (Exception e) {
 
