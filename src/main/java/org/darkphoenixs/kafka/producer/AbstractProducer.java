@@ -110,7 +110,6 @@ public abstract class AbstractProducer<K, V> implements Producer<V> {
     public void sendWithKey(K key, V message) throws MQException {
 
         try {
-
             V obj = doSend(message);
 
             messageTemplate.convertAndSendWithKey(destination, key, obj);
