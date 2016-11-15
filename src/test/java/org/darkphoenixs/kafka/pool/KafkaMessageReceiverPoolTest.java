@@ -165,7 +165,7 @@ public class KafkaMessageReceiverPoolTest {
     }
 
     @Test
-    public void test1() throws Exception {
+    public void test3() throws Exception {
 
         KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
@@ -175,6 +175,51 @@ public class KafkaMessageReceiverPoolTest {
         recePool.setMessageAdapter(getAdapter());
 
         recePool.setAutoCommit(false);
+
+        recePool.init();
+
+        KafkaMessageEncoderImpl messageEncoder = new KafkaMessageEncoderImpl();
+
+        KafkaDestination kafkaDestination = new KafkaDestination(topic);
+
+        KafkaMessageSenderPool<byte[], byte[]> sendPool = new KafkaMessageSenderPool<byte[], byte[]>();
+
+        sendPool.setProps(TestUtils.getProducerConfig("localhost:" + port));
+
+        sendPool.init();
+
+        KafkaMessageTemplate<Integer, MessageBeanImpl> messageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
+
+        messageTemplate.setEncoder(messageEncoder);
+
+        messageTemplate.setMessageSenderPool(sendPool);
+
+        MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
+
+        messageProducer.setMessageTemplate(messageTemplate);
+
+        messageProducer.setDestination(kafkaDestination);
+
+        messageProducer.send(getMessage());
+
+        Thread.sleep(5000);
+
+        sendPool.destroy();
+
+        recePool.destroy();
+    }
+
+    @Test
+    public void test1() throws Exception {
+
+        KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
+
+        recePool.setProps(TestUtils.createConsumerProperties(zkConnect,
+                "group_1", "consumer_id", 1000));
+
+        recePool.setMessageAdapter(getAdapter());
+
+        recePool.setAutoCommit(true);
 
         recePool.init();
 
