@@ -85,10 +85,6 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      */
     private Resource config;
     /**
-     * autoCommit
-     */
-    private Boolean autoCommit = true;
-    /**
      * retryCount
      */
     private int retryCount = 3;
@@ -159,14 +155,13 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      * @return the autoCommit
      */
     public Boolean getAutoCommit() {
-        return autoCommit;
+        return Boolean.valueOf(props.getProperty(KafkaConstants.AUTO_COMMIT_ENABLE, "true"));
     }
 
     /**
      * @param autoCommit the autoCommit to set
      */
     public void setAutoCommit(boolean autoCommit) {
-        this.autoCommit = autoCommit;
         props.setProperty(KafkaConstants.AUTO_COMMIT_ENABLE,
                 String.valueOf(autoCommit));
     }
