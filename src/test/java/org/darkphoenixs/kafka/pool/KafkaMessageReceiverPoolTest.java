@@ -121,7 +121,9 @@ public class KafkaMessageReceiverPoolTest {
         pool.setClientId("test");
 
         Assert.assertTrue(pool.getAutoCommit());
-        pool.setAutoCommit(false);
+        pool.setAutoCommit(true);
+
+        Assert.assertEquals(pool.getRetryCount(), 3);
 
         Assert.assertNull(pool.getConfig());
         pool.setConfig(new DefaultResourceLoader()
@@ -212,12 +214,20 @@ public class KafkaMessageReceiverPoolTest {
 
         KafkaMessageReceiverPool<byte[], byte[]> recePool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
-        recePool.setProps(TestUtils.createConsumerProperties(zkConnect,
-                "group_1", "consumer_id", 1000));
+        Properties properties = TestUtils.createConsumerProperties(zkConnect,
+                "group_1", "consumer_id", 1000);
+
+        properties.setProperty("connect.timeout.ms", "1000");
+        properties.setProperty("reconnect.interval", "1000");
+        properties.setProperty("auto.offset.reset", "largest");
+
+        recePool.setProps(properties);
 
         recePool.setMessageAdapter(getAdapterWishErr());
 
-        recePool.setAutoCommit(true);
+        recePool.setAutoCommit(false);
+
+        recePool.setRetryCount(1);
 
         recePool.init();
 
@@ -245,7 +255,9 @@ public class KafkaMessageReceiverPoolTest {
 
         messageProducer.send(getMessage());
 
-        Thread.sleep(5000);
+        messageProducer.send(getMessage());
+
+        Thread.sleep(50000);
 
         sendPool.destroy();
 

@@ -15,6 +15,8 @@
  */
 package org.darkphoenixs.kafka.pool;
 
+import kafka.common.OffsetAndMetadata;
+import kafka.common.TopicAndPartition;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
@@ -35,10 +37,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -89,7 +88,10 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      * autoCommit
      */
     private Boolean autoCommit = true;
-
+    /**
+     * retryCount
+     */
+    private int retryCount = 3;
     /**
      * keyDecoder
      */
@@ -167,6 +169,22 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
         this.autoCommit = autoCommit;
         props.setProperty(KafkaConstants.AUTO_COMMIT_ENABLE,
                 String.valueOf(autoCommit));
+    }
+
+    /**
+     * @return the retryCount
+     */
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    /**
+     * Note: AutoCommit is false to take effect.
+     *
+     * @param retryCount the retryCount to set
+     */
+    public void setRetryCount(int retryCount) {
+        this.retryCount = retryCount;
     }
 
     /**
@@ -375,26 +393,38 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
             ConsumerIterator<K, V> it = stream.iterator();
 
+            int failCount = 0;
+
             while (it.hasNext()) {
 
                 MessageAndMetadata<K, V> messageAndMetadata = it.next();
 
                 try {
-
                     this.adapter.messageAdapter(messageAndMetadata);
 
                 } catch (MQException e) {
 
-                    logger.error(Thread.currentThread().getName()
-                            + " productArity: " + messageAndMetadata.productArity()
-                            + " productPrefix: " + messageAndMetadata.productPrefix() + " topic: "
-                            + messageAndMetadata.topic() + " offset: " + messageAndMetadata.offset() + " partition: "
-                            + messageAndMetadata.partition() + " Exception: " + e.getMessage());
-                }
+                    failCount++;
 
-				/* commitOffsets */
-                if (!getAutoCommit())
-                    consumer.commitOffsets();
+                    logger.error(Thread.currentThread().getName()
+                            + " failCount: " + failCount
+                            + " topic: " + messageAndMetadata.topic()
+                            + " offset: " + messageAndMetadata.offset()
+                            + " partition: " + messageAndMetadata.partition()
+                            + " Exception: " + e.getMessage());
+
+                } finally {
+
+                    /* commitOffsets */
+                    if (!getAutoCommit() && (failCount == 0 || failCount > retryCount)) {
+
+                        failCount = 0;
+
+                        consumer.commitOffsets(Collections.singletonMap(
+                                TopicAndPartition.apply(messageAndMetadata.topic(), messageAndMetadata.partition()),
+                                OffsetAndMetadata.apply(messageAndMetadata.offset() + 1)), true);
+                    }
+                }
             }
 
             logger.info(Thread.currentThread().getName() + " clientId: "
