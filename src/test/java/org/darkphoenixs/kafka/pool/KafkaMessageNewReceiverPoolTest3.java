@@ -35,12 +35,10 @@ import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.kafka.core.KafkaMessageTemplate;
 import org.darkphoenixs.kafka.listener.KafkaMessageConsumerListener;
-import org.darkphoenixs.kafka.listener.MessageConsumerListener;
 import org.darkphoenixs.kafka.producer.MessageProducer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -52,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class KafkaMessageNewReceiverPoolTest {
+public class KafkaMessageNewReceiverPoolTest3 {
 
     private int brokerId = 0;
     private String topic = "QUEUE.TEST";
@@ -72,8 +70,8 @@ public class KafkaMessageNewReceiverPoolTest {
                 JaasUtils.isZkSecurityEnabled());
         zkClient = zkUtils.zkClient();
 
-        final Option<File> noFile = scala.Option.apply(null);
-        final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option
+        final Option<File> noFile = Option.apply(null);
+        final Option<SecurityProtocol> noInterBrokerSecurityProtocol = Option
                 .apply(null);
 
         kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
@@ -115,101 +113,6 @@ public class KafkaMessageNewReceiverPoolTest {
     }
 
     @Test
-    public void test0() throws Exception {
-
-        KafkaMessageNewReceiverPool<byte[], byte[]> pool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
-
-        pool.returnReceiver(null);
-
-        try {
-            pool.returnReceiver(pool.getReceiver());
-        } catch (Exception e) {
-        }
-
-        pool.destroy();
-
-        Assert.assertNull(pool.getConfig());
-
-        Assert.assertEquals(pool.getPoolSize(), 0);
-
-        Assert.assertNotNull(pool.getProps());
-
-        Assert.assertNull(pool.getMessageAdapter());
-
-        Assert.assertEquals(pool.getModel(), "MODEL_1");
-
-        pool.setModel("MODEL_1");
-
-        Assert.assertEquals(pool.getBatch(), "NON_BATCH");
-
-        pool.setBatch("NON_BATCH");
-
-        Assert.assertEquals(pool.getCommit(), "AUTO_COMMIT");
-
-        pool.setCommit("AUTO_COMMIT");
-
-        Assert.assertEquals(pool.getRetryCount(), 3);
-
-        pool.setRetryCount(1);
-
-        Assert.assertEquals(pool.getHandleMultiple(), 2);
-
-        pool.setHandleMultiple(1);
-
-        pool.setPoolSize(10);
-
-        pool.setProps(new Properties());
-
-        pool.setConfig(new DefaultResourceLoader()
-                .getResource("kafka/newconsumer.properties"));
-
-        pool.setConfig(new DefaultResourceLoader()
-                .getResource("kafka/newconsumer1.properties"));
-
-        pool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
-
-        pool.getGroupId();
-
-        pool.getClientId();
-
-        KafkaMessageAdapter<Integer, MessageBeanImpl> adapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
-
-        adapter.setDestination(new KafkaDestination(topic));
-
-        adapter.setDecoder(new KafkaMessageDecoderImpl());
-
-        KafkaMessageConsumerListener<Integer, MessageBeanImpl> listener = new KafkaMessageConsumerListener<Integer, MessageBeanImpl>();
-
-        listener.setConsumer(new MessageConsumer<Integer, MessageBeanImpl>());
-
-        adapter.setMessageListener(listener);
-
-        pool.setMessageAdapter(adapter);
-
-        pool.init();
-
-        pool.destroy();
-
-        pool.setPoolSize(1);
-
-        pool.init();
-
-        pool.destroy();
-
-        pool.setPoolSize(0);
-
-        pool.init();
-
-        pool.destroy();
-
-        pool.setModel("MODEL_2");
-
-        pool.init();
-
-        pool.destroy();
-    }
-
-    @Test
     public void test1() throws Exception {
 
         KafkaMessageNewReceiverPool<byte[], byte[]> recePool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
@@ -220,6 +123,10 @@ public class KafkaMessageNewReceiverPoolTest {
         recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
 
         recePool.setPoolSize(4);
+
+        recePool.setBatch("BATCH");
+
+        recePool.setCommit("SYNC_COMMIT");
 
         recePool.setMessageAdapter(getAdapter());
 
@@ -269,6 +176,10 @@ public class KafkaMessageNewReceiverPoolTest {
         recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
 
         recePool.setModel("MODEL_2");
+
+        recePool.setBatch("BATCH");
+
+        recePool.setCommit("SYNC_COMMIT");
 
         recePool.setPoolSize(4);
 
@@ -321,7 +232,9 @@ public class KafkaMessageNewReceiverPoolTest {
 
         recePool.setPoolSize(4);
 
-        recePool.setRetryCount(1);
+        recePool.setBatch("BATCH");
+
+        recePool.setCommit("ASYNC_COMMIT");
 
         recePool.setMessageAdapter(getAdapterWishErr());
 
@@ -371,6 +284,10 @@ public class KafkaMessageNewReceiverPoolTest {
         recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
 
         recePool.setModel("MODEL_2");
+
+        recePool.setBatch("BATCH");
+
+        recePool.setCommit("ASYNC_COMMIT");
 
         recePool.setPoolSize(4);
 
