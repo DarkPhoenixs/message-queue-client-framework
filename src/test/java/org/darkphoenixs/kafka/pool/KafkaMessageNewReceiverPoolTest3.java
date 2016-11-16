@@ -338,7 +338,14 @@ public class KafkaMessageNewReceiverPoolTest3 {
 
         KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
-        MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
+        MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>(){
+
+            @Override
+            protected void doReceive(Map<Integer, MessageBeanImpl> messages) throws MQException {
+
+                System.out.println(messages);
+            }
+        };
 
         KafkaMessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new KafkaMessageConsumerListener<Integer, MessageBeanImpl>();
 
