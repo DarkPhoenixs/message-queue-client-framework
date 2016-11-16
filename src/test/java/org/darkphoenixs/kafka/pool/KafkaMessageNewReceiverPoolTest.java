@@ -259,7 +259,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         Thread.sleep(2000);
 
-        recePool.setCommit("AYNC_COMMIT");
+        recePool.setCommit("ASYNC_COMMIT");
 
         for (int i = 0; i < 10; i++) {
 
