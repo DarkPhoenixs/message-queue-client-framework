@@ -170,19 +170,19 @@ public class KafkaMessageReceiverImplTest {
 
         }
 
-//        receiver.receiveWithKey(topic, 0, 1, 1);
-//
-//        receiver.receiveWithKey(topic, 0, 1, 2);
-//
-//        receiver.receiveWithKey(topic, 0, 2, 2);
-//
-//        receiver.receiveWithKey(topic, 0, 1, 2);
-//
-//        try {
-//            receiver.receiveWithKey(topic, 1, 1, 0);
-//        } catch (Exception e) {
-//
-//        }
+        receiver.receiveWithKey(topic, 0, 1, 1);
+
+        receiver.receiveWithKey(topic, 0, 1, 2);
+
+        receiver.receiveWithKey(topic, 0, 2, 2);
+
+        receiver.receiveWithKey(topic, 0, 1, 2);
+
+        try {
+            receiver.receiveWithKey(topic, 1, 1, 0);
+        } catch (Exception e) {
+
+        }
 
         receiver.shutDown();
 

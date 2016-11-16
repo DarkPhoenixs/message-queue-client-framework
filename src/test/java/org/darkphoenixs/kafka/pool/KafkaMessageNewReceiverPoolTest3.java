@@ -124,8 +124,6 @@ public class KafkaMessageNewReceiverPoolTest3 {
 
         recePool.setPoolSize(4);
 
-        recePool.setBatch("BATCH");
-
         recePool.setCommit("SYNC_COMMIT");
 
         recePool.setMessageAdapter(getAdapter());
@@ -176,8 +174,6 @@ public class KafkaMessageNewReceiverPoolTest3 {
         recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
 
         recePool.setModel("MODEL_2");
-
-        recePool.setBatch("BATCH");
 
         recePool.setCommit("SYNC_COMMIT");
 
@@ -232,8 +228,6 @@ public class KafkaMessageNewReceiverPoolTest3 {
 
         recePool.setPoolSize(4);
 
-        recePool.setBatch("BATCH");
-
         recePool.setCommit("ASYNC_COMMIT");
 
         recePool.setMessageAdapter(getAdapterWishErr());
@@ -284,8 +278,6 @@ public class KafkaMessageNewReceiverPoolTest3 {
         recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
 
         recePool.setModel("MODEL_2");
-
-        recePool.setBatch("BATCH");
 
         recePool.setCommit("ASYNC_COMMIT");
 
