@@ -253,6 +253,13 @@ public class KafkaMessageNewReceiverPoolTest {
             messageProducer.sendWithKey(i, getMessage());
         }
 
+        recePool.setBatch("BATCH");
+
+        for (int i = 0; i < 10; i++) {
+
+            messageProducer.sendWithKey(i, getMessage());
+        }
+
         sendPool.destroy();
 
         recePool.destroy();
@@ -298,6 +305,13 @@ public class KafkaMessageNewReceiverPoolTest {
         messageProducer.setMessageTemplate(kafkaMessageTemplate);
 
         messageProducer.setDestination(new KafkaDestination(topic));
+
+        for (int i = 0; i < 10; i++) {
+
+            messageProducer.sendWithKey(i, getMessage());
+        }
+
+        recePool.setBatch("BATCH");
 
         for (int i = 0; i < 10; i++) {
 
@@ -355,6 +369,13 @@ public class KafkaMessageNewReceiverPoolTest {
             messageProducer.sendWithKey(i, getMessage());
         }
 
+        recePool.setBatch("BATCH");
+
+        for (int i = 0; i < 10; i++) {
+
+            messageProducer.sendWithKey(i, getMessage());
+        }
+
         sendPool.destroy();
 
         recePool.destroy();
@@ -406,6 +427,13 @@ public class KafkaMessageNewReceiverPoolTest {
             messageProducer.sendWithKey(i, getMessage());
         }
 
+        recePool.setBatch("BATCH");
+
+        for (int i = 0; i < 10; i++) {
+
+            messageProducer.sendWithKey(i, getMessage());
+        }
+
         sendPool.destroy();
 
         recePool.destroy();
@@ -417,7 +445,23 @@ public class KafkaMessageNewReceiverPoolTest {
 
         KafkaDestination kafkaDestination = new KafkaDestination(topic);
 
-        MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>();
+        MessageConsumer<Integer, MessageBeanImpl> MessageConsumer = new MessageConsumer<Integer, MessageBeanImpl>() {
+
+            @Override
+            protected void doReceive(MessageBeanImpl message) throws MQException {
+                System.out.println(message);
+            }
+
+            @Override
+            protected void doReceive(Integer key, MessageBeanImpl val) throws MQException {
+                System.out.println(key + ":" +val);
+            }
+
+            @Override
+            protected void doReceive(Map<Integer, MessageBeanImpl> messages) throws MQException {
+                System.out.println(messages);
+            }
+        };
 
         KafkaMessageConsumerListener<Integer, MessageBeanImpl> messageConsumerListener = new KafkaMessageConsumerListener<Integer, MessageBeanImpl>();
 
