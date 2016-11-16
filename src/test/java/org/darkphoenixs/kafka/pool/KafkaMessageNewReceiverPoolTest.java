@@ -147,6 +147,8 @@ public class KafkaMessageNewReceiverPoolTest {
         Assert.assertEquals(pool.getCommit(), "AUTO_COMMIT");
 
         pool.setCommit("AUTO_COMMIT");
+        pool.setCommit("SYNC_COMMIT");
+        pool.setCommit("ASYNC_COMMIT");
 
         Assert.assertEquals(pool.getRetryCount(), 3);
 
@@ -255,6 +257,8 @@ public class KafkaMessageNewReceiverPoolTest {
 
         recePool.setBatch("BATCH");
 
+        recePool.setCommit("SYNC_COMMIT");
+
         for (int i = 0; i < 10; i++) {
 
             messageProducer.sendWithKey(i, getMessage());
@@ -312,6 +316,8 @@ public class KafkaMessageNewReceiverPoolTest {
         }
 
         recePool.setBatch("BATCH");
+
+        recePool.setCommit("ASYNC_COMMIT");
 
         for (int i = 0; i < 10; i++) {
 
@@ -371,6 +377,8 @@ public class KafkaMessageNewReceiverPoolTest {
 
         recePool.setBatch("BATCH");
 
+        recePool.setCommit("ASYNC_COMMIT");
+
         for (int i = 0; i < 10; i++) {
 
             messageProducer.sendWithKey(i, getMessage());
@@ -428,6 +436,8 @@ public class KafkaMessageNewReceiverPoolTest {
         }
 
         recePool.setBatch("BATCH");
+
+        recePool.setCommit("SYNC_COMMIT");
 
         for (int i = 0; i < 10; i++) {
 
