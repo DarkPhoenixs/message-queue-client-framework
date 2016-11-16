@@ -255,6 +255,8 @@ public class KafkaMessageNewReceiverPoolTest {
             messageProducer.sendWithKey(i, getMessage());
         }
 
+        Thread.sleep(2000);
+
         recePool.setBatch("BATCH");
 
         recePool.setCommit("SYNC_COMMIT");
@@ -263,6 +265,8 @@ public class KafkaMessageNewReceiverPoolTest {
 
             messageProducer.sendWithKey(i, getMessage());
         }
+
+        Thread.sleep(2000);
 
         sendPool.destroy();
 
@@ -315,6 +319,8 @@ public class KafkaMessageNewReceiverPoolTest {
             messageProducer.sendWithKey(i, getMessage());
         }
 
+        Thread.sleep(2000);
+
         recePool.setBatch("BATCH");
 
         recePool.setCommit("ASYNC_COMMIT");
@@ -323,6 +329,8 @@ public class KafkaMessageNewReceiverPoolTest {
 
             messageProducer.sendWithKey(i, getMessage());
         }
+
+        Thread.sleep(2000);
 
         sendPool.destroy();
 
@@ -375,6 +383,8 @@ public class KafkaMessageNewReceiverPoolTest {
             messageProducer.sendWithKey(i, getMessage());
         }
 
+        Thread.sleep(2000);
+
         recePool.setBatch("BATCH");
 
         recePool.setCommit("ASYNC_COMMIT");
@@ -383,6 +393,8 @@ public class KafkaMessageNewReceiverPoolTest {
 
             messageProducer.sendWithKey(i, getMessage());
         }
+
+        Thread.sleep(2000);
 
         sendPool.destroy();
 
@@ -435,6 +447,8 @@ public class KafkaMessageNewReceiverPoolTest {
             messageProducer.sendWithKey(i, getMessage());
         }
 
+        Thread.sleep(2000);
+
         recePool.setBatch("BATCH");
 
         recePool.setCommit("SYNC_COMMIT");
@@ -443,6 +457,8 @@ public class KafkaMessageNewReceiverPoolTest {
 
             messageProducer.sendWithKey(i, getMessage());
         }
+
+        Thread.sleep(2000);
 
         sendPool.destroy();
 
