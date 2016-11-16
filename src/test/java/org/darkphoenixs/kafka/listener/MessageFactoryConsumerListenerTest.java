@@ -8,6 +8,8 @@ import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Map;
+
 public class MessageFactoryConsumerListenerTest {
 
     @Test
@@ -15,10 +17,17 @@ public class MessageFactoryConsumerListenerTest {
 
         MessageFactoryConsumerListener<Integer, MessageBeanImpl> factoryListener = new MessageFactoryConsumerListener<Integer, MessageBeanImpl>();
 
+        MessageBeanImpl messageBean = null;
         try {
-            factoryListener.onMessage(null);
+            factoryListener.onMessage(messageBean);
         } catch (Exception e) {
             Assert.assertTrue(e instanceof MQException);
+        }
+
+        Map map = null;
+        try {
+            factoryListener.onMessage(map);
+        } catch (Exception e) {
         }
 
         MessageConsumerFactory consumerFactory = (MessageConsumerFactory) MessageConsumerFactory
@@ -38,7 +47,7 @@ public class MessageFactoryConsumerListenerTest {
         factoryListener.setConsumerFactory(consumerFactory);
 
         try {
-            factoryListener.onMessage(null);
+            factoryListener.onMessage(messageBean);
         } catch (Exception e) {
             Assert.assertTrue(e instanceof MQException);
         }
@@ -47,7 +56,7 @@ public class MessageFactoryConsumerListenerTest {
         factoryListener.setConsumerKeyField("messageType");
 
         try {
-            factoryListener.onMessage(null);
+            factoryListener.onMessage(messageBean);
         } catch (Exception e) {
             Assert.assertTrue(e instanceof MQException);
         }

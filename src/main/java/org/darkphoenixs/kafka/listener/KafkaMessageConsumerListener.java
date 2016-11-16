@@ -18,6 +18,8 @@ package org.darkphoenixs.kafka.listener;
 import org.darkphoenixs.kafka.consumer.AbstractConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 
+import java.util.Map;
+
 /**
  * <p>KafkaMessageConsumerListener</p>
  * <p>Kafka消费者监听器</p>
@@ -54,6 +56,16 @@ public class KafkaMessageConsumerListener<K, V> extends KafkaMessageListener<K, 
         if (consumer != null)
 
             consumer.receive(key, val);
+        else
+            throw new MQException("Consumer is null !");
+    }
+
+    @Override
+    public void onMessage(Map<K, V> messages) throws MQException {
+
+        if (consumer != null)
+
+            consumer.receive(messages);
         else
             throw new MQException("Consumer is null !");
     }

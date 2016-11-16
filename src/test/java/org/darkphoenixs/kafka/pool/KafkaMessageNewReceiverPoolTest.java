@@ -140,6 +140,22 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.setModel("MODEL_1");
 
+        Assert.assertEquals(pool.getBatch(), "NON_BATCH");
+
+        pool.setBatch("NON_BATCH");
+
+        Assert.assertEquals(pool.getCommit(), "AUTO_COMMIT");
+
+        pool.setCommit("AUTO_COMMIT");
+
+        Assert.assertEquals(pool.getRetryCount(), 3);
+
+        pool.setRetryCount(1);
+
+        Assert.assertEquals(pool.getHandleMultiple(), 2);
+
+        pool.setHandleMultiple(1);
+
         pool.setPoolSize(10);
 
         pool.setProps(new Properties());

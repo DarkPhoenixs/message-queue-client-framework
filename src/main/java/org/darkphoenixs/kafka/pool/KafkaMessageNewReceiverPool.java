@@ -19,6 +19,9 @@ package org.darkphoenixs.kafka.pool;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.clients.consumer.internals.ConsumerCoordinator;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.darkphoenixs.kafka.core.KafkaConstants;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
@@ -31,10 +34,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>
  * <p>采用两种设计模式</p>
  * <li>模式一：数据接收与业务处理在同一线程中（并发取决于队列分区）</li>
- * <li>模式二：接收线程与业务线程分离（类Reactor模式）</li>
+ * <li>模式二：接收线程与业务线程分离（异步处理数据）</li>
  *
  * @param <K> the type of kafka message key
  * @param <V> the type of kafka message value
@@ -57,6 +57,56 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K, V> {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaMessageNewReceiverPool.class);
+
+    /**
+     * The enum Model.
+     */
+    public enum MODEL {
+
+        /**
+         * Model 1 model.
+         */
+        MODEL_1,
+        /**
+         * Model 2 model.
+         */
+        MODEL_2
+    }
+
+    /**
+     * The enum Batch.
+     */
+    public enum BATCH {
+
+        /**
+         * non-batch consumer.
+         */
+        NON_BATCH,
+        /**
+         * batch consumer.
+         */
+        BATCH
+    }
+
+    /**
+     * The enum Commit.
+     */
+    public enum COMMIT {
+
+        /**
+         * auto commit.
+         */
+        AUTO_COMMIT,
+        /**
+         * sync commit.
+         */
+        SYNC_COMMIT,
+        /**
+         * async commit.
+         */
+        ASYNC_COMMIT
+    }
+
     /**
      * The Receiver pool.
      */
@@ -76,6 +126,18 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     private MODEL model = MODEL.MODEL_1;
     /**
+     * The Commit.
+     * <p>
+     * Default AUTO_COMMIT.
+     */
+    private COMMIT commit = COMMIT.AUTO_COMMIT;
+    /**
+     * The Batch.
+     * <p>
+     * Default NON_BATCH.
+     */
+    private BATCH batch = BATCH.NON_BATCH;
+    /**
      * The Props.
      */
     private Properties props = new Properties();
@@ -86,12 +148,22 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
     /**
      * The Pool size.
      * <p>
-     * When MODEL is MODEL_1, the size is the consumer thread pool size.
-     * <p>
-     * When MODEL is MODEL_2, the size is the handle thread pool size,
-     * the consumer thread pool size as same as the topic partition number.
+     * The size is the consumer thread pool size.
      */
     private int poolSize;
+    /**
+     * How many multiple is the consumer thread pool size, MODEL_2 to take effect.
+     * <p>
+     * When MODEL is MODEL_2, the handle thread pool size is (poolSize * handleMultiple + 1).
+     */
+    private int handleMultiple = 2;
+    /**
+     * The retry Count.
+     * <p>
+     * When MODEL is MODEL_1 & BATCH is NON_BATCH & COMMIT is SYNC_COMMIT or ASYNC_COMMIT to take effect.
+     */
+    private int retryCount = 3;
+
     /**
      * messageAdapter
      */
@@ -113,6 +185,42 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     public void setProps(Properties props) {
         this.props = props;
+    }
+
+    /**
+     * Gets handle multiple.
+     *
+     * @return the handle multiple
+     */
+    public int getHandleMultiple() {
+        return handleMultiple;
+    }
+
+    /**
+     * Sets handle multiple.
+     *
+     * @param handleMultiple the handle multiple
+     */
+    public void setHandleMultiple(int handleMultiple) {
+        this.handleMultiple = handleMultiple;
+    }
+
+    /**
+     * Gets retry count.
+     *
+     * @return the retry count
+     */
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    /**
+     * Sets retry count.
+     *
+     * @param retryCount the retry count
+     */
+    public void setRetryCount(int retryCount) {
+        this.retryCount = retryCount;
     }
 
     /**
@@ -174,6 +282,49 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
     public void setModel(String model) {
 
         this.model = MODEL.valueOf(model);
+    }
+
+    /**
+     * Gets batch.
+     *
+     * @return the batch
+     */
+    public String getBatch() {
+
+        return batch.name();
+    }
+
+    /**
+     * Sets batch.
+     *
+     * @param batch the batch
+     */
+    public void setBatch(String batch) {
+
+        this.batch = BATCH.valueOf(batch);
+    }
+
+    /**
+     * Gets commit.
+     *
+     * @return the commit
+     */
+    public String getCommit() {
+
+        return commit.name();
+    }
+
+    /**
+     * Sets commit.
+     *
+     * @param commit the commit
+     */
+    public void setCommit(String commit) {
+
+        this.commit = COMMIT.valueOf(commit);
+
+        if (!commit.equals(COMMIT.AUTO_COMMIT))
+            props.setProperty(KafkaConstants.ENABLE_AUTO_COMMIT, "false");
     }
 
     /**
@@ -242,36 +393,38 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
         // partition size
         int partSize = receiver.getPartitionCount(topic);
 
+        if (poolSize == 0 || poolSize > partSize)
+            // pool size default partition size
+            setPoolSize(partSize);
+
         returnReceiver(receiver);
 
         switch (model) {
 
             case MODEL_1: // MODEL_1
 
-                if (poolSize == 0 || poolSize > partSize)
-                    // pool size default partition size
-                    setPoolSize(partSize);
+                receivPool = Executors.newFixedThreadPool(poolSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
 
-                receivPool = Executors.newFixedThreadPool(partSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
-
-                logger.info("Message Receiver Pool initializing. poolSize : " + partSize);
+                logger.info("Message Receiver Pool initializing. poolSize : " + poolSize);
 
                 break;
 
             case MODEL_2: // MODEL_2
 
-                receivPool = Executors.newFixedThreadPool(partSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
+                int handSize = poolSize * handleMultiple + 1;
 
-                handlePool = Executors.newFixedThreadPool(poolSize, new KafkaPoolThreadFactory(HandlerThread.tagger + "-" + topic));
+                receivPool = Executors.newFixedThreadPool(poolSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
 
-                logger.info("Message Receiver Pool initializing poolSize : " + partSize);
+                handlePool = Executors.newFixedThreadPool(handSize, new KafkaPoolThreadFactory(HandlerThread.tagger + "-" + topic));
 
-                logger.info("Message Handler Pool initializing poolSize : " + poolSize);
+                logger.info("Message Receiver Pool initializing poolSize : " + poolSize);
+
+                logger.info("Message Handler Pool initializing poolSize : " + handSize);
 
                 break;
         }
 
-        for (int i = 0; i < partSize; i++) {
+        for (int i = 0; i < poolSize; i++) {
 
             Properties properties = (Properties) props.clone();
 
@@ -299,21 +452,6 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
         if (receivPool != null)
 
             receivPool.shutdown();
-    }
-
-    /**
-     * The enum Model.
-     */
-    public enum MODEL {
-
-        /**
-         * Model 1 model.
-         */
-        MODEL_1,
-        /**
-         * Model 2 model.
-         */
-        MODEL_2
     }
 
     /**
@@ -358,6 +496,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
             try {
                 consumer.subscribe(Arrays.asList(topic));
 
+                int failCount = 0; // 失败次数计数器
+
                 while (!closed.get()) {
 
                     ConsumerRecords<K, V> records = consumer.poll(KafkaConstants.MAX_POLL_TIMEOUT);
@@ -365,25 +505,64 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
                     // Handle new records
                     switch (model) {
 
-                        case MODEL_1:
+                        case MODEL_1: // 模式1
 
-                            for (ConsumerRecord<K, V> record : records)
+                            switch (batch) {
 
-                                try {
-                                    adapter.messageAdapter(record);
+                                case BATCH: // 批量
 
-                                } catch (MQException e) {
+                                    try {
+                                        adapter.messageAdapter(records);
 
-                                    logger.error(Thread.currentThread().getName() + " topic: "
-                                            + record.topic() + " offset: " + record.offset() + " partition: "
-                                            + record.partition() + " Exception: " + e.getMessage());
-                                }
+                                    } catch (MQException e) {
+
+                                        logger.error(Thread.currentThread().getName()
+                                                + " failNumber: " + records.count()
+                                                + " Exception: " + e.getMessage());
+                                    } finally {
+
+                                        batchCommit(consumer, commit); // 批量提交
+                                    }
+
+                                    break;
+
+                                case NON_BATCH: // 非批量
+
+                                    for (ConsumerRecord<K, V> record : records)
+
+                                        try {
+                                            adapter.messageAdapter(record);
+
+                                        } catch (MQException e) {
+
+                                            failCount++; // 计数器+1
+
+                                            logger.error(Thread.currentThread().getName()
+                                                    + " failCount: " + failCount
+                                                    + " topic: " + record.topic()
+                                                    + " offset: " + record.offset()
+                                                    + " partition: " + record.partition()
+                                                    + " Exception: " + e.getMessage());
+                                        } finally {
+
+                                            if (failCount == 0 || failCount > retryCount) {
+
+                                                failCount = 0;
+
+                                                commit(consumer, record, commit); // 逐个提交
+                                            }
+                                        }
+
+                                    break;
+                            }
 
                             break;
 
                         case MODEL_2:
 
                             handlePool.execute(new HandlerThread(adapter, records));
+
+                            batchCommit(consumer, commit); // 批量提交
 
                             break;
                     }
@@ -444,19 +623,86 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             logger.info(Thread.currentThread().getName() + " start.");
 
-            for (ConsumerRecord<K, V> record : records)
+            switch (batch) {
 
-                try {
-                    adapter.messageAdapter(record);
+                case BATCH:
 
-                } catch (MQException e) {
+                    try {
+                        adapter.messageAdapter(records);
 
-                    logger.error(Thread.currentThread().getName() + " topic: "
-                            + record.topic() + " offset: " + record.offset() + " partition: "
-                            + record.partition() + " Exception: " + e.getMessage());
-                }
+                    } catch (MQException e) {
+
+                        logger.error(Thread.currentThread().getName()
+                                + " failNumber: " + records.count()
+                                + " Exception: " + e.getMessage());
+                    }
+
+                    break;
+
+                case NON_BATCH:
+
+                    for (ConsumerRecord<K, V> record : records)
+
+                        try {
+                            adapter.messageAdapter(record);
+
+                        } catch (MQException e) {
+
+                            logger.error(Thread.currentThread().getName()
+                                    + " topic: " + record.topic()
+                                    + " offset: " + record.offset()
+                                    + " partition: " + record.partition()
+                                    + " Exception: " + e.getMessage());
+                        }
+
+                    break;
+            }
 
             logger.info(Thread.currentThread().getName() + " end.");
+        }
+    }
+
+    /**
+     * Commit offSet.
+     *
+     * @param consumer consumer
+     * @param record   record
+     * @param commit   commit
+     */
+    private void commit(KafkaConsumer<K, V> consumer, ConsumerRecord<K, V> record, COMMIT commit) {
+
+        switch (commit) {
+
+            case SYNC_COMMIT:
+                consumer.commitSync(Collections.singletonMap(
+                        new TopicPartition(record.topic(), record.partition()),
+                        new OffsetAndMetadata(record.offset() + 1)));
+                break;
+            case ASYNC_COMMIT:
+                consumer.commitAsync(Collections.singletonMap(
+                        new TopicPartition(record.topic(), record.partition()),
+                        new OffsetAndMetadata(record.offset() + 1)),
+                        new ConsumerCoordinator.DefaultOffsetCommitCallback());
+                break;
+        }
+    }
+
+    /**
+     * Batch Commit.
+     *
+     * @param consumer consumer
+     * @param commit   commit
+     */
+    private void batchCommit(KafkaConsumer<K, V> consumer, COMMIT commit) {
+
+        switch (commit) {
+
+            case SYNC_COMMIT: // 同步提交
+                consumer.commitSync();
+                break;
+            case ASYNC_COMMIT: // 异步提交
+                consumer.commitAsync();
+                break;
         }
     }
 }

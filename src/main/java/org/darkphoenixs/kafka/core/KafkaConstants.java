@@ -33,7 +33,8 @@ public interface KafkaConstants {
     String GROUP_ID = "group.id";
     String SERIALIZER_CLASS = "serializer.class";
     String KEY_SERIALIZER_CLASS = "key.serializer.class";
-    String AUTO_COMMIT_ENABLE = "auto.commit.enable";
+    String AUTO_COMMIT_ENABLE = "auto.commit.enable"; // 0.8 consumer config
+    String ENABLE_AUTO_COMMIT = "enable.auto.commit"; // 0.9 consumer config
 
     int DEFAULT_REFRESH_FRE_SEC = 60;
     int INIT_TIMEOUT_MIN = 2; // 2min

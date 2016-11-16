@@ -17,9 +17,13 @@ package org.darkphoenixs.kafka.core;
 
 import kafka.message.MessageAndMetadata;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoder;
 import org.darkphoenixs.kafka.listener.KafkaMessageListener;
 import org.darkphoenixs.mq.exception.MQException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Title: KafkaMessageAdapter</p>
@@ -147,31 +151,21 @@ public class KafkaMessageAdapter<K, V> {
      * <p>Title: messageAdapter</p>
      * <p>Description: 消息适配方法</p>
      *
-     * @param records the records
+     * @param consumerRecords the records
      * @throws MQException the mq exception
-     * @since 1.4.0
+     * @since 1.4.3
      */
-//    public void messageAdapter(ConsumerRecords<?, ?> records) throws MQException {
-//
-//        StringBuffer exceptionMsg = new StringBuffer();
-//
-//        for (ConsumerRecord<?, ?> record : records)
-//
-//            try {
-//                messageAdapter(record);
-//
-//            } catch (Exception e) {
-//
-//                exceptionMsg.append(System.getProperty("line.separator")).
-//                        append(" topic: " + record.topic()).
-//                        append(" offset: " + record.offset()).
-//                        append(" partition: " + record.partition()).
-//                        append(" Exception: " + e.getMessage());
-//            }
-//
-//        if (exceptionMsg.length() > 0)
-//
-//            throw new MQException(exceptionMsg.toString());
-//    }
+    public void messageAdapter(ConsumerRecords<?, ?> consumerRecords) throws MQException {
+
+        Map<byte[], byte[]> map = new HashMap<byte[], byte[]>();
+
+        for (ConsumerRecord<?, ?> consumerRecord : consumerRecords)
+
+            map.put((byte[]) consumerRecord.key(), (byte[]) consumerRecord.value());
+
+        Map<K, V> kv = decoder.batchDecode(map);
+
+        messageListener.onMessage(kv);
+    }
 }
 

@@ -18,10 +18,14 @@ package org.darkphoenixs.kafka.listener;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.listener.MessageListener;
 
+import java.util.Map;
+
 /**
  * <p>KafkaMessageListener</p>
  * <p>Kafka消息监听器基类</p>
  *
+ * @param <K> the type parameter
+ * @param <V> the type parameter
  * @author Victor.Zxy
  * @version 1.3.0
  * @see MessageListener
@@ -35,7 +39,7 @@ public abstract class KafkaMessageListener<K, V> implements MessageListener<V> {
      *
      * @param key 标识
      * @param val 消息
-     * @throws MQException
+     * @throws MQException the mq exception
      */
     public void onMessage(final K key, final V val) throws MQException {
 
@@ -45,5 +49,18 @@ public abstract class KafkaMessageListener<K, V> implements MessageListener<V> {
     @Override
     public void onMessage(V message) throws MQException {
         // For compatible without Key.
+    }
+
+
+    /**
+     * <p>onMessage</p>
+     * <p>监听方法</p>
+     *
+     * @param messages 消息键值对
+     * @throws MQException the mq exception
+     * @since 1.4.3
+     */
+    public void onMessage(Map<K, V> messages) throws MQException {
+        // For batch consumer messages.
     }
 }
