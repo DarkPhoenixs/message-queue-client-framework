@@ -231,6 +231,8 @@ public class KafkaMessageNewReceiverPoolTest2 {
 
         recePool.setBatch("BATCH");
 
+        recePool.setRetryCount(1);
+
         recePool.setMessageAdapter(getAdapterWishErr());
 
         recePool.init();
@@ -281,6 +283,8 @@ public class KafkaMessageNewReceiverPoolTest2 {
         recePool.setModel("MODEL_2");
 
         recePool.setBatch("BATCH");
+
+        recePool.setRetryCount(1);
 
         recePool.setPoolSize(4);
 
