@@ -62,7 +62,7 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
      * @return the or create instance
      */
     @SuppressWarnings("rawtypes")
-    public static KafkaMessageNewSender getOrCreateInstance(Properties properties) {
+    public synchronized static KafkaMessageNewSender getOrCreateInstance(Properties properties) {
 
         if (instance.get() == null)
 

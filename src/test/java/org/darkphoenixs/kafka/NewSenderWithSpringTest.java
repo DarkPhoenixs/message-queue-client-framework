@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath*:/kafka/applicationContext-newproducer.xml"})
+@ContextConfiguration({"classpath*:/kafka/applicationContext-newproducer4test.xml"})
 public class NewSenderWithSpringTest {
 
     private int brokerId = 0;

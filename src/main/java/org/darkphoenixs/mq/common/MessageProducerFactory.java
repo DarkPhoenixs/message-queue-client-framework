@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>Title: MessageProducerFactory</p>
@@ -37,7 +38,7 @@ public class MessageProducerFactory implements ProducerFactory {
     /**
      * instance
      */
-    private static MessageProducerFactory instance;
+    private static final AtomicReference<MessageProducerFactory> instance = new AtomicReference<MessageProducerFactory>();
     /**
      * logger
      */
@@ -63,9 +64,9 @@ public class MessageProducerFactory implements ProducerFactory {
      */
     public synchronized static ProducerFactory getInstance() {
 
-        if (instance == null)
-            instance = new MessageProducerFactory();
-        return instance;
+        if (instance.get() == null)
+            instance.set(new MessageProducerFactory());
+        return instance.get();
     }
 
     /**
@@ -119,8 +120,8 @@ public class MessageProducerFactory implements ProducerFactory {
         if (producers != null)
             producers = null;
 
-        if (instance != null)
-            instance = null;
+        if (instance.get() != null)
+            instance.set(null);
 
         producerCache.clear();
 

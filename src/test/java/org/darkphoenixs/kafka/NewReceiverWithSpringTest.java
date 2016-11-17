@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath*:/kafka/applicationContext-newconsumer.xml"})
+@ContextConfiguration({"classpath*:/kafka/applicationContext-newconsumer4test.xml"})
 public class NewReceiverWithSpringTest {
 
     private int brokerId = 0;
