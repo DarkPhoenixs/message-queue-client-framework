@@ -135,7 +135,7 @@ public class KafkaMessageTemplate<K, V> {
      * @param message     消息
      * @since 1.3.0
      */
-    public void sendWithKey(KafkaDestination destination, byte[] key, byte[] message) {
+    public void sendWithKey(KafkaDestination destination, byte[] key, byte[] message) throws MQException {
 
         KafkaMessageSender<byte[], byte[]> sender = messageSenderPool.getSender();
 

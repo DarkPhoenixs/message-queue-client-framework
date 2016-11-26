@@ -27,6 +27,7 @@ import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
+import org.darkphoenixs.mq.exception.MQException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -126,6 +127,10 @@ public class KafkaMessageNewSenderTest {
         sender.sendWithKey(topic, "key".getBytes(), "value".getBytes());
 
         sender.shutDown();
+
+        sender.sendCallback.onCompletion(null, null);
+
+        sender.sendCallback.onCompletion(null, new MQException("test"));
     }
 
 }

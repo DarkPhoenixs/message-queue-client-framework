@@ -15,8 +15,10 @@
  */
 package org.darkphoenixs.kafka.core;
 
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.PartitionInfo;
 
 import java.util.List;
@@ -85,13 +87,13 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
     @Override
     public void send(String topic, V value) {
 
-        kafkaProducer.send(new ProducerRecord<K, V>(topic, value));
+        kafkaProducer.send(new ProducerRecord<K, V>(topic, value), sendCallback);
     }
 
     @Override
     public void sendWithKey(String topic, K key, V value) {
 
-        kafkaProducer.send(new ProducerRecord<K, V>(topic, key, value));
+        kafkaProducer.send(new ProducerRecord<K, V>(topic, key, value), sendCallback);
     }
 
     @Override
@@ -103,4 +105,17 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
 
         instance.set(null);
     }
+
+    /**
+     * The Send callback.
+     */
+    protected Callback sendCallback = new Callback() {
+
+        @Override
+        public void onCompletion(RecordMetadata metadata, Exception exception) {
+
+            if (exception != null)
+                logger.error("Send message failed.", exception);
+        }
+    };
 }
