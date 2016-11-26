@@ -396,7 +396,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
                 try {
                     metadata = findNewLeader(leadHost, a_topic, a_partition);
                 } catch (MQException e) {
-                    logger.error(e.getMessage());
+                    logger.error("Find new leader failed.", e);
                 }
                 return false;
             }

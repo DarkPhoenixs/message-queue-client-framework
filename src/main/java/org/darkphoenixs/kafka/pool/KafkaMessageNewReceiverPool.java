@@ -260,7 +260,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
         try {
             PropertiesLoaderUtils.fillProperties(props, this.config);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error("Fill properties failed.", e);
         }
     }
 
@@ -516,9 +516,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                                     } catch (MQException e) {
 
-                                        logger.error(Thread.currentThread().getName()
-                                                + " failNumber: " + records.count()
-                                                + " Exception: " + e.getMessage());
+                                        logger.error("Receive message failed. failNumber:" + records.count(), e);
+
                                     } finally {
 
                                         batchCommit(consumer, commit); // 批量提交
@@ -537,12 +536,11 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                                             failCount++; // 计数器+1
 
-                                            logger.error(Thread.currentThread().getName()
+                                            logger.error("Receive message failed."
                                                     + " failCount: " + failCount
                                                     + " topic: " + record.topic()
                                                     + " offset: " + record.offset()
-                                                    + " partition: " + record.partition()
-                                                    + " Exception: " + e.getMessage());
+                                                    + " partition: " + record.partition(), e);
                                         } finally {
 
                                             if (failCount == 0 || failCount > retryCount) {
@@ -632,9 +630,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                     } catch (MQException e) {
 
-                        logger.error(Thread.currentThread().getName()
-                                + " failNumber: " + records.count()
-                                + " Exception: " + e.getMessage());
+                        logger.error("Receive message failed. failNumber: " + records.count(), e);
                     }
 
                     break;
@@ -648,11 +644,10 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                         } catch (MQException e) {
 
-                            logger.error(Thread.currentThread().getName()
+                            logger.error("Receive message failed."
                                     + " topic: " + record.topic()
                                     + " offset: " + record.offset()
-                                    + " partition: " + record.partition()
-                                    + " Exception: " + e.getMessage());
+                                    + " partition: " + record.partition(), e);
                         }
 
                     break;

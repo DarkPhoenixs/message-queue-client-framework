@@ -92,7 +92,7 @@ public class MessageConsumerListener<T> implements MessageListener<T> {
                         try {
                             consumer.receive(message);
                         } catch (MQException e) {
-                            logger.error(e.getMessage());
+                            logger.error("Receive message failed.", e);
                         }
                     }
                 });

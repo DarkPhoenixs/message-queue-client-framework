@@ -225,7 +225,7 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
         try {
             PropertiesLoaderUtils.fillProperties(props, this.config);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error("Fill properties failed.", e);
         }
     }
 
@@ -401,12 +401,11 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
                     failCount++;
 
-                    logger.error(Thread.currentThread().getName()
+                    logger.error("Receive message failed."
                             + " failCount: " + failCount
                             + " topic: " + messageAndMetadata.topic()
                             + " offset: " + messageAndMetadata.offset()
-                            + " partition: " + messageAndMetadata.partition()
-                            + " Exception: " + e.getMessage());
+                            + " partition: " + messageAndMetadata.partition(), e);
 
                 } finally {
 

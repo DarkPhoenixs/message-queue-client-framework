@@ -172,7 +172,7 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
         try {
             PropertiesLoaderUtils.fillProperties(props, this.config);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error("Fill properties failed.", e);
         }
     }
 
