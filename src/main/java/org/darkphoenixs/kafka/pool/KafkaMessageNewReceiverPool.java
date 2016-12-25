@@ -35,8 +35,10 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -108,6 +110,10 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
     }
 
     /**
+     * The blocking queue.
+     */
+    protected BlockingQueue<ConsumerRecords<K, V>> blockingQueue;
+    /**
      * The Receiver pool.
      */
     protected ExecutorService receivPool;
@@ -116,9 +122,14 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     protected ExecutorService handlePool;
     /**
-     * The Threads.
+     * The ReceiverThreads.
      */
-    protected List<ReceiverThread> threads = new ArrayList<ReceiverThread>();
+    protected List<ReceiverThread> receivThreads = new ArrayList<ReceiverThread>();
+    /**
+     * The HandleThreads.
+     */
+    protected List<HandlerThread> handleThreads = new ArrayList<HandlerThread>();
+
     /**
      * The Model.
      * <p>
@@ -163,6 +174,12 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      * When MODEL is MODEL_1 & BATCH is NON_BATCH & COMMIT is SYNC_COMMIT or ASYNC_COMMIT to take effect.
      */
     private int retryCount = 3;
+    /**
+     * The Blocking queue size.
+     * <p>
+     * When MODEL is MODEL_2 to take effect.
+     */
+    private int queueSize = 100000;
 
     /**
      * messageAdapter
@@ -239,6 +256,24 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     public void setPoolSize(int poolSize) {
         this.poolSize = poolSize;
+    }
+
+    /**
+     * Gets queue size.
+     *
+     * @return the queue size
+     */
+    public int getQueueSize() {
+        return queueSize;
+    }
+
+    /**
+     * Sets queue size.
+     *
+     * @param queueSize the queue size
+     */
+    public void setQueueSize(int queueSize) {
+        this.queueSize = queueSize;
     }
 
     /**
@@ -405,21 +440,28 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                 receivPool = Executors.newFixedThreadPool(poolSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
 
-                logger.info("Message Receiver Pool initializing. poolSize : " + poolSize);
-
                 break;
 
             case MODEL_2: // MODEL_2
 
                 int handSize = poolSize * handleMultiple + 1;
 
+                blockingQueue = new LinkedBlockingQueue<ConsumerRecords<K, V>>(queueSize);
+
                 receivPool = Executors.newFixedThreadPool(poolSize, new KafkaPoolThreadFactory(ReceiverThread.tagger + "-" + topic));
 
                 handlePool = Executors.newFixedThreadPool(handSize, new KafkaPoolThreadFactory(HandlerThread.tagger + "-" + topic));
 
-                logger.info("Message Receiver Pool initializing poolSize : " + poolSize);
+                for (int i = 0; i < handSize; i++) {
 
-                logger.info("Message Handler Pool initializing poolSize : " + handSize);
+                    HandlerThread handlerThread = new HandlerThread(messageAdapter);
+
+                    handleThreads.add(handlerThread);
+
+                    handlePool.submit(handlerThread);
+                }
+
+                logger.info("Message Handler Pool initialized. PoolSize : " + handSize);
 
                 break;
         }
@@ -432,26 +474,36 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             ReceiverThread receiverThread = new ReceiverThread(properties, topic, messageAdapter);
 
-            threads.add(receiverThread);
+            receivThreads.add(receiverThread);
 
             receivPool.submit(receiverThread);
         }
+
+        logger.info("Message Receiver Pool initialized. PoolSize : " + poolSize);
     }
 
     @Override
     public synchronized void destroy() {
 
-        if (handlePool != null)
-
-            handlePool.shutdown();
-
-        for (ReceiverThread thread : threads)
+        for (ReceiverThread thread : receivThreads)
 
             thread.shutdown();
 
         if (receivPool != null)
 
             receivPool.shutdown();
+
+        for (HandlerThread thread : handleThreads)
+
+            thread.shutdown();
+
+        if (handlePool != null)
+
+            handlePool.shutdown();
+
+        if (blockingQueue != null)
+
+            blockingQueue.clear();
     }
 
     /**
@@ -558,7 +610,13 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                         case MODEL_2:
 
-                            handlePool.execute(new HandlerThread(adapter, records));
+                            try {
+                                blockingQueue.put(records);
+
+                            } catch (InterruptedException e) {
+
+                                logger.error("BlockingQueue put failed.", e);
+                            }
 
                             batchCommit(consumer, commit); // 批量提交
 
@@ -599,21 +657,18 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
          */
         public static final String tagger = "HandlerThread";
 
-        private final KafkaMessageAdapter<?, ?> adapter;
+        private final AtomicBoolean closed = new AtomicBoolean(false);
 
-        private final ConsumerRecords<K, V> records;
+        private final KafkaMessageAdapter<?, ?> adapter;
 
         /**
          * Instantiates a new Handler thread.
          *
          * @param adapter the adapter
-         * @param records the records
          */
-        public HandlerThread(KafkaMessageAdapter<?, ?> adapter, ConsumerRecords<K, V> records) {
+        public HandlerThread(KafkaMessageAdapter<?, ?> adapter) {
 
             this.adapter = adapter;
-
-            this.records = records;
         }
 
         @Override
@@ -621,39 +676,60 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             logger.info(Thread.currentThread().getName() + " start.");
 
-            switch (batch) {
+            while (!closed.get()) {
 
-                case BATCH:
+                ConsumerRecords<K, V> records = null;
 
-                    try {
-                        adapter.messageAdapter(records);
+                try {
+                    records = blockingQueue.take();
 
-                    } catch (MQException e) {
+                } catch (InterruptedException e) {
 
-                        logger.error("Receive message failed. failNumber: " + records.count(), e);
-                    }
+                    logger.error("BlockingQueue take failed.", e);
+                }
 
-                    break;
+                switch (batch) {
 
-                case NON_BATCH:
-
-                    for (ConsumerRecord<K, V> record : records)
+                    case BATCH:
 
                         try {
-                            adapter.messageAdapter(record);
+                            adapter.messageAdapter(records);
 
                         } catch (MQException e) {
 
-                            logger.error("Receive message failed."
-                                    + " topic: " + record.topic()
-                                    + " offset: " + record.offset()
-                                    + " partition: " + record.partition(), e);
+                            logger.error("Receive message failed. failNumber: " + records.count(), e);
                         }
 
-                    break;
+                        break;
+
+                    case NON_BATCH:
+
+                        for (ConsumerRecord<K, V> record : records)
+
+                            try {
+                                adapter.messageAdapter(record);
+
+                            } catch (MQException e) {
+
+                                logger.error("Receive message failed."
+                                        + " topic: " + record.topic()
+                                        + " offset: " + record.offset()
+                                        + " partition: " + record.partition(), e);
+                            }
+
+                        break;
+                }
             }
 
             logger.info(Thread.currentThread().getName() + " end.");
+        }
+
+        /**
+         * Shutdown hook which can be called from a separate thread.
+         */
+        public void shutdown() {
+
+            closed.set(true);
         }
     }
 
