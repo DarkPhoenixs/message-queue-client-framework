@@ -493,6 +493,10 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             receivPool.shutdown();
 
+        if (blockingQueue != null)
+
+            while (!blockingQueue.isEmpty());
+
         for (HandlerThread thread : handleThreads)
 
             thread.shutdown();
@@ -500,10 +504,6 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
         if (handlePool != null)
 
             handlePool.shutdown();
-
-        if (blockingQueue != null)
-
-            blockingQueue.clear();
     }
 
     /**
