@@ -180,6 +180,12 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      * When MODEL is MODEL_2 to take effect.
      */
     private int queueSize = 100000;
+    /**
+     * The Thread sleep time(ms).
+     * <p>
+     * To prevent the CPU usage is too high.
+     */
+    private long threadSleep = 0;
 
     /**
      * messageAdapter
@@ -274,6 +280,24 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     public void setQueueSize(int queueSize) {
         this.queueSize = queueSize;
+    }
+
+    /**
+     * Gets thread sleep.
+     *
+     * @return the thread sleep
+     */
+    public long getThreadSleep() {
+        return threadSleep;
+    }
+
+    /**
+     * Sets thread sleep.
+     *
+     * @param threadSleep the thread sleep
+     */
+    public void setThreadSleep(long threadSleep) {
+        this.threadSleep = threadSleep;
     }
 
     /**
@@ -495,7 +519,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
         if (blockingQueue != null)
 
-            while (!blockingQueue.isEmpty());
+            while (!blockingQueue.isEmpty()) ;
 
         for (HandlerThread thread : handleThreads)
 
@@ -622,6 +646,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                             break;
                     }
+
+                    waitAmoment(threadSleep);
                 }
 
             } catch (WakeupException e) {
@@ -719,6 +745,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                         break;
                 }
+
+                waitAmoment(threadSleep);
             }
 
             logger.info(Thread.currentThread().getName() + " end.");
@@ -774,6 +802,22 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
             case ASYNC_COMMIT: // 异步提交
                 consumer.commitAsync();
                 break;
+        }
+    }
+
+    /**
+     * Wait a moment.
+     *
+     * @param ms millisecond
+     */
+    private void waitAmoment(long ms) {
+
+        if (ms > 0) {
+            try {
+                Thread.sleep(ms);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
