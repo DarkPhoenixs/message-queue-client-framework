@@ -158,6 +158,14 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.setHandleMultiple(1);
 
+        Assert.assertEquals(pool.getQueueSize(), 100000);
+
+        pool.setQueueSize(10000);
+
+        Assert.assertEquals(pool.getThreadSleep(), 0);
+
+        pool.setThreadSleep(1);
+
         pool.setPoolSize(10);
 
         pool.setProps(new Properties());
@@ -349,6 +357,8 @@ public class KafkaMessageNewReceiverPoolTest {
 
         recePool.setPoolSize(4);
 
+        recePool.setThreadSleep(1);
+
         recePool.setMessageAdapter(getAdapter());
 
         recePool.init();
@@ -412,6 +422,8 @@ public class KafkaMessageNewReceiverPoolTest {
         recePool.setPoolSize(4);
 
         recePool.setRetryCount(1);
+
+        recePool.setThreadSleep(1);
 
         recePool.setMessageAdapter(getAdapterWishErr());
 
