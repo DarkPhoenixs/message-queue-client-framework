@@ -25,6 +25,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>Title: KafkaMessageNewSenderPool</p>
@@ -42,6 +43,11 @@ import java.util.Properties;
 public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaMessageNewSenderPool.class);
+
+    /**
+     * The Running.
+     */
+    protected AtomicBoolean running = new AtomicBoolean(false);
 
     /**
      * The Props.
@@ -130,17 +136,27 @@ public class KafkaMessageNewSenderPool<K, V> implements MessageSenderPool<K, V> 
     @Override
     public synchronized void init() {
 
-        logger.info("Message sender pool initializing. ");
-
         sender = KafkaMessageNewSender.getOrCreateInstance(props);
+
+        running.set(true);
+
+        logger.info("Message Sender Pool initialized.");
     }
 
     @Override
     public synchronized void destroy() {
 
-        logger.info("Message sender pool closing.");
-
         sender.shutDown();
+
+        running.set(false);
+
+        logger.info("Message Sender pool closed.");
+    }
+
+    @Override
+    public synchronized boolean isRunning() {
+
+        return running.get();
     }
 
     @SuppressWarnings("unchecked")

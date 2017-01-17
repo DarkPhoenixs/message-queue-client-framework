@@ -129,6 +129,10 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      * The HandleThreads.
      */
     protected List<HandlerThread> handleThreads = new ArrayList<HandlerThread>();
+    /**
+     * The Running.
+     */
+    protected AtomicBoolean running = new AtomicBoolean(false);
 
     /**
      * The Model.
@@ -504,6 +508,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
         }
 
         logger.info("Message Receiver Pool initialized. PoolSize : " + poolSize);
+
+        running.set(true);
     }
 
     @Override
@@ -513,9 +519,12 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             thread.shutdown();
 
-        if (receivPool != null)
+        if (receivPool != null) {
 
             receivPool.shutdown();
+
+            logger.info("Message Receiver pool closed.");
+        }
 
         if (blockingQueue != null)
 
@@ -525,9 +534,20 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             thread.shutdown();
 
-        if (handlePool != null)
+        if (handlePool != null) {
 
             handlePool.shutdown();
+
+            logger.info("Message Handler pool closed.");
+        }
+
+        running.set(false);
+    }
+
+    @Override
+    public synchronized boolean isRunning() {
+
+        return running.get();
     }
 
     /**

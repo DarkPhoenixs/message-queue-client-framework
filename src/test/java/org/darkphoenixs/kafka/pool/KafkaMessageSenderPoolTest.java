@@ -95,6 +95,8 @@ public class KafkaMessageSenderPoolTest {
 
         KafkaMessageSenderPool<byte[], byte[]> pool = new KafkaMessageSenderPool<byte[], byte[]>();
 
+        Assert.assertFalse(pool.isRunning());
+
         Assert.assertNull(pool.getThreadFactory());
         pool.setThreadFactory(new KafkaPoolThreadFactory());
 
@@ -122,6 +124,8 @@ public class KafkaMessageSenderPoolTest {
 
         pool.init();
 
+        Assert.assertTrue(pool.isRunning());
+
         Assert.assertNotNull(pool.getSender());
 
         Assert.assertNotNull(pool.getSender());
@@ -132,6 +136,8 @@ public class KafkaMessageSenderPoolTest {
         pool.returnSender(sender);
 
         pool.destroy();
+
+        Assert.assertFalse(pool.isRunning());
     }
 
     @Test

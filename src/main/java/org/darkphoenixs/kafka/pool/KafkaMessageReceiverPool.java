@@ -42,6 +42,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>Title: KafkaMessageReceiverPool</p>
@@ -70,6 +71,10 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      * props
      */
     protected Properties props = new Properties();
+    /**
+     * The Running.
+     */
+    protected AtomicBoolean running = new AtomicBoolean(false);
 
     /**
      * messageAdapter
@@ -340,6 +345,10 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
             pool.submit(new ReceiverThread(stream, messageAdapter));
         }
+
+        logger.info("Message receiver pool initialized.");
+
+        running.set(true);
     }
 
     @Override
@@ -362,6 +371,16 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
                 logger.error("Interrupted during shutdown, exiting uncleanly");
             }
         }
+
+        logger.info("Message receiver pool closed.");
+
+        running.set(false);
+    }
+
+    @Override
+    public synchronized boolean isRunning() {
+
+        return running.get();
     }
 
     /**

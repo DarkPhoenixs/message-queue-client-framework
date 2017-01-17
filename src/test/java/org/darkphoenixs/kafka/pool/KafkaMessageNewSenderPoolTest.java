@@ -117,6 +117,7 @@ public class KafkaMessageNewSenderPoolTest {
         Assert.assertNull(pool.getConfig());
         Assert.assertNotNull(pool.getProps());
         Assert.assertEquals(pool.getPoolSize(), 0);
+        Assert.assertFalse(pool.isRunning());
 
         pool.setConfig(new DefaultResourceLoader()
                 .getResource("kafka/producer1.properties"));
@@ -128,10 +129,14 @@ public class KafkaMessageNewSenderPoolTest {
 
         pool.init();
 
+        Assert.assertTrue(pool.isRunning());
+
         KafkaMessageSender<byte[], byte[]> sender = pool.getSender();
 
         pool.returnSender(sender);
 
         pool.destroy();
+
+        Assert.assertFalse(pool.isRunning());
     }
 }

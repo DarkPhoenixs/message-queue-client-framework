@@ -40,6 +40,15 @@ public interface MessageSenderPool<K, V> {
     public void destroy();
 
     /**
+     * <p>isRunning</p>
+     * <p>是否运行</p>
+     *
+     * @return 是否运行
+     * @since 1.4.6
+     */
+    public boolean isRunning();
+
+    /**
      * <p>getSender</p>
      * <p>获得发送器</p>
      *

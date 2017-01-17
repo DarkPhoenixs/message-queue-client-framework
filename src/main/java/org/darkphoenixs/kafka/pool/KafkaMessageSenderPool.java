@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -67,6 +68,10 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
      * props
      */
     protected Properties props = new Properties();
+    /**
+     * The Running.
+     */
+    protected AtomicBoolean running = new AtomicBoolean(false);
 
     /**
      * poolSize
@@ -219,6 +224,10 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
         } catch (InterruptedException e) {
             logger.error("Failed to init the MessageSenderPool", e);
         }
+
+        logger.info("Message sender pool initialized.");
+
+        running.set(true);
     }
 
     /**
@@ -292,6 +301,16 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
         } finally {
             closingLock.writeLock().unlock();
         }
+
+        logger.info("Message sender pool closed.");
+
+        running.set(false);
+    }
+
+    @Override
+    public synchronized boolean isRunning() {
+
+        return running.get();
     }
 
     /**

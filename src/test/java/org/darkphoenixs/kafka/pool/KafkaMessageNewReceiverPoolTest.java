@@ -128,6 +128,8 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.destroy();
 
+        Assert.assertFalse(pool.isRunning());
+
         Assert.assertNull(pool.getConfig());
 
         Assert.assertEquals(pool.getPoolSize(), 0);
@@ -198,7 +200,11 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.init();
 
+        Assert.assertTrue(pool.isRunning());
+
         pool.destroy();
+
+        Assert.assertFalse(pool.isRunning());
 
         pool.setPoolSize(1);
 

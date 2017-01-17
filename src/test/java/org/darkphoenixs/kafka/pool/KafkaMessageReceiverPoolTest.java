@@ -104,6 +104,7 @@ public class KafkaMessageReceiverPoolTest {
         final KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
 
         pool.destroy();
+        Assert.assertFalse(pool.isRunning());
 
         Assert.assertNull(pool.getThreadFactory());
         pool.setThreadFactory(new KafkaPoolThreadFactory());
@@ -147,6 +148,8 @@ public class KafkaMessageReceiverPoolTest {
 
         pool.init();
 
+        Assert.assertTrue(pool.isRunning());
+
         Thread.sleep(5000);
 
         Thread thread = new Thread(new Runnable() {
@@ -162,6 +165,8 @@ public class KafkaMessageReceiverPoolTest {
         pool.destroy();
 
         pool.returnReceiver(null);
+
+        Assert.assertFalse(pool.isRunning());
     }
 
     @Test
