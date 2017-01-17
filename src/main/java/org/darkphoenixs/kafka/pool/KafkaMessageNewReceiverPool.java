@@ -382,7 +382,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
         this.commit = COMMIT.valueOf(commit);
 
-        if (!commit.equals(COMMIT.AUTO_COMMIT))
+        if (!this.commit.equals(COMMIT.AUTO_COMMIT))
             props.setProperty(KafkaConstants.ENABLE_AUTO_COMMIT, "false");
     }
 

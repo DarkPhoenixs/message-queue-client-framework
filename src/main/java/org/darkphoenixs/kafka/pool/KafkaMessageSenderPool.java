@@ -210,7 +210,7 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
         List<Callable<Boolean>> taskList = new ArrayList<Callable<Boolean>>();
         final CountDownLatch count = new CountDownLatch(poolSize);
         for (int i = 0; i < poolSize; i++) {
-            taskList.add(new InitTask(count, this));
+            taskList.add(new InitTask(count));
         }
 
         try {
@@ -300,11 +300,9 @@ public class KafkaMessageSenderPool<K, V> implements MessageSenderPool<K, V> {
     class InitTask implements Callable<Boolean> {
 
         CountDownLatch count;
-        KafkaMessageSenderPool<K, V> pool;
 
-        public InitTask(CountDownLatch count, KafkaMessageSenderPool<K, V> pool) {
+        public InitTask(CountDownLatch count) {
             this.count = count;
-            this.pool = pool;
         }
 
         @Override

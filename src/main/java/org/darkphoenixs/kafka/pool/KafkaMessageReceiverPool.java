@@ -319,7 +319,7 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
         Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
 
-        topicCountMap.put(topic, new Integer(poolSize));
+        topicCountMap.put(topic, poolSize);
 
         VerifiableProperties verProps = new VerifiableProperties(props);
 
