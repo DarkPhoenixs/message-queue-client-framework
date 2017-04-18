@@ -35,7 +35,6 @@ import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.kafka.core.KafkaMessageTemplate;
 import org.darkphoenixs.kafka.listener.KafkaMessageConsumerListener;
-import org.darkphoenixs.kafka.listener.MessageConsumerListener;
 import org.darkphoenixs.kafka.producer.MessageProducer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
@@ -165,6 +164,10 @@ public class KafkaMessageNewReceiverPoolTest {
         pool.setQueueSize(10000);
 
         Assert.assertEquals(pool.getThreadSleep(), 0);
+
+        pool.setPollTimeout(2000);
+
+        Assert.assertEquals(pool.getPollTimeout(), 2000);
 
         pool.setThreadSleep(1);
 

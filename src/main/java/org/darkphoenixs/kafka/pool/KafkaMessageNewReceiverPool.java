@@ -192,6 +192,13 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
     private long threadSleep = 0;
 
     /**
+     * The Kafka poll timeout time(ms).
+     * <p>
+     * Default Long.MAX_VALUE.
+     */
+    private long pollTimeout = KafkaConstants.MAX_POLL_TIMEOUT;
+
+    /**
      * messageAdapter
      */
     private KafkaMessageAdapter<?, ?> messageAdapter;
@@ -302,6 +309,24 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     public void setThreadSleep(long threadSleep) {
         this.threadSleep = threadSleep;
+    }
+
+    /**
+     * Gets poll timeout.
+     *
+     * @return the poll timeout
+     */
+    public long getPollTimeout() {
+        return pollTimeout;
+    }
+
+    /**
+     * Sets poll timeout.
+     *
+     * @param pollTimeout the poll timeout
+     */
+    public void setPollTimeout(long pollTimeout) {
+        this.pollTimeout = pollTimeout;
     }
 
     /**
@@ -596,7 +621,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                 while (!closed.get()) {
 
-                    ConsumerRecords<K, V> records = consumer.poll(KafkaConstants.MAX_POLL_TIMEOUT);
+                    ConsumerRecords<K, V> records = consumer.poll(pollTimeout);
 
                     // Handle new records
                     switch (model) {
