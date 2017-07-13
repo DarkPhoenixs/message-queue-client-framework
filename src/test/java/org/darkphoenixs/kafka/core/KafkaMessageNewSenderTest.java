@@ -112,9 +112,9 @@ public class KafkaMessageNewSenderTest {
         properties.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
         properties.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
 
-        KafkaMessageNewSender<byte[], byte[]> sender = KafkaMessageNewSender.getOrCreateInstance(properties);
+        KafkaMessageNewSender<byte[], byte[]> sender = new KafkaMessageNewSender(properties);
 
-        KafkaMessageNewSender<byte[], byte[]> sender2 = KafkaMessageNewSender.getOrCreateInstance(null);
+        KafkaMessageNewSender<byte[], byte[]> sender2 = new KafkaMessageNewSender(null);
 
         Assert.assertEquals(sender, sender2);
 
