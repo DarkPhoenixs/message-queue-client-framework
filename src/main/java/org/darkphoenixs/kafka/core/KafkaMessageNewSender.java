@@ -23,7 +23,6 @@ import org.apache.kafka.common.PartitionInfo;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>Title: KafkaMessageNewSender</p>
@@ -39,11 +38,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
 
     /**
-     * Atomic singleton instance.
-     */
-    private static final AtomicReference<KafkaMessageNewSender<?, ?>> instance = new AtomicReference<KafkaMessageNewSender<?, ?>>();
-
-    /**
      * The producer is thread safe and sharing a single producer instance
      * across threads will generally be faster than having multiple instances.
      */
@@ -52,25 +46,9 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
     /**
      * @param properties the properties
      */
-    private KafkaMessageNewSender(Properties properties) {
+    public KafkaMessageNewSender(Properties properties) {
 
         kafkaProducer = new KafkaProducer<K, V>(properties);
-    }
-
-    /**
-     * Gets or Create instance.
-     *
-     * @param properties the properties
-     * @return the or create instance
-     */
-    @SuppressWarnings("rawtypes")
-    public synchronized static KafkaMessageNewSender getOrCreateInstance(Properties properties) {
-
-        if (instance.get() == null)
-
-            instance.set(new KafkaMessageNewSender(properties));
-
-        return instance.get();
     }
 
     /**
@@ -102,8 +80,6 @@ public class KafkaMessageNewSender<K, V> implements KafkaMessageSender<K, V> {
         kafkaProducer.flush();
 
         kafkaProducer.close();
-
-        instance.set(null);
     }
 
     /**

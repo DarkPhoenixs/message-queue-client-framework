@@ -22,7 +22,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>Title: KafkaMessageNewReceiver</p>
@@ -40,7 +39,7 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
     /**
      * The Consumer.
      */
-    protected final AtomicReference<KafkaConsumer<K, V>> consumer = new AtomicReference<KafkaConsumer<K, V>>();
+    protected final KafkaConsumer<K, V> kafkaConsumer;
 
     /**
      * Instantiates a new Kafka message new receiver.
@@ -49,7 +48,7 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
      */
     public KafkaMessageNewReceiver(Properties props) {
 
-        consumer.set(new KafkaConsumer<K, V>(props));
+        kafkaConsumer = new KafkaConsumer<K, V>(props);
     }
 
     @Override
@@ -73,8 +72,6 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
             readOffset = latestOffset - beginOffset;
 
         List<V> list = new ArrayList<V>();
-
-        KafkaConsumer<K, V> kafkaConsumer = consumer.get();
 
         kafkaConsumer.assign(Arrays.asList(new TopicPartition(topic, partition)));
 
@@ -126,8 +123,6 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
 
         Map<K, V> map = new HashMap<K, V>();
 
-        KafkaConsumer<K, V> kafkaConsumer = consumer.get();
-
         kafkaConsumer.assign(Arrays.asList(new TopicPartition(topic, partition)));
 
         kafkaConsumer.seek(new TopicPartition(topic, partition), beginOffset);
@@ -159,8 +154,6 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
     @Override
     public synchronized long getLatestOffset(String topic, int partition) {
 
-        KafkaConsumer<K, V> kafkaConsumer = consumer.get();
-
         kafkaConsumer.assign(Arrays.asList(new TopicPartition(topic, partition)));
 
         kafkaConsumer.seekToEnd(new TopicPartition(topic, partition));
@@ -172,8 +165,6 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
 
     @Override
     public synchronized long getEarliestOffset(String topic, int partition) {
-
-        KafkaConsumer<K, V> kafkaConsumer = consumer.get();
 
         kafkaConsumer.assign(Arrays.asList(new TopicPartition(topic, partition)));
 
@@ -187,19 +178,15 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
     @Override
     public int getPartitionCount(String topic) {
 
-        KafkaConsumer<K, V> kafkaConsumer = consumer.get();
-
         return kafkaConsumer.partitionsFor(topic).size();
     }
 
     @Override
     public synchronized void shutDown() {
 
-        if (consumer.get() != null) {
+        if (kafkaConsumer != null) {
 
-            consumer.get().close();
-
-            consumer.set(null);
+            kafkaConsumer.close();
         }
     }
 }
