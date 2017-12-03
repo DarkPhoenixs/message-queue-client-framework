@@ -165,6 +165,10 @@ public class KafkaMessageNewReceiverTest {
 
         receiver.shutDown();
 
-        receiver.shutDown();
+        try {
+            receiver.shutDown();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

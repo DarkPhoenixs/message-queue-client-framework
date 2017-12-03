@@ -114,12 +114,6 @@ public class KafkaMessageNewSenderTest {
 
         KafkaMessageNewSender<byte[], byte[]> sender = new KafkaMessageNewSender(properties);
 
-        KafkaMessageNewSender<byte[], byte[]> sender2 = new KafkaMessageNewSender(null);
-
-        Assert.assertEquals(sender, sender2);
-
-        Assert.assertSame(sender, sender2);
-
         Assert.assertEquals(sender.getPartitions(topic).size(), 4);
 
         sender.send(topic, "hahah".getBytes());
