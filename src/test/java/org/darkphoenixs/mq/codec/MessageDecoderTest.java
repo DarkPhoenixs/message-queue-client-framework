@@ -26,7 +26,7 @@ public class MessageDecoderTest {
         Assert.assertEquals("哈哈", decoder.batchDecode(bytes).get(1));
     }
 
-    private class MessageDecoderImpl implements MessageDecoder<String> {
+    private class MessageDecoderImpl implements MQMessageDecoder<String> {
 
         @Override
         public String decode(byte[] bytes) throws MQException {

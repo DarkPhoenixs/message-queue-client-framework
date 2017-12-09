@@ -16,17 +16,17 @@
 package org.darkphoenixs.mq.factory;
 
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.producer.Producer;
+import org.darkphoenixs.mq.producer.MQProducer;
 
 /**
- * <p>Title: ProducerFactory</p>
+ * <p>Title: MQProducerFactory</p>
  * <p>Description: 生产者工厂接口</p>
  *
  * @author Victor.Zxy
  * @version 1.0
  * @since 2015-06-01
  */
-public interface ProducerFactory {
+public interface MQProducerFactory {
 
     /**
      * <p>Title: addProducer</p>
@@ -35,7 +35,7 @@ public interface ProducerFactory {
      * @param producer 生产者
      * @throws MQException MQ异常
      */
-    public <T> void addProducer(Producer<T> producer) throws MQException;
+    <T> void addProducer(MQProducer<T> producer) throws MQException;
 
     /**
      * <p>Title: getProducer</p>
@@ -45,7 +45,7 @@ public interface ProducerFactory {
      * @return 生产者
      * @throws MQException MQ异常
      */
-    public <T> Producer<T> getProducer(String producerKey) throws MQException;
+    <T> MQProducer<T> getProducer(String producerKey) throws MQException;
 
     /**
      * <p>Title: init</p>
@@ -53,7 +53,7 @@ public interface ProducerFactory {
      *
      * @throws MQException MQ异常
      */
-    public void init() throws MQException;
+    void init() throws MQException;
 
     /**
      * <p>Title: destroy</p>
@@ -61,5 +61,5 @@ public interface ProducerFactory {
      *
      * @throws MQException MQ异常
      */
-    public void destroy() throws MQException;
+    void destroy() throws MQException;
 }

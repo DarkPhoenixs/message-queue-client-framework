@@ -42,7 +42,7 @@
         <property name="encoder" ref="encoder"/>
     </bean>
 
-    <!-- Kafka Message Producer -->
+    <!-- Kafka Message MQProducer -->
     <bean id="messageProducer" class="org.darkphoenixs.kafka.producer.MessageProducer">
         <property name="messageTemplate" ref="messageTemplate"/>
         <property name="destination" ref="destination"/>

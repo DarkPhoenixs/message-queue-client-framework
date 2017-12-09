@@ -37,7 +37,7 @@ import java.util.*;
 public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V> {
 
     /**
-     * The Consumer.
+     * The MQConsumer.
      */
     protected final KafkaConsumer<K, V> kafkaConsumer;
 

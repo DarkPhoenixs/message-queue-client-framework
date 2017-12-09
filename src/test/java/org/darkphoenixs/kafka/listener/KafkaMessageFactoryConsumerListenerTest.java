@@ -1,8 +1,8 @@
 package org.darkphoenixs.kafka.listener;
 
 import org.darkphoenixs.kafka.consumer.AbstractConsumer;
-import org.darkphoenixs.mq.common.MessageConsumerFactory;
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.common.MQMessageConsumerFactory;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
@@ -21,7 +21,7 @@ public class KafkaMessageFactoryConsumerListenerTest {
             Assert.assertTrue(e instanceof MQException);
         }
 
-        MessageConsumerFactory consumerFactory = (MessageConsumerFactory) MessageConsumerFactory
+        MQMessageConsumerFactory consumerFactory = (MQMessageConsumerFactory) MQMessageConsumerFactory
                 .getInstance();
 
         ConsumerTest consumer1 = new ConsumerTest();
@@ -30,7 +30,7 @@ public class KafkaMessageFactoryConsumerListenerTest {
         ConsumerTest consumer2 = new ConsumerTest();
         consumer2.setConsumerKey("ProtocolId2");
 
-        consumerFactory.setConsumers(new Consumer[]{consumer1});
+        consumerFactory.setConsumers(new MQConsumer[]{consumer1});
         consumerFactory.addConsumer(consumer2);
         consumerFactory.init();
 

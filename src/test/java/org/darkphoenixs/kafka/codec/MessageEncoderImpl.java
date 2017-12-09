@@ -15,7 +15,7 @@
  */
 package org.darkphoenixs.kafka.codec;
 
-import org.darkphoenixs.mq.codec.MessageEncoder;
+import org.darkphoenixs.mq.codec.MQMessageEncoder;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 
@@ -30,10 +30,10 @@ import java.util.List;
  *
  * @author Victor.Zxy
  * @version 1.0
- * @see MessageEncoder
+ * @see MQMessageEncoder
  * @since 2015-06-01
  */
-public class MessageEncoderImpl implements MessageEncoder<MessageBeanImpl> {
+public class MessageEncoderImpl implements MQMessageEncoder<MessageBeanImpl> {
 
     @Override
     public byte[] encode(MessageBeanImpl message) throws MQException {

@@ -1,7 +1,7 @@
 package org.darkphoenixs.activemq.listener;
 
 import org.darkphoenixs.activemq.consumer.MessageConsumer;
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class MessageConsumerListenerTest {
 
     }
 
-    private class MessageConsumerImpl implements Consumer<String> {
+    private class MessageConsumerImpl implements MQConsumer<String> {
 
         @Override
         public String getConsumerKey() throws MQException {

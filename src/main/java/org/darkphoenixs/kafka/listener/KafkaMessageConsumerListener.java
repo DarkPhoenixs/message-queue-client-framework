@@ -57,7 +57,7 @@ public class KafkaMessageConsumerListener<K, V> extends KafkaMessageListener<K, 
 
             consumer.receive(key, val);
         else
-            throw new MQException("Consumer is null !");
+            throw new MQException("MQConsumer is null !");
     }
 
     @Override
@@ -67,6 +67,6 @@ public class KafkaMessageConsumerListener<K, V> extends KafkaMessageListener<K, 
 
             consumer.receive(messages);
         else
-            throw new MQException("Consumer is null !");
+            throw new MQException("MQConsumer is null !");
     }
 }

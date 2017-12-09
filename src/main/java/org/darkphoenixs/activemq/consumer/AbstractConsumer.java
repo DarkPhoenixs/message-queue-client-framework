@@ -15,7 +15,7 @@
  */
 package org.darkphoenixs.activemq.consumer;
 
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author Victor.Zxy
  * @version 1.3.1
- * @see Consumer
+ * @see MQConsumer
  * @since 2015-06-01
  */
-public abstract class AbstractConsumer<T> implements Consumer<T> {
+public abstract class AbstractConsumer<T> implements MQConsumer<T> {
 
     /**
      * logger

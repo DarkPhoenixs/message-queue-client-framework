@@ -16,8 +16,8 @@
 package org.darkphoenixs.mq.common;
 
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.factory.ProducerFactory;
-import org.darkphoenixs.mq.producer.Producer;
+import org.darkphoenixs.mq.factory.MQProducerFactory;
+import org.darkphoenixs.mq.producer.MQProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,75 +25,75 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * <p>Title: MessageProducerFactory</p>
+ * <p>Title: MQMessageProducerFactory</p>
  * <p>Description: 消息生产者工厂</p>
  *
  * @author Victor.Zxy
  * @version 1.0
- * @see ProducerFactory
+ * @see MQProducerFactory
  * @since 2015-06-01
  */
-public class MessageProducerFactory implements ProducerFactory {
+public class MQMessageProducerFactory implements MQProducerFactory {
 
     /**
      * instance
      */
-    private static final AtomicReference<MessageProducerFactory> instance = new AtomicReference<MessageProducerFactory>();
+    private static final AtomicReference<MQMessageProducerFactory> instance = new AtomicReference<MQMessageProducerFactory>();
     /**
      * logger
      */
-    protected Logger logger = LoggerFactory.getLogger(MessageProducerFactory.class);
+    protected Logger logger = LoggerFactory.getLogger(MQMessageProducerFactory.class);
     /**
      * producers
      */
-    private Producer<?>[] producers;
+    private MQProducer<?>[] producers;
 
     /**
      * producerCache
      */
-    private ConcurrentHashMap<String, Producer<?>> producerCache = new ConcurrentHashMap<String, Producer<?>>();
+    private ConcurrentHashMap<String, MQProducer<?>> producerCache = new ConcurrentHashMap<String, MQProducer<?>>();
 
     /**
      * private construction method
      */
-    private MessageProducerFactory() {
+    private MQMessageProducerFactory() {
     }
 
     /**
      * get singleton instance method
      */
-    public synchronized static ProducerFactory getInstance() {
+    public synchronized static MQProducerFactory getInstance() {
 
         if (instance.get() == null)
-            instance.set(new MessageProducerFactory());
+            instance.set(new MQMessageProducerFactory());
         return instance.get();
     }
 
     /**
      * @param producers the producers to set
      */
-    public void setProducers(Producer<?>[] producers) {
+    public void setProducers(MQProducer<?>[] producers) {
         this.producers = producers;
     }
 
     @Override
-    public <T> void addProducer(Producer<T> producer) throws MQException {
+    public <T> void addProducer(MQProducer<T> producer) throws MQException {
 
         producerCache.put(producer.getProducerKey(), producer);
 
-        logger.debug("Add Producer : " + producer.getProducerKey());
+        logger.debug("Add MQProducer : " + producer.getProducerKey());
 
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Producer<T> getProducer(String producerKey) throws MQException {
+    public <T> MQProducer<T> getProducer(String producerKey) throws MQException {
 
         if (producerCache.containsKey(producerKey)) {
 
-            logger.debug("Get Producer : " + producerKey);
+            logger.debug("Get MQProducer : " + producerKey);
 
-            return (Producer<T>) producerCache.get(producerKey);
+            return (MQProducer<T>) producerCache.get(producerKey);
 
         } else {
 

@@ -26,11 +26,11 @@
         <constructor-arg value="${mq.receiveDestinationName}"/>
     </bean>
 
-    <!-- Message Consumer -->
+    <!-- Message MQConsumer -->
     <bean id="messageConsumer" class="org.darkphoenixs.activemq.consumer.MessageConsumer">
     </bean>
 
-    <!-- Consumer Listener -->
+    <!-- MQConsumer Listener -->
     <bean id="consumerListener"
           class="org.darkphoenixs.activemq.listener.MessageConsumerListener">
         <property name="consumer" ref="messageConsumer"/>

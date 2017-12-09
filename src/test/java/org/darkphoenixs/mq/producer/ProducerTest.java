@@ -17,7 +17,7 @@ public class ProducerTest {
 
     }
 
-    private class ProducerImpl implements Producer<String> {
+    private class ProducerImpl implements MQProducer<String> {
 
         @Override
         public void send(String message) throws MQException {

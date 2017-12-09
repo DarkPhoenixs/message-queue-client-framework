@@ -7,7 +7,7 @@ import org.apache.kafka.common.TopicPartition;
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
 import org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl;
 import org.darkphoenixs.kafka.listener.MessageConsumerListener;
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
@@ -31,7 +31,7 @@ public class KafkaMessageAdapterTest {
         Assert.assertNull(adapter.getMessageListener());
 
         MessageConsumerListener<Integer, MessageBeanImpl> listener = new MessageConsumerListener<Integer, MessageBeanImpl>();
-        listener.setConsumer(new Consumer<MessageBeanImpl>() {
+        listener.setConsumer(new MQConsumer<MessageBeanImpl>() {
 
             @Override
             public void receive(MessageBeanImpl message) throws MQException {

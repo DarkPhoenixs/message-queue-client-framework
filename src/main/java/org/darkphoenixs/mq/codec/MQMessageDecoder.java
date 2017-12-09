@@ -20,14 +20,14 @@ import org.darkphoenixs.mq.exception.MQException;
 import java.util.List;
 
 /**
- * <p>Title: MessageDecoder</p>
+ * <p>Title: MQMessageDecoder</p>
  * <p>Description: 消息解码器接口</p>
  *
  * @author Victor.Zxy
  * @version 1.0
  * @since 2015-06-01
  */
-public interface MessageDecoder<T> {
+public interface MQMessageDecoder<T> {
 
     /**
      * <p>Title: decode</p>

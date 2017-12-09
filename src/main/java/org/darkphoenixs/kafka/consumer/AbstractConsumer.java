@@ -15,7 +15,7 @@
  */
 package org.darkphoenixs.kafka.consumer;
 
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +30,10 @@ import java.util.Map;
  * @param <V> the type parameter
  * @author Victor.Zxy
  * @version 1.3.0
- * @see Consumer
+ * @see MQConsumer
  * @since 2016年7月21日
  */
-public abstract class AbstractConsumer<K, V> implements Consumer<V> {
+public abstract class AbstractConsumer<K, V> implements MQConsumer<V> {
 
     /**
      * logger

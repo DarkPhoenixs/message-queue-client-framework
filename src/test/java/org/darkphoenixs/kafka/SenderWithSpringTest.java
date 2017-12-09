@@ -13,7 +13,7 @@ import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
 import org.darkphoenixs.kafka.pool.KafkaMessageSenderPool;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
-import org.darkphoenixs.mq.producer.Producer;
+import org.darkphoenixs.mq.producer.MQProducer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class SenderWithSpringTest {
     @Autowired
     private KafkaMessageSenderPool<byte[], byte[]> pool;
     @Autowired
-    private Producer<MessageBeanImpl> producer;
+    private MQProducer<MessageBeanImpl> producer;
 
     @Before
     public void before() {

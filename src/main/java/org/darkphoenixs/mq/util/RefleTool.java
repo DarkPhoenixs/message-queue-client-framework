@@ -17,6 +17,7 @@ package org.darkphoenixs.mq.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * <p>Title: RefleTool</p>
@@ -64,11 +65,9 @@ public class RefleTool {
      *
      * @param obj
      * @param fieldName
-     * @param fieldType
      * @return 属性值
      */
-    @SuppressWarnings("unchecked")
-    public static <T> T getFieldValue(Object obj, String fieldName, Class<T> fieldType) {
+    public static <T> T getFieldValue(Object obj, String fieldName) {
 
         Class<?> clasz = obj.getClass();
 
@@ -84,6 +83,30 @@ public class RefleTool {
             } catch (Exception e) {
 
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * <p>Title: getMethodValue</p>
+     * <p>Description: 反射机制获取方法返回值</p>
+     *
+     * @param obj
+     * @param methodName
+     * @return 方法返回值
+     */
+    public static <T> T getMethodValue(Object obj, String methodName) {
+
+        Class<?> clasz = obj.getClass();
+
+        try {
+            Method method = clasz.getMethod(methodName);
+
+            return (T) method.invoke(obj);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;

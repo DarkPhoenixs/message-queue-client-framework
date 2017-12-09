@@ -15,10 +15,10 @@
  */
 package org.darkphoenixs.activemq.listener;
 
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.factory.ConsumerFactory;
-import org.darkphoenixs.mq.listener.MessageListener;
+import org.darkphoenixs.mq.factory.MQConsumerFactory;
+import org.darkphoenixs.mq.listener.MQMessageListener;
 import org.darkphoenixs.mq.util.RefleTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +31,10 @@ import java.util.concurrent.ExecutorService;
  *
  * @author Victor.Zxy
  * @version 1.0
- * @see MessageListener
+ * @see MQMessageListener
  * @since 2015-06-01
  */
-public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
+public class MessageFactoryConsumerListener<T> implements MQMessageListener<T> {
 
     /**
      * logger
@@ -49,7 +49,7 @@ public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
     /**
      * consumerFactory
      */
-    private ConsumerFactory consumerFactory;
+    private MQConsumerFactory consumerFactory;
 
     /**
      * threadPool
@@ -73,14 +73,14 @@ public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
     /**
      * @return the consumerFactory
      */
-    public ConsumerFactory getConsumerFactory() {
+    public MQConsumerFactory getConsumerFactory() {
         return consumerFactory;
     }
 
     /**
      * @param consumerFactory the consumerFactory to set
      */
-    public void setConsumerFactory(ConsumerFactory consumerFactory) {
+    public void setConsumerFactory(MQConsumerFactory consumerFactory) {
         this.consumerFactory = consumerFactory;
     }
 
@@ -102,7 +102,7 @@ public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
     public void onMessage(final T message) throws MQException {
 
         if (consumerFactory == null)
-            throw new MQException("ConsumerFactory is null !");
+            throw new MQException("MQConsumerFactory is null !");
 
         if (consumerKeyField == null)
             throw new MQException("ConsumerKeyField is null !");
@@ -110,15 +110,15 @@ public class MessageFactoryConsumerListener<T> implements MessageListener<T> {
         if (message == null)
             throw new MQException("Message is null !");
 
-        final String consumerKey = RefleTool.getFieldValue(message, consumerKeyField, String.class);
+        final String consumerKey = RefleTool.getMethodValue(message, "get" + consumerKeyField.substring(0, 1).toUpperCase() + consumerKeyField.substring(1));
 
         if (consumerKey == null)
-            throw new MQException("Consumer Key is null !");
+            throw new MQException("MQConsumer Key is null !");
 
-        final Consumer<T> consumer = consumerFactory.getConsumer(consumerKey);
+        final MQConsumer<T> consumer = consumerFactory.getConsumer(consumerKey);
 
         if (consumer == null)
-            throw new MQException("Consumer is null !");
+            throw new MQException("MQConsumer is null !");
 
         if (threadPool == null)
 

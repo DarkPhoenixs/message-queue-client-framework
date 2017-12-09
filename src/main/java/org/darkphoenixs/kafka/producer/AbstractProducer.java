@@ -18,7 +18,7 @@ package org.darkphoenixs.kafka.producer;
 import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageTemplate;
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.producer.Producer;
+import org.darkphoenixs.mq.producer.MQProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author Victor.Zxy
  * @version 1.0
- * @see Producer
+ * @see MQProducer
  * @since 2015-06-01
  */
-public abstract class AbstractProducer<K, V> implements Producer<V> {
+public abstract class AbstractProducer<K, V> implements MQProducer<V> {
 
     /**
      * logger

@@ -15,7 +15,7 @@
  */
 package org.darkphoenixs.kafka.codec;
 
-import org.darkphoenixs.mq.codec.MessageDecoder;
+import org.darkphoenixs.mq.codec.MQMessageDecoder;
 import org.darkphoenixs.mq.exception.MQException;
 
 import java.util.ArrayList;
@@ -28,10 +28,10 @@ import java.util.Map;
  *
  * @author Victor.Zxy
  * @version 1.3.0
- * @see MessageDecoder
+ * @see MQMessageDecoder
  * @since 2016年7月21日
  */
-public abstract class KafkaMessageDecoder<K, V> implements MessageDecoder<V> {
+public abstract class KafkaMessageDecoder<K, V> implements MQMessageDecoder<V> {
 
     @Override
     public V decode(byte[] bytes) throws MQException {

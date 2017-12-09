@@ -15,18 +15,18 @@
  */
 package org.darkphoenixs.mq.factory;
 
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 
 /**
- * <p>Title: ConsumerFactory</p>
+ * <p>Title: MQConsumerFactory</p>
  * <p>Description: 消费者工厂接口</p>
  *
  * @author Victor.Zxy
  * @version 1.0
  * @since 2015-06-01
  */
-public interface ConsumerFactory {
+public interface MQConsumerFactory {
 
     /**
      * <p>Title: addConsumer</p>
@@ -35,7 +35,7 @@ public interface ConsumerFactory {
      * @param consumer 消费者
      * @throws MQException MQ异常
      */
-    public <T> void addConsumer(Consumer<T> consumer) throws MQException;
+    <T> void addConsumer(MQConsumer<T> consumer) throws MQException;
 
     /**
      * <p>Title: getConsumer</p>
@@ -45,7 +45,7 @@ public interface ConsumerFactory {
      * @return 消费者
      * @throws MQException MQ异常
      */
-    public <T> Consumer<T> getConsumer(String consumerKey) throws MQException;
+    <T> MQConsumer<T> getConsumer(String consumerKey) throws MQException;
 
     /**
      * <p>Title: init</p>
@@ -53,7 +53,7 @@ public interface ConsumerFactory {
      *
      * @throws MQException MQ异常
      */
-    public void init() throws MQException;
+    void init() throws MQException;
 
     /**
      * <p>Title: destroy</p>
@@ -61,6 +61,6 @@ public interface ConsumerFactory {
      *
      * @throws MQException MQ异常
      */
-    public void destroy() throws MQException;
+    void destroy() throws MQException;
 
 }

@@ -18,14 +18,14 @@ package org.darkphoenixs.mq.consumer;
 import org.darkphoenixs.mq.exception.MQException;
 
 /**
- * <p>Title: Consumer</p>
+ * <p>Title: MQConsumer</p>
  * <p>Description: 消费者接口</p>
  *
  * @author Victor.Zxy
  * @version 1.0
  * @since 2015-06-01
  */
-public interface Consumer<T> {
+public interface MQConsumer<T> {
 
     /**
      * <p>Title: receive</p>
@@ -34,7 +34,7 @@ public interface Consumer<T> {
      * @param message 消息
      * @throws MQException MQ异常
      */
-    public abstract void receive(T message) throws MQException;
+    void receive(T message) throws MQException;
 
     /**
      * <p>Title: getConsumerKey</p>
@@ -43,5 +43,5 @@ public interface Consumer<T> {
      * @return 消费者标识
      * @throws MQException MQ异常
      */
-    public abstract String getConsumerKey() throws MQException;
+    String getConsumerKey() throws MQException;
 }

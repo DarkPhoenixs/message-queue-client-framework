@@ -13,39 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.darkphoenixs.mq.codec;
+package org.darkphoenixs.mq.listener;
 
 import org.darkphoenixs.mq.exception.MQException;
 
-import java.util.List;
-
 /**
- * <p>Title: MessageEncoder</p>
- * <p>Description: 消息编码器接口</p>
+ * <p>Title: MQMessageListener</p>
+ * <p>Description: 消息监听器接口</p>
  *
  * @author Victor.Zxy
  * @version 1.0
  * @since 2015-06-01
  */
-public interface MessageEncoder<T> {
+public interface MQMessageListener<T> {
 
     /**
-     * <p>Title: encode</p>
-     * <p>Description: 消息序列化</p>
+     * <p>Title: onMessage</p>
+     * <p>Description: 监听方法</p>
      *
      * @param message 消息
-     * @return 消息序列化
-     * @throws MQException
+     * @throws MQException MQ异常
      */
-    byte[] encode(T message) throws MQException;
-
-    /**
-     * <p>Title: batchEncode</p>
-     * <p>Description: 批量序列化</p>
-     *
-     * @param message 消息列表
-     * @return 消息序列化列表
-     * @throws MQException
-     */
-    List<byte[]> batchEncode(List<T> message) throws MQException;
+    void onMessage(final T message) throws MQException;
 }

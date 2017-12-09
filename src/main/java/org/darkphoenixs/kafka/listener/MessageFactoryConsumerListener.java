@@ -15,9 +15,9 @@
  */
 package org.darkphoenixs.kafka.listener;
 
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.factory.ConsumerFactory;
+import org.darkphoenixs.mq.factory.MQConsumerFactory;
 import org.darkphoenixs.mq.util.RefleTool;
 
 /**
@@ -39,7 +39,7 @@ public class MessageFactoryConsumerListener<K, V> extends KafkaMessageListener<K
     /**
      * consumerFactory
      */
-    private ConsumerFactory consumerFactory;
+    private MQConsumerFactory consumerFactory;
 
     /**
      * @return the consumerKeyField
@@ -58,14 +58,14 @@ public class MessageFactoryConsumerListener<K, V> extends KafkaMessageListener<K
     /**
      * @return the consumerFactory
      */
-    public ConsumerFactory getConsumerFactory() {
+    public MQConsumerFactory getConsumerFactory() {
         return consumerFactory;
     }
 
     /**
      * @param consumerFactory the consumerFactory to set
      */
-    public void setConsumerFactory(ConsumerFactory consumerFactory) {
+    public void setConsumerFactory(MQConsumerFactory consumerFactory) {
         this.consumerFactory = consumerFactory;
     }
 
@@ -73,7 +73,7 @@ public class MessageFactoryConsumerListener<K, V> extends KafkaMessageListener<K
     public void onMessage(V message) throws MQException {
 
         if (consumerFactory == null)
-            throw new MQException("ConsumerFactory is null !");
+            throw new MQException("MQConsumerFactory is null !");
 
         if (consumerKeyField == null)
             throw new MQException("ConsumerKeyField is null !");
@@ -81,15 +81,15 @@ public class MessageFactoryConsumerListener<K, V> extends KafkaMessageListener<K
         if (message == null)
             throw new MQException("Message is null !");
 
-        String consumerKey = RefleTool.getFieldValue(message, consumerKeyField, String.class);
+        String consumerKey = RefleTool.getMethodValue(message, "get" + consumerKeyField.substring(0, 1).toUpperCase() + consumerKeyField.substring(1));
 
         if (consumerKey == null)
-            throw new MQException("Consumer Key is null !");
+            throw new MQException("MQConsumer Key is null !");
 
-        Consumer<V> consumer = consumerFactory.getConsumer(consumerKey);
+        MQConsumer<V> consumer = consumerFactory.getConsumer(consumerKey);
 
         if (consumer == null)
-            throw new MQException("Consumer is null !");
+            throw new MQException("MQConsumer is null !");
 
         consumer.receive(message);
     }

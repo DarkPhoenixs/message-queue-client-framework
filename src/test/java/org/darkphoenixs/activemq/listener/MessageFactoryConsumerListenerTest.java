@@ -1,8 +1,8 @@
 package org.darkphoenixs.activemq.listener;
 
 import org.darkphoenixs.activemq.consumer.AbstractConsumer;
-import org.darkphoenixs.mq.common.MessageConsumerFactory;
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.common.MQMessageConsumerFactory;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
@@ -23,7 +23,7 @@ public class MessageFactoryConsumerListenerTest {
             Assert.assertTrue(e instanceof MQException);
         }
 
-        MessageConsumerFactory consumerFactory = (MessageConsumerFactory) MessageConsumerFactory
+        MQMessageConsumerFactory consumerFactory = (MQMessageConsumerFactory) MQMessageConsumerFactory
                 .getInstance();
 
         ConsumerTest consumer1 = new ConsumerTest();
@@ -35,7 +35,7 @@ public class MessageFactoryConsumerListenerTest {
         ConsumerTestErr consumerErr = new ConsumerTestErr();
         consumerErr.setConsumerKey("ProtocolIdErr");
 
-        consumerFactory.setConsumers(new Consumer[]{consumer1, consumer2});
+        consumerFactory.setConsumers(new MQConsumer[]{consumer1, consumer2});
         consumerFactory.addConsumer(consumerErr);
         consumerFactory.init();
 

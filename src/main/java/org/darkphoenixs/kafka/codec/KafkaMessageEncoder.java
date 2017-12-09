@@ -15,7 +15,7 @@
  */
 package org.darkphoenixs.kafka.codec;
 
-import org.darkphoenixs.mq.codec.MessageEncoder;
+import org.darkphoenixs.mq.codec.MQMessageEncoder;
 import org.darkphoenixs.mq.exception.MQException;
 
 import java.util.ArrayList;
@@ -28,10 +28,10 @@ import java.util.Map;
  *
  * @author Victor.Zxy
  * @version 1.3.0
- * @see MessageEncoder
+ * @see MQMessageEncoder
  * @since 2016年7月21日
  */
-public abstract class KafkaMessageEncoder<K, V> implements MessageEncoder<V> {
+public abstract class KafkaMessageEncoder<K, V> implements MQMessageEncoder<V> {
 
     @Override
     public byte[] encode(V message) throws MQException {

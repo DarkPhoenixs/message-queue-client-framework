@@ -16,7 +16,7 @@
 package org.darkphoenixs.activemq.producer;
 
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.producer.Producer;
+import org.darkphoenixs.mq.producer.MQProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
@@ -31,10 +31,10 @@ import javax.jms.Topic;
  *
  * @author Victor.Zxy
  * @version 1.0
- * @see Producer
+ * @see MQProducer
  * @since 2015-06-01
  */
-public abstract class AbstractProducer<T> implements Producer<T> {
+public abstract class AbstractProducer<T> implements MQProducer<T> {
 
     /**
      * logger

@@ -14,7 +14,7 @@
         <constructor-arg value="QUEUE.TEST"/>
     </bean>
 
-    <!-- Kafka Message Consumer -->
+    <!-- Kafka Message MQConsumer -->
     <bean id="messageConsumer" class="org.darkphoenixs.kafka.consumer.MessageConsumer">
     </bean>
 

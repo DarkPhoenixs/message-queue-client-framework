@@ -13,26 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.darkphoenixs.mq.listener;
+package org.darkphoenixs.mq.producer;
 
 import org.darkphoenixs.mq.exception.MQException;
 
 /**
- * <p>Title: MessageListener</p>
- * <p>Description: 消息监听器接口</p>
+ * <p>Title: MQProducer</p>
+ * <p>Description: 生产者接口</p>
  *
  * @author Victor.Zxy
  * @version 1.0
  * @since 2015-06-01
  */
-public interface MessageListener<T> {
+public interface MQProducer<T> {
 
     /**
-     * <p>Title: onMessage</p>
-     * <p>Description: 监听方法</p>
+     * <p>Title: send</p>
+     * <p>Description: 发送消息</p>
      *
      * @param message 消息
      * @throws MQException MQ异常
      */
-    public abstract void onMessage(final T message) throws MQException;
+    void send(T message) throws MQException;
+
+    /**
+     * <p>Title: getProducerKey</p>
+     * <p>Description: 生产者标识</p>
+     *
+     * @return 生产者标识
+     * @throws MQException MQ异常
+     */
+    String getProducerKey() throws MQException;
+
 }

@@ -16,7 +16,7 @@
 package org.darkphoenixs.kafka.listener;
 
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.listener.MessageListener;
+import org.darkphoenixs.mq.listener.MQMessageListener;
 
 import java.util.Map;
 
@@ -28,10 +28,10 @@ import java.util.Map;
  * @param <V> the type parameter
  * @author Victor.Zxy
  * @version 1.3.0
- * @see MessageListener
+ * @see MQMessageListener
  * @since 2016年7月21日
  */
-public abstract class KafkaMessageListener<K, V> implements MessageListener<V> {
+public abstract class KafkaMessageListener<K, V> implements MQMessageListener<V> {
 
     /**
      * <p>onMessage</p>

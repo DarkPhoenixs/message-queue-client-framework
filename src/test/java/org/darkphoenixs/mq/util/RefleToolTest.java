@@ -34,9 +34,18 @@ public class RefleToolTest {
         messageBean.setMessageDate(date);
         messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
 
-        Assert.assertEquals("MessageType", RefleTool.getFieldValue(messageBean, "messageType", String.class));
+        Assert.assertEquals("MessageType", RefleTool.getFieldValue(messageBean, "messageType"));
 
-        Assert.assertNull(RefleTool.getFieldValue(messageBean, "messageType1", String.class));
+        Assert.assertEquals("MessageType", RefleTool.getMethodValue(messageBean, "getMessageType"));
+
+        Assert.assertNull(RefleTool.getFieldValue(messageBean, "messageType1"));
+
+        try {
+            RefleTool.getMethodValue(messageBean, "messageType1");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NoSuchMethodException);
+        }
+
     }
 
 }

@@ -1,7 +1,7 @@
 package org.darkphoenixs.mq.common;
 
 import org.darkphoenixs.mq.consumer.AbstractConsumer;
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.Assert;
@@ -13,14 +13,14 @@ public class MessageConsumerFactoryTest {
     @Test
     public void test_0() throws Exception {
 
-        MessageConsumerFactory factory = (MessageConsumerFactory) MessageConsumerFactory
+        MQMessageConsumerFactory factory = (MQMessageConsumerFactory) MQMessageConsumerFactory
                 .getInstance();
 
         factory.init();
 
         factory.destroy();
 
-        factory = (MessageConsumerFactory) MessageConsumerFactory
+        factory = (MQMessageConsumerFactory) MQMessageConsumerFactory
                 .getInstance();
 
         factory.init();
@@ -33,7 +33,7 @@ public class MessageConsumerFactoryTest {
         ConsumerTest consumer2 = new ConsumerTest();
         consumer2.setConsumerKey("ProtocolId2");
 
-        factory.setConsumers(new Consumer[]{consumer1});
+        factory.setConsumers(new MQConsumer[]{consumer1});
         factory.addConsumer(consumer2);
         factory.init();
 

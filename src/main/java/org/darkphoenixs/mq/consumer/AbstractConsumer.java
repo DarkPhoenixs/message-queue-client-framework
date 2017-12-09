@@ -25,11 +25,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author Victor.Zxy
  * @version 1.0
- * @see Consumer
+ * @see MQConsumer
  * @since 2015-06-01
  */
 @Deprecated
-public abstract class AbstractConsumer<T> implements Consumer<T> {
+public abstract class AbstractConsumer<T> implements MQConsumer<T> {
 
     /**
      * logger

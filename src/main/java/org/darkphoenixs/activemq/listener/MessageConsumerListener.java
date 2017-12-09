@@ -15,9 +15,9 @@
  */
 package org.darkphoenixs.activemq.listener;
 
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.listener.MessageListener;
+import org.darkphoenixs.mq.listener.MQMessageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +29,10 @@ import java.util.concurrent.ExecutorService;
  *
  * @author Victor.Zxy
  * @version 1.0
- * @see MessageListener
+ * @see MQMessageListener
  * @since 2015-06-01
  */
-public class MessageConsumerListener<T> implements MessageListener<T> {
+public class MessageConsumerListener<T> implements MQMessageListener<T> {
 
     /**
      * logger
@@ -42,7 +42,7 @@ public class MessageConsumerListener<T> implements MessageListener<T> {
     /**
      * messageConsumer
      */
-    private Consumer<T> consumer;
+    private MQConsumer<T> consumer;
 
     /**
      * threadPool
@@ -52,14 +52,14 @@ public class MessageConsumerListener<T> implements MessageListener<T> {
     /**
      * @return the consumer
      */
-    public Consumer<T> getConsumer() {
+    public MQConsumer<T> getConsumer() {
         return consumer;
     }
 
     /**
      * @param consumer the consumer to set
      */
-    public void setConsumer(Consumer<T> consumer) {
+    public void setConsumer(MQConsumer<T> consumer) {
         this.consumer = consumer;
     }
 
@@ -99,7 +99,7 @@ public class MessageConsumerListener<T> implements MessageListener<T> {
             else
                 consumer.receive(message);
         else
-            throw new MQException("Consumer is null !");
+            throw new MQException("MQConsumer is null !");
 
     }
 }

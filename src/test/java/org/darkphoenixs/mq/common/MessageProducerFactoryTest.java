@@ -2,7 +2,7 @@ package org.darkphoenixs.mq.common;
 
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
-import org.darkphoenixs.mq.producer.Producer;
+import org.darkphoenixs.mq.producer.MQProducer;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,10 +11,10 @@ public class MessageProducerFactoryTest {
     @Test
     public void test_0() throws Exception {
 
-        MessageProducerFactory factory = (MessageProducerFactory) MessageProducerFactory
+        MQMessageProducerFactory factory = (MQMessageProducerFactory) MQMessageProducerFactory
                 .getInstance();
 
-        factory = (MessageProducerFactory) MessageProducerFactory
+        factory = (MQMessageProducerFactory) MQMessageProducerFactory
                 .getInstance();
 
         factory.init();
@@ -27,7 +27,7 @@ public class MessageProducerFactoryTest {
         ProducerTest producer2 = new ProducerTest();
         producer2.setProducerKey("ProducerKey2");
 
-        factory.setProducers(new Producer[]{producer1});
+        factory.setProducers(new MQProducer[]{producer1});
         factory.addProducer(producer2);
 
         factory.init();
@@ -39,7 +39,7 @@ public class MessageProducerFactoryTest {
         factory.destroy();
     }
 
-    private class ProducerTest implements Producer<MessageBeanImpl> {
+    private class ProducerTest implements MQProducer<MessageBeanImpl> {
 
         private String producerKey;
 

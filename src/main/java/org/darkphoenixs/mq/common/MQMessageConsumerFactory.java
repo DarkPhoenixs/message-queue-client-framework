@@ -15,9 +15,9 @@
  */
 package org.darkphoenixs.mq.common;
 
-import org.darkphoenixs.mq.consumer.Consumer;
+import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.mq.factory.ConsumerFactory;
+import org.darkphoenixs.mq.factory.MQConsumerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,74 +25,74 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * <p>Title: MessageConsumerFactory</p>
+ * <p>Title: MQMessageConsumerFactory</p>
  * <p>Description: 消息消费者工厂</p>
  *
  * @author Victor.Zxy
  * @version 1.0
- * @see ConsumerFactory
+ * @see MQConsumerFactory
  * @since 2015-06-01
  */
-public class MessageConsumerFactory implements ConsumerFactory {
+public class MQMessageConsumerFactory implements MQConsumerFactory {
 
     /**
      * instance
      */
-    private static final AtomicReference<MessageConsumerFactory> instance = new AtomicReference<MessageConsumerFactory>();
+    private static final AtomicReference<MQMessageConsumerFactory> instance = new AtomicReference<MQMessageConsumerFactory>();
     /**
      * logger
      */
-    protected Logger logger = LoggerFactory.getLogger(MessageConsumerFactory.class);
+    protected Logger logger = LoggerFactory.getLogger(MQMessageConsumerFactory.class);
     /**
      * consumers
      */
-    private Consumer<?>[] consumers;
+    private MQConsumer<?>[] consumers;
 
     /**
      * consumerCache
      */
-    private ConcurrentHashMap<String, Consumer<?>> consumerCache = new ConcurrentHashMap<String, Consumer<?>>();
+    private ConcurrentHashMap<String, MQConsumer<?>> consumerCache = new ConcurrentHashMap<String, MQConsumer<?>>();
 
     /**
      * private construction method
      */
-    private MessageConsumerFactory() {
+    private MQMessageConsumerFactory() {
     }
 
     /**
      * get singleton instance method
      */
-    public synchronized static ConsumerFactory getInstance() {
+    public synchronized static MQConsumerFactory getInstance() {
 
         if (instance.get() == null)
-            instance.set(new MessageConsumerFactory());
+            instance.set(new MQMessageConsumerFactory());
         return instance.get();
     }
 
     /**
      * @param consumers the consumers to set
      */
-    public void setConsumers(Consumer<?>[] consumers) {
+    public void setConsumers(MQConsumer<?>[] consumers) {
         this.consumers = consumers;
     }
 
     @Override
-    public <T> void addConsumer(Consumer<T> consumer) throws MQException {
+    public <T> void addConsumer(MQConsumer<T> consumer) throws MQException {
 
         consumerCache.put(consumer.getConsumerKey(), consumer);
 
-        logger.debug("Add Consumer : " + consumer.getConsumerKey());
+        logger.debug("Add MQConsumer : " + consumer.getConsumerKey());
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Consumer<T> getConsumer(String consumerKey) throws MQException {
+    public <T> MQConsumer<T> getConsumer(String consumerKey) throws MQException {
 
         if (consumerCache.containsKey(consumerKey)) {
 
-            logger.debug("Get Consumer : " + consumerKey);
+            logger.debug("Get MQConsumer : " + consumerKey);
 
-            return (Consumer<T>) consumerCache.get(consumerKey);
+            return (MQConsumer<T>) consumerCache.get(consumerKey);
 
         } else {
 

@@ -27,7 +27,7 @@
         <constructor-arg value="${mq.sendDestinationName}"/>
     </bean>
 
-    <!-- Message Producer -->
+    <!-- Message MQProducer -->
     <bean id="messageProducer" class="org.darkphoenixs.activemq.producer.MessageProducer">
         <property name="jmsTemplate" ref="queueJmsTemplate"/>
         <property name="destination" ref="sendDestination"/>

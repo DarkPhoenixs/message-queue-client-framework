@@ -26,7 +26,7 @@ public class MessageEncoderTest {
         Assert.assertArrayEquals("哈哈".getBytes("UTF-8"), encoder.batchEncode(list).get(1));
     }
 
-    private class MessageEncoderImpl implements MessageEncoder<String> {
+    private class MessageEncoderImpl implements MQMessageEncoder<String> {
 
         @Override
         public byte[] encode(String message) throws MQException {
