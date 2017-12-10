@@ -37,7 +37,7 @@ import java.util.List;
  * @see RocketmqMessageListener
  * @since 2017 /12/10
  */
-public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<T> implements MessageListenerConcurrently, MessageListenerOrderly {
+public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<T> {
 
     /**
      * The Logger.
@@ -49,6 +49,8 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
     private AbstractConsumer<T> consumer;
 
     private BATCH batch = BATCH.NON_BATCH;
+
+    private MODEL model = MODEL.MODEL_1;
 
     /**
      * Gets message decoder.
@@ -104,6 +106,24 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
         this.batch = BATCH.valueOf(batch);
     }
 
+    /**
+     * Gets model.
+     *
+     * @return the model
+     */
+    public String getModel() {
+        return model.name();
+    }
+
+    /**
+     * Sets model.
+     *
+     * @param model the model
+     */
+    public void setModel(String model) {
+        this.model = MODEL.valueOf(model);
+    }
+
     @Override
     public void onMessage(List<T> messages) throws MQException {
 
@@ -117,6 +137,28 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
     }
 
     @Override
+    public MessageListener getMessageListener() {
+
+        MessageListener messageListener = null;
+
+        switch (model) {
+
+            case MODEL_1:
+
+                messageListener = messageListenerConcurrently;
+
+            break;
+
+            case MODEL_2:
+
+                messageListener = messageListenerOrderly;
+
+            break;
+        }
+        return messageListener;
+    }
+
+    @Override
     public void onMessage(T message) throws MQException {
 
         if (consumer != null)
@@ -126,38 +168,6 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
             throw new MQException("Consumer is null !");
 
         logger.debug("Consume Success, Message : " + message);
-    }
-
-    @Override
-    public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messages, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
-
-        try {
-            consume(messages);
-
-        } catch (Exception e) {
-
-            logger.error("Consume failed !", e);
-
-            return ConsumeConcurrentlyStatus.RECONSUME_LATER;
-        }
-
-        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-    }
-
-    @Override
-    public ConsumeOrderlyStatus consumeMessage(List<MessageExt> messages, ConsumeOrderlyContext consumeOrderlyContext) {
-
-        try {
-            consume(messages);
-
-        } catch (Exception e) {
-
-            logger.error("Consume failed !", e);
-
-            return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
-        }
-
-        return ConsumeOrderlyStatus.SUCCESS;
     }
 
     /**
@@ -190,6 +200,65 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
 
                 break;
         }
+    }
+
+
+    /**
+     * The Message listener concurrently.
+     */
+    protected MessageListenerConcurrently messageListenerConcurrently = new MessageListenerConcurrently() {
+
+        public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messages, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
+
+            try {
+                consume(messages);
+
+            } catch (Exception e) {
+
+                logger.error("Consume failed !", e);
+
+                return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+            }
+
+            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+        }
+    };
+
+    /**
+     * The Message listener orderly.
+     */
+    protected MessageListenerOrderly messageListenerOrderly = new MessageListenerOrderly() {
+
+        @Override
+        public ConsumeOrderlyStatus consumeMessage(List<MessageExt> messages, ConsumeOrderlyContext consumeOrderlyContext) {
+
+            try {
+                consume(messages);
+
+            } catch (Exception e) {
+
+                logger.error("Consume failed !", e);
+
+                return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
+            }
+
+            return ConsumeOrderlyStatus.SUCCESS;
+        }
+    };
+
+    /**
+     * The enum Model.
+     */
+    public enum MODEL {
+
+        /**
+         * Model 1 model.
+         */
+        MODEL_1,
+        /**
+         * Model 2 model.
+         */
+        MODEL_2
     }
 
     /**

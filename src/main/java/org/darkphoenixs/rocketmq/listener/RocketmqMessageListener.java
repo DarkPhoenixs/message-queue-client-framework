@@ -16,6 +16,7 @@
 
 package org.darkphoenixs.rocketmq.listener;
 
+import org.apache.rocketmq.client.consumer.listener.MessageListener;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.listener.MQMessageListener;
 
@@ -25,12 +26,26 @@ import java.util.List;
  * <p>Title: RocketmqMessageListener</p>
  * <p>Description: Rocketmq消息监听器抽象类</p>
  *
+ * @param <T> the type parameter
  * @author Victor
  * @version 1.0
  * @see MQMessageListener
- * @since 2017/12/10
+ * @since 2017 /12/10
  */
 public abstract class RocketmqMessageListener<T> implements MQMessageListener<T> {
 
+    /**
+     * On message.
+     *
+     * @param messages the messages
+     * @throws MQException the mq exception
+     */
     public abstract void onMessage(final List<T> messages) throws MQException;
+
+    /**
+     * Gets message listener.
+     *
+     * @return the message listener
+     */
+    public abstract MessageListener getMessageListener();
 }
