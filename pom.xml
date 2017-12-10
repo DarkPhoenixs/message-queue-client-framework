@@ -55,7 +55,7 @@
     <properties>
         <kafka.version>0.9.0.1</kafka.version>
         <activemq.version>5.10.0</activemq.version>
-        <rocketmq.version>4.0.0-incubating</rocketmq.version>
+        <rocketmq.version>4.1.0-incubating</rocketmq.version>
         <spring.version>4.0.0.RELEASE</spring.version>
         <jdk.version>1.7</jdk.version>
         <test.skip>true</test.skip>
