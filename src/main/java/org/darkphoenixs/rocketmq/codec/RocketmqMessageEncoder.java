@@ -19,7 +19,7 @@ package org.darkphoenixs.rocketmq.codec;
 import org.darkphoenixs.mq.codec.MQMessageEncoder;
 
 /**
- * <p>Title: RockermqMessageEncoder</p>
+ * <p>Title: RocketmqMessageEncoder</p>
  * <p>Description: Rocketmq消息解码器接口</p>
  *
  * @author Victor
@@ -27,5 +27,5 @@ import org.darkphoenixs.mq.codec.MQMessageEncoder;
  * @see MQMessageEncoder
  * @since 2017/12/10
  */
-public abstract class RockermqMessageEncoder<T> implements MQMessageEncoder<T> {
+public abstract class RocketmqMessageEncoder<T> implements MQMessageEncoder<T> {
 }
