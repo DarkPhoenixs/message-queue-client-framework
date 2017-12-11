@@ -22,7 +22,6 @@
 
     <description>Sender Configuration</description>
 
-
     <bean id="messageEncoder" class="org.darkphoenixs.rocketmq.codec.RocketmqMessageEncoderTest"/>
 
     <bean id="messageTemplate" class="org.darkphoenixs.rocketmq.producer.MessageProducer">
