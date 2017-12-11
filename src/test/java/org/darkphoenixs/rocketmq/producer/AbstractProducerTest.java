@@ -23,7 +23,7 @@ import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.darkphoenixs.mq.exception.MQException;
-import org.darkphoenixs.rocketmq.codec.RocketmqMessageEncoderTest;
+import org.darkphoenixs.rocketmq.codec.RocketmqMessageEncoderDemo;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -77,7 +77,7 @@ public class AbstractProducerTest {
             Assert.assertNotNull(e);
         }
 
-        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderTest());
+        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderDemo());
         Assert.assertNotNull(abstractProducer.getMessageEncoder());
 
         abstractProducer.setProducerKey("test");
@@ -112,7 +112,7 @@ public class AbstractProducerTest {
             Assert.assertNotNull(e);
         }
 
-        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderTest());
+        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderDemo());
 
         abstractProducer.batchSend(Collections.singletonList("test"));
 
@@ -144,7 +144,7 @@ public class AbstractProducerTest {
             Assert.assertNotNull(e);
         }
 
-        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderTest());
+        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderDemo());
 
         abstractProducer.sendAsync("test");
     }
@@ -173,7 +173,7 @@ public class AbstractProducerTest {
             Assert.assertNotNull(e);
         }
 
-        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderTest());
+        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderDemo());
 
         abstractProducer.sendOneWay("test");
     }
@@ -206,7 +206,7 @@ public class AbstractProducerTest {
             Assert.assertNotNull(e);
         }
 
-        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderTest());
+        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderDemo());
 
         abstractProducer.sendWithKey("key", "val");
     }
@@ -239,7 +239,7 @@ public class AbstractProducerTest {
             Assert.assertNotNull(e);
         }
 
-        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderTest());
+        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderDemo());
 
         abstractProducer.sendWithTag("key", "tag", "val");
     }
@@ -273,7 +273,7 @@ public class AbstractProducerTest {
             Assert.assertNotNull(e);
         }
 
-        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderTest());
+        abstractProducer.setMessageEncoder(new RocketmqMessageEncoderDemo());
 
         abstractProducer.sendWithTx("test", new LocalTransactionExecuter() {
             @Override

@@ -19,7 +19,7 @@ package org.darkphoenixs.rocketmq.listener;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.darkphoenixs.rocketmq.codec.RocketmqMessageDecoderTest;
+import org.darkphoenixs.rocketmq.codec.RocketmqMessageDecoderDemo;
 import org.darkphoenixs.rocketmq.consumer.MessageConsumer;
 import org.darkphoenixs.rocketmq.listener.RocketmqMessageConsumerListener.MODEL;
 import org.junit.Assert;
@@ -45,7 +45,7 @@ public class RocketmqMessageConsumerListenerTest {
         listener.setBatch(BATCH.NON_BATCH.name());
         listener.setModel(MODEL.MODEL_2.name());
         listener.setConsumer(new MessageConsumer<String>());
-        listener.setMessageDecoder(new RocketmqMessageDecoderTest());
+        listener.setMessageDecoder(new RocketmqMessageDecoderDemo());
 
         Assert.assertTrue(listener.getMessageListener() instanceof MessageListenerConcurrently);
 
@@ -99,7 +99,7 @@ public class RocketmqMessageConsumerListenerTest {
             Assert.assertNotNull(e);
         }
         listener.setConsumer(new MessageConsumer<String>());
-        listener.setMessageDecoder(new RocketmqMessageDecoderTest());
+        listener.setMessageDecoder(new RocketmqMessageDecoderDemo());
         listener.messageListenerOrderly.consumeMessage(Collections.singletonList(messageExt), null);
 
         listener.setBatch(BATCH.BATCH.name());
@@ -110,7 +110,7 @@ public class RocketmqMessageConsumerListenerTest {
             Assert.assertNotNull(e);
         }
         listener.setConsumer(new MessageConsumer<String>());
-        listener.setMessageDecoder(new RocketmqMessageDecoderTest());
+        listener.setMessageDecoder(new RocketmqMessageDecoderDemo());
         listener.messageListenerConcurrently.consumeMessage(Collections.singletonList(messageExt), null);
     }
 

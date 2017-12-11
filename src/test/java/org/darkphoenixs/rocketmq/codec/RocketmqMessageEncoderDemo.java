@@ -21,22 +21,20 @@ import org.darkphoenixs.mq.exception.MQException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RocketmqMessageDecoderTest extends RocketmqMessageDecoder<String> {
+public class RocketmqMessageEncoderDemo extends RocketmqMessageEncoder<String> {
 
-    @Override
-    public String decode(byte[] bytes) throws MQException {
-        return new String(bytes);
+    public byte[] encode(String message) throws MQException {
+        return message.getBytes();
     }
 
-    @Override
-    public List<String> batchDecode(List<byte[]> bytes) throws MQException {
+    public List<byte[]> batchEncode(List<String> message) throws MQException {
 
-        List<String> list = new ArrayList<String>();
+        List<byte[]> bytes = new ArrayList<byte[]>();
 
-        for (byte[] b : bytes)
+        for (String string : message)
 
-            list.add(new String(b));
+            bytes.add(string.getBytes());
 
-        return list;
+        return bytes;
     }
 }

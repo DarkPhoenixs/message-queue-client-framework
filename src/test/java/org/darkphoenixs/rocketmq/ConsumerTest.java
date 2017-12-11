@@ -18,7 +18,7 @@ package org.darkphoenixs.rocketmq;
 
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.darkphoenixs.rocketmq.codec.RocketmqMessageDecoderTest;
+import org.darkphoenixs.rocketmq.codec.RocketmqMessageDecoderDemo;
 import org.darkphoenixs.rocketmq.consumer.MessageConsumer;
 import org.darkphoenixs.rocketmq.listener.RocketmqMessageConsumerListener;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class ConsumerTest {
 
         messageConsumerListener.setModel("MODEL_1");
         messageConsumerListener.setBatch("NON_BATCH");
-        messageConsumerListener.setMessageDecoder(new RocketmqMessageDecoderTest());
+        messageConsumerListener.setMessageDecoder(new RocketmqMessageDecoderDemo());
         messageConsumerListener.setConsumer(new MessageConsumer());
 
         DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer();

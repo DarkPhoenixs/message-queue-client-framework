@@ -17,7 +17,7 @@
 package org.darkphoenixs.rocketmq;
 
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.darkphoenixs.rocketmq.codec.RocketmqMessageEncoderTest;
+import org.darkphoenixs.rocketmq.codec.RocketmqMessageEncoderDemo;
 import org.darkphoenixs.rocketmq.producer.MessageProducer;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class ProducerTest {
 
         MessageProducer messageProducer = new MessageProducer();
         messageProducer.setDefaultMQProducer(defaultMQProducer);
-        messageProducer.setMessageEncoder(new RocketmqMessageEncoderTest());
+        messageProducer.setMessageEncoder(new RocketmqMessageEncoderDemo());
         messageProducer.setTopic("QUEUE_TEST");
 
 //        for (int i = 0; i < 100; i++)

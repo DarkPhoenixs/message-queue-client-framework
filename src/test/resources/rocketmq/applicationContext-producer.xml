@@ -22,7 +22,7 @@
 
     <description>Sender Configuration</description>
 
-    <bean id="messageEncoder" class="org.darkphoenixs.rocketmq.codec.RocketmqMessageEncoderTest"/>
+    <bean id="messageEncoder" class="org.darkphoenixs.rocketmq.codec.RocketmqMessageEncoderDemo"/>
 
     <bean id="messageTemplate" class="org.darkphoenixs.rocketmq.producer.MessageProducer">
         <property name="topic" value="QUEUE_TEST"/>

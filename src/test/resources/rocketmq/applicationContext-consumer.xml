@@ -21,7 +21,7 @@
 
     <description>Receiver Configuration</description>
 
-    <bean id="messageDecoder" class="org.darkphoenixs.rocketmq.codec.RocketmqMessageDecoderTest"/>
+    <bean id="messageDecoder" class="org.darkphoenixs.rocketmq.codec.RocketmqMessageDecoderDemo"/>
 
     <bean id="messageConsumer" class="org.darkphoenixs.rocketmq.consumer.MessageConsumer"/>
 
