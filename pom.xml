@@ -4,12 +4,12 @@
 
     <groupId>org.darkphoenixs</groupId>
     <artifactId>messagequeue-framework</artifactId>
-    <version>1.4.9-SNAPSHOT</version>
+    <version>1.4.9</version>
     <packaging>jar</packaging>
 
     <name>Message Queue Client Framework</name>
     <url>http://darkphoenixs.org/message-queue-client-framework/</url>
-    <description>A message queue client framework (Apache Kafka &amp; Apache ActiveMQ)</description>
+    <description>A message queue client framework (Kafka &amp; ActiveMQ &amp; RocketMQ)</description>
     <inceptionYear>2015</inceptionYear>
 
     <organization>
@@ -58,7 +58,7 @@
         <rocketmq.version>4.1.0-incubating</rocketmq.version>
         <spring.version>4.0.0.RELEASE</spring.version>
         <jdk.version>1.7</jdk.version>
-        <test.skip>false</test.skip>
+        <test.skip>true</test.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
