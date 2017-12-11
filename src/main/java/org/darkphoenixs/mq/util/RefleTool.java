@@ -103,6 +103,8 @@ public class RefleTool {
         try {
             Method method = clasz.getMethod(methodName);
 
+            method.setAccessible(true);
+
             return (T) method.invoke(obj);
 
         } catch (Exception e) {

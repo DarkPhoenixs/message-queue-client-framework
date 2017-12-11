@@ -160,14 +160,13 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
 
             SendResult sendResult = defaultMQProducer.send(msg);
 
-            assert sendResult != null;
+            logger.debug("Send Success: " + sendResult + " " + message);
 
         } catch (Exception e) {
 
             throw new MQException(e);
         }
 
-        logger.debug("Send Success, Topic : " + topic + " , Message : " + message);
     }
 
     /**
@@ -195,14 +194,12 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
 
             SendResult sendResult = defaultMQProducer.send(batchMessage);
 
-            assert sendResult != null;
+            logger.debug("Send Success: " + sendResult + " " + batchMessage);
 
         } catch (Exception e) {
 
             throw new MQException(e);
         }
-
-        logger.debug("Send Success, Topic : " + topic + " , Message size: " + messages.size());
 
     }
 
@@ -221,13 +218,13 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
         try {
             T obj = doSend(message);
 
-            Message msg = new Message(topic, messageEncoder.encode(obj));
+            final Message msg = new Message(topic, messageEncoder.encode(obj));
 
             defaultMQProducer.send(msg, new SendCallback() {
 
                 @Override
                 public void onSuccess(SendResult sendResult) {
-                    assert sendResult != null;
+                    logger.debug("Send Success: " + sendResult + " " + msg);
                 }
 
                 @Override
@@ -240,8 +237,6 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
 
             throw new MQException(e);
         }
-
-        logger.debug("Send Success, Topic : " + topic + " , Message : " + message);
     }
 
     /**
@@ -263,12 +258,12 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
 
             defaultMQProducer.sendOneway(msg);
 
+            logger.debug("Send Success: " + msg);
+
         } catch (Exception e) {
 
             throw new MQException(e);
         }
-
-        logger.debug("Send Success, Topic : " + topic + " , Message : " + message);
     }
 
     /**
@@ -291,14 +286,12 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
 
             SendResult sendResult = defaultMQProducer.send(msg, messageQueueSelector, key);
 
-            assert sendResult != null;
+            logger.debug("Send Success: " + sendResult + " " + msg);
 
         } catch (Exception e) {
 
             throw new MQException(e);
         }
-
-        logger.debug("Send Success, Topic : " + topic + " , MessageKey : " + key + " , Message : " + message);
     }
 
     /**
@@ -322,14 +315,12 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
 
             SendResult sendResult = defaultMQProducer.send(msg, messageQueueSelector, key);
 
-            assert sendResult != null;
+            logger.debug("Send Success: " + sendResult + " " + msg);
 
         } catch (Exception e) {
 
             throw new MQException(e);
         }
-
-        logger.debug("Send Success, Topic : " + topic + " , Tag : " + tag + " , MessageKey : " + key + " , Message : " + message);
     }
 
     /**
@@ -353,14 +344,12 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
 
             TransactionSendResult sendResult = transactionMQProducer.sendMessageInTransaction(msg, executer, param);
 
-            assert sendResult != null;
+            logger.debug("Send Success: " + sendResult + " " + msg);
 
         } catch (Exception e) {
 
             throw new MQException(e);
         }
-
-        logger.debug("Send Success, Topic : " + topic + " , Params : " + param + " , Message : " + message);
     }
 
     /**

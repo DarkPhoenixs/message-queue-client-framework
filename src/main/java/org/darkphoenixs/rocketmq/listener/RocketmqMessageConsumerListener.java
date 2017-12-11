@@ -145,15 +145,15 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
 
             case MODEL_1:
 
-                messageListener = messageListenerConcurrently;
+                messageListener = messageListenerOrderly;
 
-            break;
+                break;
 
             case MODEL_2:
 
-                messageListener = messageListenerOrderly;
+                messageListener = messageListenerConcurrently;
 
-            break;
+                break;
         }
         return messageListener;
     }
@@ -213,6 +213,8 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
             try {
                 consume(messages);
 
+                logger.debug("Consume Success: " + messages);
+
             } catch (Exception e) {
 
                 logger.error("Consume failed !", e);
@@ -234,6 +236,8 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
 
             try {
                 consume(messages);
+
+                logger.debug("Consume Success: " + messages);
 
             } catch (Exception e) {
 
