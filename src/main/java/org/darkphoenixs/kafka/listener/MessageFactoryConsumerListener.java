@@ -29,6 +29,7 @@ import org.darkphoenixs.mq.util.RefleTool;
  * @see KafkaMessageListener
  * @since 2015-06-01
  */
+@Deprecated
 public class MessageFactoryConsumerListener<K, V> extends KafkaMessageListener<K, V> {
 
     /**

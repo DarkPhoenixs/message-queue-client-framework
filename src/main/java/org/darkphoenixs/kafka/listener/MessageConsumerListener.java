@@ -27,6 +27,7 @@ import org.darkphoenixs.mq.exception.MQException;
  * @see KafkaMessageListener
  * @since 2015-06-01
  */
+@Deprecated
 public class MessageConsumerListener<K, V> extends KafkaMessageListener<K, V> {
 
     /**
