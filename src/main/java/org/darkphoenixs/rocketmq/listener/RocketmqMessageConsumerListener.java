@@ -24,8 +24,9 @@ import org.darkphoenixs.rocketmq.consumer.AbstractConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Title: RocketmqMessageConsumerListener</p>
@@ -124,8 +125,44 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
         this.model = MODEL.valueOf(model);
     }
 
-    @Override
+    @Deprecated
+    public void onMessage(T message) throws MQException {
+
+        if (consumer != null)
+
+            consumer.receive(message);
+        else
+            throw new MQException("Consumer is null !");
+
+        logger.debug("Consume Success, Message : " + message);
+    }
+
+    @Deprecated
     public void onMessage(List<T> messages) throws MQException {
+
+        if (consumer != null)
+
+            consumer.receive(messages);
+        else
+            throw new MQException("Consumer is null !");
+
+        logger.debug("Consume Success, Message size: " + messages.size());
+    }
+
+    @Override
+    public void onMessage(String key, T message) throws MQException {
+
+        if (consumer != null)
+
+            consumer.receive(key, message);
+        else
+            throw new MQException("Consumer is null !");
+
+        logger.debug("Consume Success, Message : " + message);
+    }
+
+    @Override
+    public void onMessage(Map<String, T> messages) throws MQException {
 
         if (consumer != null)
 
@@ -158,18 +195,6 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
         return messageListener;
     }
 
-    @Override
-    public void onMessage(T message) throws MQException {
-
-        if (consumer != null)
-
-            consumer.receive(message);
-        else
-            throw new MQException("Consumer is null !");
-
-        logger.debug("Consume Success, Message : " + message);
-    }
-
     /**
      * consume.
      *
@@ -182,13 +207,13 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
 
             case BATCH:
 
-                List<byte[]> byteList = new ArrayList<byte[]>();
+                Map<String, T> identityHashMap = new IdentityHashMap<String, T>();
 
                 for (MessageExt message : messages)
 
-                    byteList.add(message.getBody());
+                    identityHashMap.put(message.getKeys(), messageDecoder.decode(message.getBody()));
 
-                onMessage(messageDecoder.batchDecode(byteList));
+                onMessage(identityHashMap);
 
                 break;
 
@@ -196,7 +221,7 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
 
                 for (MessageExt message : messages)
 
-                    onMessage(messageDecoder.decode(message.getBody()));
+                    onMessage(message.getKeys(), messageDecoder.decode(message.getBody()));
 
                 break;
         }

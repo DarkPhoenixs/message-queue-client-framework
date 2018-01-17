@@ -137,4 +137,83 @@ public class RocketmqMessageFactoryListenerTest {
 
         factoryListener.onMessage(bean);
     }
+
+    @Test
+    public void test1() throws Exception {
+
+        RocketmqMessageFactoryListener<Bean> factoryListener = new RocketmqMessageFactoryListener<Bean>();
+
+        Assert.assertNull(factoryListener.getConsumerKeyField());
+        Assert.assertNull(factoryListener.getConsumerFactory());
+
+        Bean bean = null;
+        try {
+            factoryListener.onMessage(null, bean);
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+        }
+
+        try {
+            factoryListener.onMessage(null, new Bean());
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+        }
+
+        try {
+            factoryListener.onMessage(Collections.singletonMap("", new Bean()));
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+        }
+
+        factoryListener.setConsumerFactory(MQMessageConsumerFactory.getInstance());
+
+        try {
+            factoryListener.onMessage(null, new Bean());
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+        }
+
+        factoryListener.setConsumerKeyField("type");
+
+        try {
+            factoryListener.onMessage(null, new Bean());
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+        }
+
+        bean = new Bean();
+
+        bean.setType("test");
+
+        try {
+            factoryListener.onMessage(null, bean);
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+        }
+
+        factoryListener.setConsumerFactory(new MQConsumerFactory() {
+
+            @Override
+            public <T> void addConsumer(MQConsumer<T> consumer) throws MQException {
+
+            }
+
+            @Override
+            public <T> MQConsumer<T> getConsumer(String consumerKey) throws MQException {
+                return new MessageConsumer<T>();
+            }
+
+            @Override
+            public void init() throws MQException {
+
+            }
+
+            @Override
+            public void destroy() throws MQException {
+
+            }
+        });
+
+        factoryListener.onMessage(null, bean);
+    }
 }

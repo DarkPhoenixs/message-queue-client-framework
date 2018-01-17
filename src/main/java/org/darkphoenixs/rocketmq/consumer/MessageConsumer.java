@@ -19,6 +19,7 @@ package org.darkphoenixs.rocketmq.consumer;
 import org.darkphoenixs.mq.exception.MQException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Title: MessageConsumer</p>
@@ -29,7 +30,7 @@ import java.util.List;
  * @see AbstractConsumer
  * @since 2017/12/10
  */
-public class MessageConsumer<T> extends AbstractConsumer<T>{
+public class MessageConsumer<T> extends AbstractConsumer<T> {
 
     @Override
     protected void doReceive(T message) throws MQException {
@@ -39,6 +40,18 @@ public class MessageConsumer<T> extends AbstractConsumer<T>{
 
     @Override
     protected void doReceive(List<T> messages) throws MQException {
+
+        System.out.println(messages);
+    }
+
+    @Override
+    protected void doReceive(String key, T message) throws MQException {
+
+        System.out.println(key + ":" + message);
+    }
+
+    @Override
+    protected void doReceive(Map<String, T> messages) throws MQException {
 
         System.out.println(messages);
     }

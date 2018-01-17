@@ -68,6 +68,22 @@ public class RocketmqMessageConsumerListenerTest {
     }
 
     @Test
+    public void onMessage_1() throws Exception {
+
+        RocketmqMessageConsumerListener<String> listener = new RocketmqMessageConsumerListener<String>();
+
+        try {
+            listener.onMessage("key", "test");
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+        }
+
+        listener.setConsumer(new MessageConsumer<String>());
+
+        listener.onMessage("key", "test");
+    }
+
+    @Test
     public void onMessage2() throws Exception {
 
         RocketmqMessageConsumerListener<String> listener = new RocketmqMessageConsumerListener<String>();
@@ -83,6 +99,21 @@ public class RocketmqMessageConsumerListenerTest {
         listener.onMessage(Collections.singletonList("test"));
     }
 
+    @Test
+    public void onMessage_2() throws Exception {
+
+        RocketmqMessageConsumerListener<String> listener = new RocketmqMessageConsumerListener<String>();
+
+        try {
+            listener.onMessage(Collections.singletonMap("key", "test"));
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+        }
+
+        listener.setConsumer(new MessageConsumer<String>());
+
+        listener.onMessage(Collections.singletonMap("key", "test"));
+    }
 
     @Test
     public void consume() throws Exception {

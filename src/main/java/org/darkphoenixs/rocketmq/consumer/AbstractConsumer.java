@@ -21,7 +21,9 @@ import org.darkphoenixs.mq.exception.MQException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Title: AbstractConsumer</p>
@@ -56,7 +58,7 @@ public abstract class AbstractConsumer<T> implements MQConsumer<T> {
         return consumerKey;
     }
 
-    @Override
+    @Deprecated
     public void receive(T message) throws MQException {
 
         try {
@@ -76,7 +78,47 @@ public abstract class AbstractConsumer<T> implements MQConsumer<T> {
      * @param messages the messages
      * @throws MQException the mq exception
      */
+    @Deprecated
     public void receive(List<T> messages) throws MQException {
+
+        try {
+            doReceive(messages);
+
+        } catch (Exception e) {
+
+            throw new MQException(e);
+        }
+
+        logger.debug("Receive Success, Message size: " + messages.size());
+    }
+
+    /**
+     * Receive.
+     *
+     * @param key     the key
+     * @param message the message
+     * @throws MQException the mq exception
+     */
+    public void receive(String key, T message) throws MQException {
+
+        try {
+            doReceive(key, message);
+
+        } catch (Exception e) {
+
+            throw new MQException(e);
+        }
+
+        logger.debug("Receive Success, Message : " + message);
+    }
+
+    /**
+     * Receive.
+     *
+     * @param messages the messages
+     * @throws MQException the mq exception
+     */
+    public void receive(Map<String, T> messages) throws MQException {
 
         try {
             doReceive(messages);
@@ -95,7 +137,9 @@ public abstract class AbstractConsumer<T> implements MQConsumer<T> {
      * @param message the message
      * @throws MQException the mq exception
      */
-    protected abstract void doReceive(T message) throws MQException;
+    protected void doReceive(T message) throws MQException {
+        // to Override
+    }
 
     /**
      * Do receive.
@@ -103,5 +147,30 @@ public abstract class AbstractConsumer<T> implements MQConsumer<T> {
      * @param messages the messages
      * @throws MQException the mq exception
      */
-    protected abstract void doReceive(List<T> messages) throws MQException;
+    protected void doReceive(List<T> messages) throws MQException {
+        // to Override
+    }
+
+    /**
+     * Do receive.
+     *
+     * @param key     the key
+     * @param message the message
+     * @throws MQException the mq exception
+     */
+    protected void doReceive(String key, T message) throws MQException {
+
+        doReceive(message);
+    }
+
+    /**
+     * Do receive.
+     *
+     * @param messages the messages
+     * @throws MQException the mq exception
+     */
+    protected void doReceive(Map<String, T> messages) throws MQException {
+
+        doReceive(new ArrayList<T>(messages.values()));
+    }
 }

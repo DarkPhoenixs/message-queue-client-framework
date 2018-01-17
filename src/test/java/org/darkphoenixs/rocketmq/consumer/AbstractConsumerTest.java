@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class AbstractConsumerTest {
 
@@ -41,11 +42,27 @@ public class AbstractConsumerTest {
 
                 System.out.println(messages);
             }
+
+            @Override
+            protected void doReceive(String key, String message) throws MQException {
+
+                System.out.println(key + ":" + message);
+            }
+
+            @Override
+            protected void doReceive(Map<String, String> messages) throws MQException {
+
+                System.out.println(messages);
+            }
         };
+
+        abstractConsumer1.receive("key", "test");
 
         abstractConsumer1.receive("test");
 
         abstractConsumer1.receive(Collections.singletonList("test"));
+
+        abstractConsumer1.receive(Collections.singletonMap("key", "test"));
 
         AbstractConsumer<String> abstractConsumer2 = new AbstractConsumer<String>() {
 
@@ -60,6 +77,16 @@ public class AbstractConsumerTest {
 
                 throw new MQException("test");
             }
+
+            @Override
+            protected void doReceive(String key, String message) throws MQException {
+                throw new MQException("test");
+            }
+
+            @Override
+            protected void doReceive(Map<String, String> messages) throws MQException {
+                throw new MQException("test");
+            }
         };
 
         try {
@@ -69,7 +96,19 @@ public class AbstractConsumerTest {
         }
 
         try {
+            abstractConsumer2.receive("key", "test");
+        } catch (MQException e) {
+            Assert.assertNotNull(e);
+        }
+
+        try {
             abstractConsumer2.receive(Collections.singletonList("test"));
+        } catch (MQException e) {
+            Assert.assertNotNull(e);
+        }
+
+        try {
+            abstractConsumer2.receive(Collections.singletonMap("key", "test"));
         } catch (MQException e) {
             Assert.assertNotNull(e);
         }

@@ -359,7 +359,10 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
      * @return the t
      * @throws MQException the mq exception
      */
-    protected abstract T doSend(T message) throws MQException;
+    protected T doSend(T message) throws MQException {
+
+        return message;
+    }
 
     /**
      * Do send list.
@@ -368,8 +371,10 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
      * @return the list
      * @throws MQException the mq exception
      */
-    protected abstract List<T> doSend(List<T> messages) throws MQException;
+    protected List<T> doSend(List<T> messages) throws MQException {
 
+        return messages;
+    }
 
     /**
      * The Message queue selector.

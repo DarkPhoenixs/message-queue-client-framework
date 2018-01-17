@@ -21,6 +21,7 @@ import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.listener.MQMessageListener;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Title: RocketmqMessageListener</p>
@@ -40,7 +41,25 @@ public abstract class RocketmqMessageListener<T> implements MQMessageListener<T>
      * @param messages the messages
      * @throws MQException the mq exception
      */
+    @Deprecated
     public abstract void onMessage(final List<T> messages) throws MQException;
+
+    /**
+     * On message.
+     *
+     * @param key     the key
+     * @param message the message
+     * @throws MQException the mq exception
+     */
+    public abstract void onMessage(final String key, final T message) throws MQException;
+
+    /**
+     * On message.
+     *
+     * @param messages the messages
+     * @throws MQException the mq exception
+     */
+    public abstract void onMessage(final Map<String, T> messages) throws MQException;
 
     /**
      * Gets message listener.

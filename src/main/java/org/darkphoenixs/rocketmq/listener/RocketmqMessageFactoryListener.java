@@ -20,8 +20,10 @@ import org.darkphoenixs.mq.consumer.MQConsumer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.factory.MQConsumerFactory;
 import org.darkphoenixs.mq.util.RefleTool;
+import org.darkphoenixs.rocketmq.consumer.AbstractConsumer;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Title: RocketmqMessageFactoryListener</p>
@@ -81,7 +83,7 @@ public class RocketmqMessageFactoryListener<T> extends RocketmqMessageConsumerLi
         this.consumerFactory = consumerFactory;
     }
 
-    @Override
+    @Deprecated
     public void onMessage(T message) throws MQException {
 
         if (message == null)
@@ -106,9 +108,40 @@ public class RocketmqMessageFactoryListener<T> extends RocketmqMessageConsumerLi
         consumer.receive(message);
     }
 
-    @Override
+    @Deprecated
     public void onMessage(List<T> messages) throws MQException {
 
-        throw new MQException("MessageFactoryListener is not support onMessage(List<T> messages) !");
+        throw new MQException("MessageFactoryListener is not support onMessage(List messages) !");
+    }
+
+    @Override
+    public void onMessage(String key, T message) throws MQException {
+
+        if (message == null)
+            throw new MQException("Message is null !");
+
+        if (consumerFactory == null)
+            throw new MQException("ConsumerFactory is null !");
+
+        if (consumerKeyField == null)
+            throw new MQException("ConsumerKeyField is null !");
+
+        String consumerKey = RefleTool.getMethodValue(message, "get" + consumerKeyField.substring(0, 1).toUpperCase() + consumerKeyField.substring(1));
+
+        if (consumerKey == null)
+            throw new MQException("Consumer Key is null !");
+
+        AbstractConsumer<T> consumer = (AbstractConsumer<T>) consumerFactory.getConsumer(consumerKey);
+
+        if (consumer == null)
+            throw new MQException("Consumer is null !");
+
+        consumer.receive(key, message);
+    }
+
+    @Override
+    public void onMessage(Map<String, T> messages) throws MQException {
+
+        throw new MQException("MessageFactoryListener is not support onMessage(Map messages) !");
     }
 }
