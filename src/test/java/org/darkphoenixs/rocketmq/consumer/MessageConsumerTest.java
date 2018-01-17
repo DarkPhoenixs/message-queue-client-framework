@@ -32,8 +32,13 @@ public class MessageConsumerTest {
 
         Assert.assertEquals(messageConsumer.getConsumerKey(), "test");
 
-        messageConsumer.doReceive("test");
+        messageConsumer.receive("test");
+
+        messageConsumer.receive("key", "test");
 
         messageConsumer.receive(Collections.singletonList("test"));
+
+        messageConsumer.receive(Collections.singletonMap("key", "test"));
+
     }
 }
