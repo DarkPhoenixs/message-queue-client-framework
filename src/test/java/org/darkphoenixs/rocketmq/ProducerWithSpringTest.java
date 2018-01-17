@@ -35,7 +35,7 @@ public class ProducerWithSpringTest {
 
 //        for (int i = 0; i < 100; i++)
 //
-//            producer.sendWithKey(String.valueOf(0), "test" + i);
+//            producer.sendWithKey(String.valueOf(i), "test" + i);
 
     }
 }

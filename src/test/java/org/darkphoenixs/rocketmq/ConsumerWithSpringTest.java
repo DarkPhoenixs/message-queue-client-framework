@@ -28,5 +28,6 @@ public class ConsumerWithSpringTest {
     @Test
     public void test() throws Exception {
 
+//        Thread.sleep(Long.MAX_VALUE);
     }
 }
