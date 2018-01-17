@@ -33,18 +33,7 @@ import java.util.List;
 
 public class AbstractProducerTest {
 
-    AbstractProducer<String> abstractProducer = new AbstractProducer<String>() {
-
-        @Override
-        protected String doSend(String message) throws MQException {
-            return message;
-        }
-
-        @Override
-        protected List<String> doSend(List<String> messages) throws MQException {
-            return messages;
-        }
-    };
+    AbstractProducer<String> abstractProducer = new AbstractProducer<String>(){};
 
     @Test
     public void send() throws Exception {

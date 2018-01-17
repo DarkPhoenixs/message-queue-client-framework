@@ -29,32 +29,7 @@ public class AbstractConsumerTest {
     @Test
     public void test() throws Exception {
 
-        AbstractConsumer<String> abstractConsumer1 = new AbstractConsumer<String>() {
-
-            @Override
-            protected void doReceive(String message) throws MQException {
-
-                System.out.println(message);
-            }
-
-            @Override
-            protected void doReceive(List<String> messages) throws MQException {
-
-                System.out.println(messages);
-            }
-
-            @Override
-            protected void doReceive(String key, String message) throws MQException {
-
-                System.out.println(key + ":" + message);
-            }
-
-            @Override
-            protected void doReceive(Map<String, String> messages) throws MQException {
-
-                System.out.println(messages);
-            }
-        };
+        AbstractConsumer<String> abstractConsumer1 = new AbstractConsumer<String>() {};
 
         abstractConsumer1.receive("key", "test");
 
