@@ -4,7 +4,7 @@
 
     <groupId>org.darkphoenixs</groupId>
     <artifactId>messagequeue-framework</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Message Queue Client Framework</name>
