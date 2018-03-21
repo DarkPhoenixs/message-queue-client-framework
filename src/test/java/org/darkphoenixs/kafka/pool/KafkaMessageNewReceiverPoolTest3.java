@@ -19,16 +19,15 @@ package org.darkphoenixs.kafka.pool;
 import kafka.admin.TopicCommand;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
-import kafka.utils.MockTime;
 import kafka.utils.TestUtils;
-import kafka.utils.Time;
 import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
-import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
+import org.apache.kafka.common.security.auth.SecurityProtocol;
+import org.apache.kafka.common.utils.SystemTime;
+import org.apache.kafka.common.utils.Time;
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoder;
-import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
 import org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl;
 import org.darkphoenixs.kafka.consumer.MessageConsumer;
 import org.darkphoenixs.kafka.core.KafkaDestination;
@@ -39,7 +38,6 @@ import org.darkphoenixs.kafka.producer.MessageProducer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -71,14 +69,16 @@ public class KafkaMessageNewReceiverPoolTest3 {
                 JaasUtils.isZkSecurityEnabled());
         zkClient = zkUtils.zkClient();
 
-        final Option<File> noFile = Option.apply(null);
-        final Option<SecurityProtocol> noInterBrokerSecurityProtocol = Option
-                .apply(null);
+        Time mock = new SystemTime();
+        final Option<File> noFile = scala.Option.apply(null);
+        final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option.apply(null);
+        final Option<Properties> noPropertiesOption = scala.Option.apply(null);
+        final Option<String> noStringOption = scala.Option.apply(null);
 
         kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
-                false, port, noInterBrokerSecurityProtocol, noFile, true,
+                false, port, noInterBrokerSecurityProtocol, noFile, noPropertiesOption, true,
                 false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
-                false, TestUtils.RandomPort());
+                false, TestUtils.RandomPort(), noStringOption, TestUtils.RandomPort());
 
         kafkaProps.setProperty("auto.create.topics.enable", "true");
         kafkaProps.setProperty("num.partitions", "1");
@@ -88,7 +88,6 @@ public class KafkaMessageNewReceiverPoolTest3 {
         kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
 
         KafkaConfig config = new KafkaConfig(kafkaProps);
-        Time mock = new MockTime();
         kafkaServer = TestUtils.createServer(config, mock);
 
         // create topic
@@ -107,10 +106,12 @@ public class KafkaMessageNewReceiverPoolTest3 {
 
     @After
     public void tearDown() throws Exception {
-
-        kafkaServer.shutdown();
-        zkClient.close();
-        zkServer.shutdown();
+        try {
+            kafkaServer.shutdown();
+            zkClient.close();
+            zkServer.shutdown();
+        } catch (Exception e) {
+        }
     }
 
     @Test

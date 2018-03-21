@@ -16,11 +16,7 @@
 
 package org.darkphoenixs.kafka.pool;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
-import org.apache.kafka.clients.consumer.internals.ConsumerCoordinator;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.darkphoenixs.kafka.core.KafkaConstants;
@@ -826,7 +822,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
                 consumer.commitAsync(Collections.singletonMap(
                         new TopicPartition(record.topic(), record.partition()),
                         new OffsetAndMetadata(record.offset() + 1)),
-                        new ConsumerCoordinator.DefaultOffsetCommitCallback());
+                        offsetCommitCallback);
                 break;
         }
     }
@@ -865,4 +861,16 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
             }
         }
     }
+
+    /**
+     * The Offset commit callback.
+     */
+    protected OffsetCommitCallback offsetCommitCallback = new OffsetCommitCallback() {
+
+        @Override
+        public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
+            if (exception != null)
+                logger.error("Offset commit with offsets {} failed", offsets, exception);
+        }
+    };
 }

@@ -3,14 +3,14 @@ package org.darkphoenixs.kafka;
 import kafka.admin.TopicCommand;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
-import kafka.utils.MockTime;
 import kafka.utils.TestUtils;
-import kafka.utils.Time;
 import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
-import org.apache.kafka.common.protocol.SecurityProtocol;
 import org.apache.kafka.common.security.JaasUtils;
+import org.apache.kafka.common.security.auth.SecurityProtocol;
+import org.apache.kafka.common.utils.SystemTime;
+import org.apache.kafka.common.utils.Time;
 import org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl;
 import org.darkphoenixs.kafka.core.KafkaDestination;
 import org.darkphoenixs.kafka.core.KafkaMessageTemplate;
@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import scala.Option;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -46,15 +47,16 @@ public class SenderTest {
                 JaasUtils.isZkSecurityEnabled());
         zkClient = zkUtils.zkClient();
 
-        final Option<java.io.File> noFile = scala.Option.apply(null);
-        final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option
-                .apply(null);
+        Time mock = new SystemTime();
+        final Option<File> noFile = scala.Option.apply(null);
+        final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option.apply(null);
+        final Option<Properties> noPropertiesOption = scala.Option.apply(null);
+        final Option<String> noStringOption = scala.Option.apply(null);
 
         kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
-                false, port, noInterBrokerSecurityProtocol, noFile, true,
+                false, port, noInterBrokerSecurityProtocol, noFile, noPropertiesOption, true,
                 false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
-                false, TestUtils.RandomPort());
-
+                false, TestUtils.RandomPort(), noStringOption, TestUtils.RandomPort());
         kafkaProps.setProperty("auto.create.topics.enable", "true");
         kafkaProps.setProperty("num.partitions", "1");
         // We *must* override this to use the port we allocated (Kafka currently
@@ -65,7 +67,6 @@ public class SenderTest {
         kafkaProps.setProperty("port", port + "");
 
         KafkaConfig config = new KafkaConfig(kafkaProps);
-        Time mock = new MockTime();
         kafkaServer = TestUtils.createServer(config, mock);
 
         // create topic
@@ -84,9 +85,12 @@ public class SenderTest {
 
     @After
     public void after() {
-        kafkaServer.shutdown();
-        zkClient.close();
-        zkServer.shutdown();
+        try {
+            kafkaServer.shutdown();
+            zkClient.close();
+            zkServer.shutdown();
+        } catch (Exception e) {
+        }
     }
 
     @Test

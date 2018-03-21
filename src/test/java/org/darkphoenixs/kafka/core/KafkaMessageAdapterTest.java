@@ -4,6 +4,7 @@ import kafka.message.MessageAndMetadata;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.record.TimestampType;
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoderImpl;
 import org.darkphoenixs.kafka.codec.KafkaMessageEncoderImpl;
 import org.darkphoenixs.kafka.listener.MessageConsumerListener;
@@ -56,7 +57,7 @@ public class KafkaMessageAdapterTest {
         messageBean.setMessageContent("MessageContent".getBytes("UTF-8"));
 
         try {
-            adapter.messageAdapter(new MessageAndMetadata<Object, Object>("QUEUE.TEST", 0, null, 0, null, null));
+            adapter.messageAdapter(new MessageAndMetadata<Object, Object>("QUEUE.TEST", 0, null, 0, null, null, -1, TimestampType.CREATE_TIME));
         } catch (Exception e) {
 
             Assert.assertTrue(e instanceof NullPointerException);

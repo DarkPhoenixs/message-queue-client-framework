@@ -156,7 +156,7 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
 
         kafkaConsumer.assign(Arrays.asList(new TopicPartition(topic, partition)));
 
-        kafkaConsumer.seekToEnd(new TopicPartition(topic, partition));
+        kafkaConsumer.seekToEnd(Arrays.asList(new TopicPartition(topic, partition)));
 
         long latestOffset = kafkaConsumer.position(new TopicPartition(topic, partition));
 
@@ -168,7 +168,7 @@ public class KafkaMessageNewReceiver<K, V> implements KafkaMessageReceiver<K, V>
 
         kafkaConsumer.assign(Arrays.asList(new TopicPartition(topic, partition)));
 
-        kafkaConsumer.seekToBeginning(new TopicPartition(topic, partition));
+        kafkaConsumer.seekToBeginning(Arrays.asList(new TopicPartition(topic, partition)));
 
         long earliestOffset = kafkaConsumer.position(new TopicPartition(topic, partition));
 
