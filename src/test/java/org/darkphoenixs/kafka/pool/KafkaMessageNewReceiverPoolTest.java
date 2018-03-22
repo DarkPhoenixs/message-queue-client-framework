@@ -121,6 +121,10 @@ public class KafkaMessageNewReceiverPoolTest {
 
         KafkaMessageNewReceiverPool<byte[], byte[]> pool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
 
+        pool.offsetCommitCallback.onComplete(null, null);
+
+        pool.offsetCommitCallback.onComplete(null, new RuntimeException("test"));
+
         pool.returnReceiver(null);
 
         try {
@@ -204,6 +208,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.setMessageAdapter(adapter);
 
+
         pool.init();
 
         Assert.assertTrue(pool.isRunning());
@@ -214,11 +219,17 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.setPoolSize(1);
 
+        pool.setRetryCount(0);
+
+        pool.setBatch("BATCH");
+
         pool.init();
 
         pool.destroy();
 
         pool.setPoolSize(0);
+
+        pool.setRetryCount(1);
 
         pool.init();
 

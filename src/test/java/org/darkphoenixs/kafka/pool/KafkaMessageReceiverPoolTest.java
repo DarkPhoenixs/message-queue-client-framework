@@ -186,6 +186,8 @@ public class KafkaMessageReceiverPoolTest {
 
         recePool.setAutoCommit(true);
 
+        recePool.setRetryCount(0);
+
         recePool.init();
 
         KafkaMessageEncoderImpl messageEncoder = new KafkaMessageEncoderImpl();
@@ -232,6 +234,8 @@ public class KafkaMessageReceiverPoolTest {
         recePool.setMessageAdapter(getAdapter());
 
         recePool.setAutoCommit(false);
+
+        recePool.setRetryCount(0);
 
         recePool.init();
 
@@ -286,7 +290,7 @@ public class KafkaMessageReceiverPoolTest {
 
         recePool.setAutoCommit(false);
 
-        recePool.setRetryCount(0);
+        recePool.setRetryCount(1);
 
         recePool.init();
 
