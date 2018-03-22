@@ -17,12 +17,15 @@
 package org.darkphoenixs.kafka.pool;
 
 import kafka.admin.TopicCommand;
+import kafka.message.MessageAndMetadata;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
 import kafka.utils.TestUtils;
 import kafka.utils.ZkUtils;
 import kafka.zk.EmbeddedZookeeper;
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.security.JaasUtils;
 import org.apache.kafka.common.security.auth.SecurityProtocol;
 import org.apache.kafka.common.utils.SystemTime;
@@ -243,6 +246,61 @@ public class KafkaMessageNewReceiverPoolTest {
     }
 
     @Test
+    public void _test() throws Exception {
+
+        KafkaMessageNewReceiverPool<byte[], byte[]> recePool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
+
+        recePool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/newconsumer.properties"));
+
+        recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
+
+        recePool.setPoolSize(4);
+
+        recePool.setCommit("SYNC_COMMIT");
+
+        recePool.setMessageAdapter(getAdapter());
+
+        recePool.setModel("MODEL_2");
+
+        recePool.init();
+
+        KafkaMessageNewSenderPool<byte[], byte[]> sendPool = new KafkaMessageNewSenderPool<byte[], byte[]>();
+
+        sendPool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/newproducer.properties"));
+
+        sendPool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
+
+        sendPool.init();
+
+        Thread.sleep(2000);
+
+        KafkaMessageTemplate<Integer, MessageBeanImpl> kafkaMessageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
+
+        kafkaMessageTemplate.setMessageSenderPool(sendPool);
+
+        kafkaMessageTemplate.setEncoder(new KafkaMessageEncoderImpl());
+
+        MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
+
+        messageProducer.setMessageTemplate(kafkaMessageTemplate);
+
+        messageProducer.setDestination(new KafkaDestination(topic));
+
+        for (int i = 0; i < 10; i++) {
+
+            messageProducer.sendWithKey(i, getMessage());
+        }
+
+//        Thread.sleep(1000);
+
+        sendPool.destroy();
+
+        recePool.destroy();
+    }
+
+    @Test
     public void test_() throws Exception {
 
         KafkaMessageNewReceiverPool<byte[], byte[]> recePool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
@@ -297,11 +355,12 @@ public class KafkaMessageNewReceiverPoolTest {
             messageProducer.sendWithKey(i, getMessage());
         }
 
-        Thread.sleep(2000);
-
         sendPool.destroy();
 
         recePool.destroy();
+
+        Thread.sleep(2000);
+
     }
 
     @Test
@@ -315,6 +374,134 @@ public class KafkaMessageNewReceiverPoolTest {
         recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
 
         recePool.setPoolSize(4);
+
+        recePool.setMessageAdapter(getAdapter());
+
+        recePool.init();
+
+        Thread.sleep(2000);
+
+        KafkaMessageNewSenderPool<byte[], byte[]> sendPool = new KafkaMessageNewSenderPool<byte[], byte[]>();
+
+        sendPool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/newproducer.properties"));
+
+        sendPool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
+
+        sendPool.init();
+
+        KafkaMessageTemplate<Integer, MessageBeanImpl> kafkaMessageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
+
+        kafkaMessageTemplate.setMessageSenderPool(sendPool);
+
+        kafkaMessageTemplate.setEncoder(new KafkaMessageEncoderImpl());
+
+        MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
+
+        messageProducer.setMessageTemplate(kafkaMessageTemplate);
+
+        messageProducer.setDestination(new KafkaDestination(topic));
+
+        for (int i = 0; i < 10; i++) {
+
+            messageProducer.sendWithKey(i, getMessage());
+        }
+
+        Thread.sleep(2000);
+
+        recePool.setBatch("BATCH");
+
+        recePool.setCommit("SYNC_COMMIT");
+
+        for (int i = 0; i < 10; i++) {
+
+            messageProducer.sendWithKey(i, getMessage());
+        }
+
+        Thread.sleep(2000);
+
+        sendPool.destroy();
+
+        recePool.destroy();
+    }
+
+    @Test
+    public void test2() throws Exception {
+
+        KafkaMessageNewReceiverPool<byte[], byte[]> recePool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
+
+        recePool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/newconsumer.properties"));
+
+        recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
+
+        recePool.setPoolSize(4);
+
+        recePool.setMessageAdapter(getAdapterWishErr());
+
+        recePool.init();
+
+        Thread.sleep(2000);
+
+        KafkaMessageNewSenderPool<byte[], byte[]> sendPool = new KafkaMessageNewSenderPool<byte[], byte[]>();
+
+        sendPool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/newproducer.properties"));
+
+        sendPool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
+
+        sendPool.init();
+
+        KafkaMessageTemplate<Integer, MessageBeanImpl> kafkaMessageTemplate = new KafkaMessageTemplate<Integer, MessageBeanImpl>();
+
+        kafkaMessageTemplate.setMessageSenderPool(sendPool);
+
+        kafkaMessageTemplate.setEncoder(new KafkaMessageEncoderImpl());
+
+        MessageProducer<Integer, MessageBeanImpl> messageProducer = new MessageProducer<Integer, MessageBeanImpl>();
+
+        messageProducer.setMessageTemplate(kafkaMessageTemplate);
+
+        messageProducer.setDestination(new KafkaDestination(topic));
+
+        for (int i = 0; i < 10; i++) {
+
+            messageProducer.sendWithKey(i, getMessage());
+        }
+
+        Thread.sleep(2000);
+
+        recePool.setBatch("BATCH");
+
+        recePool.setCommit("ASYNC_COMMIT");
+
+        for (int i = 0; i < 10; i++) {
+
+            messageProducer.sendWithKey(i, getMessage());
+        }
+
+        Thread.sleep(2000);
+
+        sendPool.destroy();
+
+        recePool.destroy();
+    }
+
+    @Test
+    public void test3() throws Exception {
+
+        KafkaMessageNewReceiverPool<byte[], byte[]> recePool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
+
+        recePool.setConfig(new DefaultResourceLoader()
+                .getResource("kafka/newconsumer.properties"));
+
+        recePool.getProps().setProperty("bootstrap.servers", "localhost:" + port);
+
+        recePool.setModel("MODEL_2");
+
+        recePool.setPoolSize(4);
+
+        recePool.setRetryCount(1);
 
         recePool.setMessageAdapter(getAdapter());
 
@@ -512,7 +699,22 @@ public class KafkaMessageNewReceiverPoolTest {
 
         messageConsumerListener.setConsumer(MessageConsumer);
 
-        KafkaMessageAdapter<Integer, MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
+        KafkaMessageAdapter<Integer, MessageBeanImpl> messageAdapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>() {
+            @Override
+            public void messageAdapter(MessageAndMetadata<?, ?> messageAndMetadata) throws MQException {
+                throw new MQException("Test");
+            }
+
+            @Override
+            public void messageAdapter(ConsumerRecord<?, ?> consumerRecord) throws MQException {
+                throw new MQException("Test");
+            }
+
+            @Override
+            public void messageAdapter(ConsumerRecords<?, ?> consumerRecords) throws MQException {
+                throw new MQException("Test");
+            }
+        };
 
         messageAdapter.setDecoder(messageDecoder);
 
