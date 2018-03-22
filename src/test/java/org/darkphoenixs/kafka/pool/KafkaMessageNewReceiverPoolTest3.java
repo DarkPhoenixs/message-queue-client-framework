@@ -115,6 +115,16 @@ public class KafkaMessageNewReceiverPoolTest3 {
     }
 
     @Test
+    public void test_() throws Exception {
+
+        KafkaMessageNewReceiverPool<byte[], byte[]> recePool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
+
+        recePool.offsetCommitCallback.onComplete(null, null);
+
+        recePool.offsetCommitCallback.onComplete(null, new RuntimeException("test"));
+    }
+
+    @Test
     public void test3() throws Exception {
 
         KafkaMessageNewReceiverPool<byte[], byte[]> recePool = new KafkaMessageNewReceiverPool<byte[], byte[]>();
