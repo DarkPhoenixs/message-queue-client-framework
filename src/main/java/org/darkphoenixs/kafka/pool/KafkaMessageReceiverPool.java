@@ -94,6 +94,10 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      */
     private int retryCount = 3;
     /**
+     * receiverRetry
+     */
+    private KafkaMessageReceiverRetry<MessageAndMetadata<K, V>> receiverRetry;
+    /**
      * keyDecoder
      */
     private Class<?> keyDecoderClass = DefaultDecoder.class;
@@ -312,6 +316,10 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
             setPoolSize(defaultSize);
 
+        if (retryCount > 0)
+
+            receiverRetry = new KafkaMessageReceiverRetry<MessageAndMetadata<K, V>>(topic, retryCount, messageAdapter);
+
         this.threadFactory = new KafkaPoolThreadFactory(tagger + "-" + topic);
 
         this.pool = Executors.newFixedThreadPool(poolSize, threadFactory);
@@ -372,6 +380,9 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
             }
         }
 
+        if (receiverRetry != null)
+            receiverRetry.destroy();
+
         logger.info("Message receiver pool closed.");
 
         running.set(false);
@@ -407,8 +418,6 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
             ConsumerIterator<K, V> it = stream.iterator();
 
-            int failCount = 0;
-
             while (it.hasNext()) {
 
                 MessageAndMetadata<K, V> messageAndMetadata = it.next();
@@ -418,10 +427,11 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
 
                 } catch (MQException e) {
 
-                    failCount++;
+                    if (receiverRetry != null)
+
+                        receiverRetry.receiveMessageRetry(messageAndMetadata);
 
                     logger.error("Receive message failed."
-                            + " failCount: " + failCount
                             + " topic: " + messageAndMetadata.topic()
                             + " offset: " + messageAndMetadata.offset()
                             + " partition: " + messageAndMetadata.partition(), e);
@@ -429,10 +439,7 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
                 } finally {
 
                     /* commitOffsets */
-                    if (!getAutoCommit() && (failCount == 0 || failCount > retryCount)) {
-
-                        failCount = 0;
-
+                    if (!getAutoCommit()) {
                         consumer.commitOffsets(Collections.singletonMap(
                                 TopicAndPartition.apply(messageAndMetadata.topic(), messageAndMetadata.partition()),
                                 OffsetAndMetadata.apply(messageAndMetadata.offset() + 1)), true);
@@ -440,8 +447,7 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
                 }
             }
 
-            logger.info(Thread.currentThread().getName() + " clientId: "
-                    + stream.clientId() + " end.");
+            logger.info(Thread.currentThread().getName() + " clientId: " + stream.clientId() + " end.");
         }
 
     }

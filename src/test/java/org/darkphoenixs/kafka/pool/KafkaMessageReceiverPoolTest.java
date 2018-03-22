@@ -286,7 +286,7 @@ public class KafkaMessageReceiverPoolTest {
 
         recePool.setAutoCommit(false);
 
-        recePool.setRetryCount(1);
+        recePool.setRetryCount(0);
 
         recePool.init();
 

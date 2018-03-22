@@ -169,9 +169,9 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     private int handleMultiple = 2;
     /**
-     * The retry Count.
+     * The message receive retry Count.
      * <p>
-     * When MODEL is MODEL_1 & BATCH is NON_BATCH & COMMIT is SYNC_COMMIT or ASYNC_COMMIT to take effect.
+     * When BATCH is NON_BATCH to take effect.
      */
     private int retryCount = 3;
     /**
@@ -198,6 +198,11 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      * messageAdapter
      */
     private KafkaMessageAdapter<?, ?> messageAdapter;
+
+    /**
+     * receiverRetry
+     */
+    private KafkaMessageReceiverRetry<ConsumerRecord<K, V>> receiverRetry;
 
     /**
      * Gets props.
@@ -483,6 +488,10 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
         returnReceiver(receiver);
 
+        if (retryCount > 0 && batch.equals(BATCH.NON_BATCH))
+            // retry count > 0 and batch is NON_BATCH
+            receiverRetry = new KafkaMessageReceiverRetry<ConsumerRecord<K, V>>(topic, retryCount, messageAdapter);
+
         switch (model) {
 
             case MODEL_1: // MODEL_1
@@ -562,6 +571,11 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
             logger.info("Message Handler pool closed.");
         }
 
+        if (receiverRetry != null) {
+
+            receiverRetry.destroy();
+        }
+
         running.set(false);
     }
 
@@ -613,8 +627,6 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
             try {
                 consumer.subscribe(Arrays.asList(topic));
 
-                int failCount = 0; // 失败次数计数器
-
                 while (!closed.get()) {
 
                     ConsumerRecords<K, V> records = consumer.poll(pollTimeout);
@@ -633,7 +645,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                                     } catch (MQException e) {
 
-                                        logger.error("Receive message failed. failNumber:" + records.count(), e);
+                                        logger.error("Receive message failed. failSize:" + records.count(), e);
 
                                     } finally {
 
@@ -651,21 +663,15 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                                         } catch (MQException e) {
 
-                                            failCount++; // 计数器+1
+                                            messageReceiveRetry(record); // 消息重试
 
                                             logger.error("Receive message failed."
-                                                    + " failCount: " + failCount
                                                     + " topic: " + record.topic()
                                                     + " offset: " + record.offset()
                                                     + " partition: " + record.partition(), e);
                                         } finally {
 
-                                            if (failCount == 0 || failCount > retryCount) {
-
-                                                failCount = 0;
-
-                                                commit(consumer, record, commit); // 逐个提交
-                                            }
+                                            commit(consumer, record, commit); // 逐个提交
                                         }
 
                                     break;
@@ -764,7 +770,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                         } catch (MQException e) {
 
-                            logger.error("Receive message failed. failNumber: " + records.count(), e);
+                            logger.error("Receive message failed. failSize: " + records.count(), e);
                         }
 
                         break;
@@ -777,6 +783,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
                                 adapter.messageAdapter(record);
 
                             } catch (MQException e) {
+
+                                messageReceiveRetry(record);
 
                                 logger.error("Receive message failed."
                                         + " topic: " + record.topic()
@@ -824,6 +832,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
                         new OffsetAndMetadata(record.offset() + 1)),
                         offsetCommitCallback);
                 break;
+            default:
+                break;
         }
     }
 
@@ -843,7 +853,21 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
             case ASYNC_COMMIT: // 异步提交
                 consumer.commitAsync();
                 break;
+            default:
+                break;
         }
+    }
+
+    /**
+     * ConsumerRecord.
+     *
+     * @param consumerRecord
+     */
+    private void messageReceiveRetry(ConsumerRecord<K, V> consumerRecord) {
+
+        if (receiverRetry != null)
+
+            receiverRetry.receiveMessageRetry(consumerRecord);
     }
 
     /**

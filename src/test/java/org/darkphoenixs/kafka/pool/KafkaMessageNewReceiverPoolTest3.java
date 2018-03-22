@@ -136,7 +136,7 @@ public class KafkaMessageNewReceiverPoolTest3 {
 
         recePool.setPoolSize(4);
 
-        recePool.setRetryCount(1);
+        recePool.setRetryCount(0);
 
         recePool.setThreadSleep(1);
 
