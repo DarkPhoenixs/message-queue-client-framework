@@ -21,6 +21,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.darkphoenixs.kafka.codec.KafkaMessageDecoder;
 import org.darkphoenixs.kafka.listener.KafkaMessageListener;
 import org.darkphoenixs.mq.exception.MQException;
+import org.darkphoenixs.mq.util.MQ_BATCH;
+import org.darkphoenixs.mq.util.MQ_MODEL;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +53,16 @@ public class KafkaMessageAdapter<K, V> {
      * destination
      */
     private KafkaDestination destination;
+
+    /**
+     * model
+     */
+    private MQ_MODEL model;
+
+    /**
+     * batch
+     */
+    private MQ_BATCH batch;
 
     /**
      * Gets decoder.
@@ -95,6 +107,42 @@ public class KafkaMessageAdapter<K, V> {
      */
     public KafkaDestination getDestination() {
         return destination;
+    }
+
+    /**
+     * Gets model.
+     *
+     * @return the model
+     */
+    public String getModel() {
+        return model.name();
+    }
+
+    /**
+     * Sets model.
+     *
+     * @param model the model
+     */
+    public void setModel(String model) {
+        this.model = MQ_MODEL.valueOf(model);
+    }
+
+    /**
+     * Gets batch.
+     *
+     * @return the batch
+     */
+    public String getBatch() {
+        return batch.name();
+    }
+
+    /**
+     * Sets batch.
+     *
+     * @param batch the batch
+     */
+    public void setBatch(String batch) {
+        this.batch = MQ_BATCH.valueOf(batch);
     }
 
     /**

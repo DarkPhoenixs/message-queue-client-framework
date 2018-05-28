@@ -24,6 +24,8 @@ import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.kafka.core.KafkaMessageNewReceiver;
 import org.darkphoenixs.kafka.core.KafkaMessageReceiver;
 import org.darkphoenixs.mq.exception.MQException;
+import org.darkphoenixs.mq.util.MQ_BATCH;
+import org.darkphoenixs.mq.util.MQ_MODEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -55,36 +57,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K, V> {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaMessageNewReceiverPool.class);
-
-    /**
-     * The enum Model.
-     */
-    public enum MODEL {
-
-        /**
-         * Model 1 model.
-         */
-        MODEL_1,
-        /**
-         * Model 2 model.
-         */
-        MODEL_2
-    }
-
-    /**
-     * The enum Batch.
-     */
-    public enum BATCH {
-
-        /**
-         * non-batch consumer.
-         */
-        NON_BATCH,
-        /**
-         * batch consumer.
-         */
-        BATCH
-    }
 
     /**
      * The enum Commit.
@@ -135,19 +107,19 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      * <p>
      * Default MODEL_1.
      */
-    private MODEL model = MODEL.MODEL_1;
+    private MQ_MODEL model = MQ_MODEL.MODEL_1;
+    /**
+     * The Batch.
+     * <p>
+     * Default NON_BATCH.
+     */
+    private MQ_BATCH batch = MQ_BATCH.NON_BATCH;
     /**
      * The Commit.
      * <p>
      * Default AUTO_COMMIT.
      */
     private COMMIT commit = COMMIT.AUTO_COMMIT;
-    /**
-     * The Batch.
-     * <p>
-     * Default NON_BATCH.
-     */
-    private BATCH batch = BATCH.NON_BATCH;
     /**
      * The Props.
      */
@@ -171,7 +143,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
     /**
      * The message receive retry Count.
      * <p>
-     * When BATCH is NON_BATCH to take effect.
+     * When MQ_BATCH is NON_BATCH to take effect.
      */
     private int retryCount = 3;
     /**
@@ -190,9 +162,9 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
     /**
      * The Kafka poll timeout time(ms).
      * <p>
-     * Default Long.MAX_VALUE.
+     * Default 2000ms.
      */
-    private long pollTimeout = KafkaConstants.MAX_POLL_TIMEOUT;
+    private long pollTimeout = 2000;
 
     /**
      * messageAdapter
@@ -365,12 +337,13 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
     /**
      * Sets model.
-     *
+     * @see KafkaMessageAdapter#setModel(String model)
      * @param model the model
      */
+    @Deprecated
     public void setModel(String model) {
 
-        this.model = MODEL.valueOf(model);
+        this.model = MQ_MODEL.valueOf(model);
     }
 
     /**
@@ -385,12 +358,13 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
     /**
      * Sets batch.
-     *
+     * @see KafkaMessageAdapter#setBatch(String batch)
      * @param batch the batch
      */
+    @Deprecated
     public void setBatch(String batch) {
 
-        this.batch = BATCH.valueOf(batch);
+        this.batch = MQ_BATCH.valueOf(batch);
     }
 
     /**
@@ -432,6 +406,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     public void setMessageAdapter(KafkaMessageAdapter<?, ?> messageAdapter) {
         this.messageAdapter = messageAdapter;
+        this.setModel(messageAdapter.getModel());
+        this.setBatch(messageAdapter.getBatch());
     }
 
     /**
@@ -488,7 +464,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
         returnReceiver(receiver);
 
-        if (retryCount > 0 && batch.equals(BATCH.NON_BATCH))
+        if (retryCount > 0 && batch.equals(MQ_BATCH.NON_BATCH))
             // retry count > 0 and batch is NON_BATCH
             receiverRetry = new KafkaMessageReceiverRetry<ConsumerRecord<K, V>>(topic, retryCount, messageAdapter);
 

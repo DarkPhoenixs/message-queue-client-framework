@@ -224,7 +224,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.setRetryCount(0);
 
-        pool.setBatch("BATCH");
+        pool.setBatch("MQ_BATCH");
 
         pool.init();
 
@@ -355,7 +355,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         Thread.sleep(2000);
 
-        recePool.setBatch("BATCH");
+        recePool.setBatch("MQ_BATCH");
 
         recePool.setCommit("SYNC_COMMIT");
 
@@ -421,7 +421,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         Thread.sleep(2000);
 
-        recePool.setBatch("BATCH");
+        recePool.setBatch("MQ_BATCH");
 
         recePool.setCommit("SYNC_COMMIT");
 

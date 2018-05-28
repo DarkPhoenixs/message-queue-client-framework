@@ -20,6 +20,8 @@ import org.apache.rocketmq.client.consumer.listener.*;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.darkphoenixs.mq.codec.MQMessageDecoder;
 import org.darkphoenixs.mq.exception.MQException;
+import org.darkphoenixs.mq.util.MQ_BATCH;
+import org.darkphoenixs.mq.util.MQ_MODEL;
 import org.darkphoenixs.rocketmq.consumer.AbstractConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +51,9 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
 
     private AbstractConsumer<T> consumer;
 
-    private BATCH batch = BATCH.NON_BATCH;
+    private MQ_BATCH batch = MQ_BATCH.NON_BATCH;
 
-    private MODEL model = MODEL.MODEL_1;
+    private MQ_MODEL model = MQ_MODEL.MODEL_1;
 
     /**
      * Gets message decoder.
@@ -104,7 +106,7 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
      * @param batch the batch
      */
     public void setBatch(String batch) {
-        this.batch = BATCH.valueOf(batch);
+        this.batch = MQ_BATCH.valueOf(batch);
     }
 
     /**
@@ -122,7 +124,7 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
      * @param model the model
      */
     public void setModel(String model) {
-        this.model = MODEL.valueOf(model);
+        this.model = MQ_MODEL.valueOf(model);
     }
 
     @Deprecated
@@ -275,33 +277,4 @@ public class RocketmqMessageConsumerListener<T> extends RocketmqMessageListener<
         }
     };
 
-    /**
-     * The enum Model.
-     */
-    public enum MODEL {
-
-        /**
-         * Model 1 model.
-         */
-        MODEL_1,
-        /**
-         * Model 2 model.
-         */
-        MODEL_2
-    }
-
-    /**
-     * The enum Batch.
-     */
-    public enum BATCH {
-
-        /**
-         * non-batch consumer.
-         */
-        NON_BATCH,
-        /**
-         * batch consumer.
-         */
-        BATCH
-    }
 }
