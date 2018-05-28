@@ -19,15 +19,15 @@ package org.darkphoenixs.rocketmq.listener;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.darkphoenixs.mq.util.MQ_BATCH;
+import org.darkphoenixs.mq.util.MQ_MODEL;
 import org.darkphoenixs.rocketmq.codec.RocketmqMessageDecoderDemo;
 import org.darkphoenixs.rocketmq.consumer.MessageConsumer;
-import org.darkphoenixs.rocketmq.listener.RocketmqMessageConsumerListener.MODEL;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.darkphoenixs.rocketmq.listener.RocketmqMessageConsumerListener.BATCH;
 
 public class RocketmqMessageConsumerListenerTest {
 
@@ -42,8 +42,8 @@ public class RocketmqMessageConsumerListenerTest {
 
         Assert.assertTrue(listener.getMessageListener() instanceof MessageListenerOrderly);
 
-        listener.setBatch(BATCH.NON_BATCH.name());
-        listener.setModel(MODEL.MODEL_2.name());
+        listener.setBatch(MQ_BATCH.NON_BATCH.name());
+        listener.setModel(MQ_MODEL.MODEL_2.name());
         listener.setConsumer(new MessageConsumer<String>());
         listener.setMessageDecoder(new RocketmqMessageDecoderDemo());
 
@@ -133,7 +133,7 @@ public class RocketmqMessageConsumerListenerTest {
         listener.setMessageDecoder(new RocketmqMessageDecoderDemo());
         listener.messageListenerOrderly.consumeMessage(Collections.singletonList(messageExt), null);
 
-        listener.setBatch(BATCH.BATCH.name());
+        listener.setBatch(MQ_BATCH.BATCH.name());
 
         try {
             listener.messageListenerConcurrently.consumeMessage(Collections.singletonList(new MessageExt()), null);
