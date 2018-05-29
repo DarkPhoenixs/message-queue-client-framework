@@ -19,10 +19,7 @@ package org.darkphoenixs.kafka.pool;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
-import org.darkphoenixs.kafka.core.KafkaConstants;
-import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
-import org.darkphoenixs.kafka.core.KafkaMessageNewReceiver;
-import org.darkphoenixs.kafka.core.KafkaMessageReceiver;
+import org.darkphoenixs.kafka.core.*;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.util.MQ_BATCH;
 import org.darkphoenixs.mq.util.MQ_MODEL;
@@ -170,6 +167,11 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      * messageAdapter
      */
     private KafkaMessageAdapter<?, ?> messageAdapter;
+
+    /**
+     * destination
+     */
+    private KafkaDestination destination;
 
     /**
      * receiverRetry
@@ -337,8 +339,9 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
     /**
      * Sets model.
-     * @see KafkaMessageAdapter#setModel(String model)
+     *
      * @param model the model
+     * @see KafkaMessageAdapter#setModel(String model)
      */
     @Deprecated
     public void setModel(String model) {
@@ -358,8 +361,9 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
     /**
      * Sets batch.
-     * @see KafkaMessageAdapter#setBatch(String batch)
+     *
      * @param batch the batch
+     * @see KafkaMessageAdapter#setBatch(String batch)
      */
     @Deprecated
     public void setBatch(String batch) {
@@ -406,8 +410,12 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     public void setMessageAdapter(KafkaMessageAdapter<?, ?> messageAdapter) {
         this.messageAdapter = messageAdapter;
-        this.setModel(messageAdapter.getModel());
-        this.setBatch(messageAdapter.getBatch());
+        if (messageAdapter.getModel() != null)
+            this.setModel(messageAdapter.getModel());
+        if (messageAdapter.getBatch() != null)
+            this.setBatch(messageAdapter.getBatch());
+        if (messageAdapter.getDestination() != null)
+            this.setDestination(messageAdapter.getDestination());
     }
 
     /**
@@ -426,6 +434,24 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     public String getGroupId() {
         return this.props.getProperty(KafkaConstants.GROUP_ID, "group_new_consumer");
+    }
+
+    /**
+     * Gets destination.
+     *
+     * @return the destination
+     */
+    public KafkaDestination getDestination() {
+        return destination;
+    }
+
+    /**
+     * Sets destination.
+     *
+     * @param destination the destination
+     */
+    public void setDestination(KafkaDestination destination) {
+        this.destination = destination;
     }
 
     @Override
@@ -451,7 +477,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
     @Override
     public synchronized void init() {
 
-        String topic = messageAdapter.getDestination().getDestinationName();
+        String topic = destination.getDestinationName();
 
         KafkaMessageReceiver<K, V> receiver = getReceiver();
 

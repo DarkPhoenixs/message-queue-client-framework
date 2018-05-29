@@ -182,7 +182,13 @@ public class KafkaMessageReceiverPoolTest {
         recePool.setProps(TestUtils.createConsumerProperties(zkConnect,
                 "group_1", "consumer_id", 1000));
 
+        KafkaMessageAdapter<Integer, MessageBeanImpl> adapter = getAdapter();
+
+        adapter.setDestination(null);
         recePool.setMessageAdapter(getAdapter());
+
+        recePool.getDestination();
+        recePool.setDestination(new KafkaDestination(topic));
 
         recePool.setAutoCommit(true);
 

@@ -41,6 +41,8 @@ import org.darkphoenixs.kafka.listener.KafkaMessageConsumerListener;
 import org.darkphoenixs.kafka.producer.MessageProducer;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
+import org.darkphoenixs.mq.util.MQ_BATCH;
+import org.darkphoenixs.mq.util.MQ_MODEL;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -199,8 +201,6 @@ public class KafkaMessageNewReceiverPoolTest {
 
         KafkaMessageAdapter<Integer, MessageBeanImpl> adapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
 
-        adapter.setDestination(new KafkaDestination(topic));
-
         adapter.setDecoder(new KafkaMessageDecoderImpl());
 
         KafkaMessageConsumerListener<Integer, MessageBeanImpl> listener = new KafkaMessageConsumerListener<Integer, MessageBeanImpl>();
@@ -209,8 +209,14 @@ public class KafkaMessageNewReceiverPoolTest {
 
         adapter.setMessageListener(listener);
 
+        adapter.setModel(MQ_MODEL.MODEL_1.name());
+
+        adapter.setBatch(MQ_BATCH.NON_BATCH.name());
+
         pool.setMessageAdapter(adapter);
 
+        pool.getDestination();
+        pool.setDestination(new KafkaDestination(topic));
 
         pool.init();
 

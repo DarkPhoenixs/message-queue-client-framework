@@ -25,10 +25,7 @@ import kafka.message.MessageAndMetadata;
 import kafka.serializer.Decoder;
 import kafka.serializer.DefaultDecoder;
 import kafka.utils.VerifiableProperties;
-import org.darkphoenixs.kafka.core.KafkaConstants;
-import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
-import org.darkphoenixs.kafka.core.KafkaMessageReceiver;
-import org.darkphoenixs.kafka.core.KafkaMessageReceiverImpl;
+import org.darkphoenixs.kafka.core.*;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.util.RefleTool;
 import org.slf4j.Logger;
@@ -80,6 +77,11 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      * messageAdapter
      */
     private KafkaMessageAdapter<?, ?> messageAdapter;
+
+    /**
+     * destination
+     */
+    private KafkaDestination destination;
 
     /**
      * poolSize
@@ -144,6 +146,24 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      */
     public void setClientId(String clientId) {
         props.setProperty(KafkaConstants.CLIENT_ID, clientId);
+    }
+
+    /**
+     * Gets destination.
+     *
+     * @return the destination
+     */
+    public KafkaDestination getDestination() {
+        return destination;
+    }
+
+    /**
+     * Sets destination.
+     *
+     * @param destination the destination
+     */
+    public void setDestination(KafkaDestination destination) {
+        this.destination = destination;
     }
 
     /**
@@ -278,6 +298,8 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
      */
     public void setMessageAdapter(KafkaMessageAdapter<?, ?> messageAdapter) {
         this.messageAdapter = messageAdapter;
+        if (messageAdapter.getDestination() != null)
+            this.setDestination(messageAdapter.getDestination());
     }
 
     /**
@@ -308,7 +330,7 @@ public class KafkaMessageReceiverPool<K, V> implements MessageReceiverPool<K, V>
     @Override
     public synchronized void init() {
 
-        String topic = messageAdapter.getDestination().getDestinationName();
+        String topic = destination.getDestinationName();
 
         int defaultSize = getReceiver().getPartitionCount(topic);
 

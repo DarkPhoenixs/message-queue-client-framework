@@ -105,6 +105,7 @@ public class KafkaMessageAdapter<K, V> {
      *
      * @return the destination
      */
+    @Deprecated
     public KafkaDestination getDestination() {
         return destination;
     }
@@ -150,6 +151,7 @@ public class KafkaMessageAdapter<K, V> {
      *
      * @param destination the destination to set
      */
+    @Deprecated
     public void setDestination(KafkaDestination destination) {
         this.destination = destination;
     }
