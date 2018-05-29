@@ -57,12 +57,12 @@ public class KafkaMessageAdapter<K, V> {
     /**
      * model
      */
-    private MQ_MODEL model = MQ_MODEL.MODEL_1;
+    private MQ_MODEL model;
 
     /**
      * batch
      */
-    private MQ_BATCH batch = MQ_BATCH.NON_BATCH;
+    private MQ_BATCH batch;
 
     /**
      * Gets decoder.
@@ -116,7 +116,9 @@ public class KafkaMessageAdapter<K, V> {
      * @return the model
      */
     public String getModel() {
-        return model.name();
+        if (model != null)
+            return model.name();
+        return null;
     }
 
     /**
@@ -134,7 +136,9 @@ public class KafkaMessageAdapter<K, V> {
      * @return the batch
      */
     public String getBatch() {
-        return batch.name();
+        if (batch != null)
+            return batch.name();
+        return null;
     }
 
     /**
