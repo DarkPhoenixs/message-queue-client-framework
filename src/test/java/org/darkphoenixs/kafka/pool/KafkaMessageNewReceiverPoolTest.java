@@ -427,7 +427,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         Thread.sleep(2000);
 
-        recePool.setBatch("_BATCH");
+        recePool.setBatch("BATCH");
 
         recePool.setCommit("SYNC_COMMIT");
 
