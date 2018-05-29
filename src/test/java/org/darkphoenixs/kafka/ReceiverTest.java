@@ -112,8 +112,6 @@ public class ReceiverTest {
 
         messageAdapter.setDecoder(messageDecoder);
 
-        messageAdapter.setDestination(kafkaDestination);
-
         messageAdapter.setMessageListener(messageConsumerListener);
 
         KafkaMessageReceiverPool<byte[], byte[]> pool = new KafkaMessageReceiverPool<byte[], byte[]>();
@@ -124,6 +122,8 @@ public class ReceiverTest {
                 "consumer_id", 1000));
 
         pool.setPoolSize(10);
+
+        pool.setDestination(kafkaDestination);
 
         pool.init();
 
