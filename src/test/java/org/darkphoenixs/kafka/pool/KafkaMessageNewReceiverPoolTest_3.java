@@ -174,7 +174,7 @@ public class KafkaMessageNewReceiverPoolTest_3 {
 
         Thread.sleep(2000);
 
-        recePool.setBatch("MQ_BATCH");
+        recePool.setBatch("BATCH");
 
         recePool.setCommit("ASYNC_COMMIT");
 

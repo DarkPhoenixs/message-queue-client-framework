@@ -155,7 +155,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         Assert.assertEquals(pool.getBatch(), "NON_BATCH");
 
-        pool.setBatch("NON_BATCH");
+        pool.setBatch("BATCH");
 
         Assert.assertEquals(pool.getCommit(), "AUTO_COMMIT");
 
@@ -230,7 +230,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.setRetryCount(0);
 
-        pool.setBatch("MQ_BATCH");
+        pool.setBatch("BATCH");
 
         pool.init();
 
@@ -361,7 +361,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         Thread.sleep(2000);
 
-        recePool.setBatch("MQ_BATCH");
+        recePool.setBatch("BATCH");
 
         recePool.setCommit("SYNC_COMMIT");
 
@@ -427,7 +427,7 @@ public class KafkaMessageNewReceiverPoolTest {
 
         Thread.sleep(2000);
 
-        recePool.setBatch("MQ_BATCH");
+        recePool.setBatch("_BATCH");
 
         recePool.setCommit("SYNC_COMMIT");
 

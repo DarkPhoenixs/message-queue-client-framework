@@ -57,12 +57,12 @@ public class KafkaMessageAdapter<K, V> {
     /**
      * model
      */
-    private MQ_MODEL model;
+    private MQ_MODEL model = MQ_MODEL.MODEL_1;
 
     /**
      * batch
      */
-    private MQ_BATCH batch;
+    private MQ_BATCH batch = MQ_BATCH.NON_BATCH;
 
     /**
      * Gets decoder.

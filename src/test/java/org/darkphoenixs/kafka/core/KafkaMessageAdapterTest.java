@@ -23,10 +23,10 @@ public class KafkaMessageAdapterTest {
 
         KafkaMessageAdapter<Integer, MessageBeanImpl> adapter = new KafkaMessageAdapter<Integer, MessageBeanImpl>();
 
-        Assert.assertNull(adapter.getBatch());
+        Assert.assertNotNull(adapter.getBatch());
         adapter.setBatch("NON_BATCH");
 
-        Assert.assertNull(adapter.getModel());
+        Assert.assertNotNull(adapter.getModel());
         adapter.setModel("MODEL_1");
 
         Assert.assertNull(adapter.getDecoder());
