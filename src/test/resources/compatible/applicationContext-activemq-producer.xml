@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2018. Dark Phoenixs (Open-Source Organization).
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <description>ActiveMQ Configuration</description>
+
+    <!-- Connection Factory -->
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616"/>
+        <property name="useAsyncSend" value="true"/>
+        <property name="dispatchAsync" value="true"/>
+        <property name="useCompression" value="true"/>
+        <property name="optimizeAcknowledge" value="true"/>
+    </bean>
+
+    <!-- Message Converter -->
+    <bean id="messageConverter" class="org.darkphoenixs.activemq.convertor.MessageStringConverter"/>
+
+    <!-- Pool Connection Factory -->
+    <bean id="sendConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+          destroy-method="stop">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="maxConnections" value="100"/>
+        <property name="maximumActiveSessionPerConnection" value="200"/>
+    </bean>
+
+    <!-- Queue Jms Template -->
+    <bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="sendConnectionFactory"/>
+        <property name="messageConverter" ref="messageConverter"/>
+        <property name="explicitQosEnabled" value="true"/>
+        <property name="sessionTransacted" value="false"/>
+        <property name="deliveryPersistent" value="false"/>
+    </bean>
+
+    <!-- Queue Destination -->
+    <bean id="sendDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="QUEUE.TEST"/>
+    </bean>
+
+    <!-- Message MQProducer -->
+    <bean id="messageProducer" class="org.darkphoenixs.compatible.MQProducerDemo">
+        <property name="activemqTemplate" ref="queueJmsTemplate"/>
+        <property name="activemqDestination" ref="sendDestination"/>
+        <property name="topic" value="ACTIVEMQ"/>
+    </bean>
+</beans>
