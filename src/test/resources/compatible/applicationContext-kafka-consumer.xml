@@ -37,6 +37,11 @@
     <!-- Kafka Pool Connection -->
     <bean id="messageReceiverPool" class="org.darkphoenixs.kafka.pool.KafkaMessageNewReceiverPool"
           init-method="init" destroy-method="destroy">
+        <property name="destination">
+            <bean class="org.darkphoenixs.kafka.core.KafkaDestination">
+                <constructor-arg value="QUEUE.TEST"/>
+            </bean>
+        </property>
         <property name="messageAdapter">
             <bean factory-bean="messageListener" factory-method="getKafkaMessageAdapter"/>
         </property>

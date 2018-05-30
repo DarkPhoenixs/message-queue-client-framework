@@ -298,6 +298,12 @@ public class MQProducerAdapterTest {
         } catch (MQException e) {
             e.printStackTrace();
         }
+        mqProducerAdapter.setRocketmqDefaultProducer(null);
+        try {
+            mqProducerAdapter.setType(MQ_TYPE.ROCKETMQ.name());
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
         try {
             mqProducerAdapter.send("test");
         } catch (MQException e) {
