@@ -193,7 +193,17 @@ public class MQProducerAdapterTest {
             e.printStackTrace();
         }
         mqProducerAdapter.setTopic("TEST");
+        try {
+            mqProducerAdapter.setType(MQ_TYPE.KAFKA.name());
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
         mqProducerAdapter.setMessageEncoder(mqMessageEncoder);
+        try {
+            mqProducerAdapter.setType(MQ_TYPE.KAFKA.name());
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
         mqProducerAdapter.setKafkaMessageSenderPool(new KafkaMessageNewSenderPool<byte[], byte[]>());
 
         try {
@@ -265,10 +275,24 @@ public class MQProducerAdapterTest {
         }
 
         mqProducerAdapter.setTopic("TEST");
+        try {
+            mqProducerAdapter.setType(MQ_TYPE.ROCKETMQ.name());
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
         mqProducerAdapter.setMessageEncoder(mqMessageEncoder);
+        try {
+            mqProducerAdapter.setType(MQ_TYPE.ROCKETMQ.name());
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
         mqProducerAdapter.setRocketmqDefaultProducer(new DefaultMQProducer());
+        try {
+            mqProducerAdapter.setType(MQ_TYPE.ROCKETMQ.name());
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
         mqProducerAdapter.setRocketmqTransactionProducer(new TransactionMQProducer());
-
         try {
             mqProducerAdapter.setType(MQ_TYPE.ROCKETMQ.name());
         } catch (MQException e) {
@@ -322,6 +346,11 @@ public class MQProducerAdapterTest {
 
         mqProducerAdapter.setTopic("TEST");
         mqProducerAdapter.setActivemqDestination(new ActiveMQQueue("TEST"));
+        try {
+            mqProducerAdapter.setType(MQ_TYPE.ACTIVEMQ.name());
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
         mqProducerAdapter.setActivemqTemplate(new JmsTemplate());
 
         try {

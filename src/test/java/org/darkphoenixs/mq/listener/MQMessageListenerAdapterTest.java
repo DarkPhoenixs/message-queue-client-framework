@@ -34,6 +34,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class MQMessageListenerAdapterTest {
 
@@ -162,6 +163,14 @@ public class MQMessageListenerAdapterTest {
         } catch (MQException e) {
             e.printStackTrace();
         }
+
+        Map<byte[], byte[]> map = null;
+        try {
+            kafkaMessageAdapter.getDecoder().batchDecode(map);
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test
