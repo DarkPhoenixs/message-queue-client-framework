@@ -223,7 +223,9 @@ public abstract class MQProducerAdapter<T> implements MQProducer<T> {
 
     @Override
     public String getProducerKey() {
-        return producerKey;
+        if (producerKey != null)
+            return producerKey;
+        return topic;
     }
 
     /**
