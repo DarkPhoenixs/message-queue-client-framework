@@ -59,6 +59,6 @@
     <bean id="messageProducer" class="org.darkphoenixs.compatible.MQProducerDemo">
         <property name="activemqTemplate" ref="queueJmsTemplate"/>
         <property name="activemqDestination" ref="sendDestination"/>
-        <property name="topic" value="ACTIVEMQ"/>
+        <property name="type" value="ACTIVEMQ"/>
     </bean>
 </beans>
