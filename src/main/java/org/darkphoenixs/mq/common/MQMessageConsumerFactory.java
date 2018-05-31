@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @see MQConsumerFactory
  * @since 2015-06-01
  */
-public class MQMessageConsumerFactory implements MQConsumerFactory {
+public final class MQMessageConsumerFactory implements MQConsumerFactory {
 
     /**
      * instance

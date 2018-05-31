@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @see MQProducerFactory
  * @since 2015-06-01
  */
-public class MQMessageProducerFactory implements MQProducerFactory {
+public final class MQMessageProducerFactory implements MQProducerFactory {
 
     /**
      * instance
