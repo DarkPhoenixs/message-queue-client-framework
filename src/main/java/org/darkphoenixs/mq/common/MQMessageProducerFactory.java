@@ -112,6 +112,7 @@ public final class MQMessageProducerFactory implements MQProducerFactory {
 
                 producerCache.put(producers[i].getProducerKey(), producers[i]);
 
+        logger.debug("Initialized!");
     }
 
     @Override
