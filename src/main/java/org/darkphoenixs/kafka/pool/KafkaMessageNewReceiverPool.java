@@ -643,7 +643,9 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
                                 case BATCH: // 批量
 
                                     try {
-                                        adapter.messageAdapter(records);
+                                        if (!records.isEmpty())
+
+                                            adapter.messageAdapter(records);
 
                                     } catch (MQException e) {
 
@@ -684,7 +686,9 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
                         case MODEL_2:
 
                             try {
-                                blockingQueue.put(records);
+                                if (!records.isEmpty())
+
+                                    blockingQueue.put(records);
 
                             } catch (InterruptedException e) {
 
