@@ -217,16 +217,15 @@ public class KafkaMessageAdapter<K, V> {
 
         Map<byte[], byte[]> map = new HashMap<byte[], byte[]>();
 
-        for (ConsumerRecord<?, ?> consumerRecord : consumerRecords) {
+        for (ConsumerRecord<?, ?> consumerRecord : consumerRecords)
 
             map.put((byte[]) consumerRecord.key(), (byte[]) consumerRecord.value());
-
-            messageAdapterForMonitor(consumerRecord);
-        }
 
         Map<K, V> kv = decoder.batchDecode(map);
 
         messageListener.onMessage(kv);
+
+        messageAdapterForMonitor(consumerRecords);
     }
 
     /**
@@ -246,6 +245,16 @@ public class KafkaMessageAdapter<K, V> {
      * @since 1.5.5
      */
     protected void messageAdapterForMonitor(ConsumerRecord<?, ?> consumerRecord) {
+        // TODO: 2018/10/8
+    }
+
+    /**
+     * Message adapter for monitor.
+     *
+     * @param consumerRecords the consumer records
+     * @since 1.5.5
+     */
+    protected void messageAdapterForMonitor(ConsumerRecords<?, ?> consumerRecords) {
         // TODO: 2018/10/8
     }
 }
