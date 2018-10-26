@@ -178,8 +178,6 @@ public class KafkaMessageAdapter<K, V> {
         V v = decoder.decodeVal(valBytes);
 
         messageListener.onMessage(k, v);
-
-        messageAdapterForMonitor(messageAndMetadata);
     }
 
     /**
@@ -201,8 +199,6 @@ public class KafkaMessageAdapter<K, V> {
         V v = decoder.decodeVal(valBytes);
 
         messageListener.onMessage(k, v);
-
-        messageAdapterForMonitor(consumerRecord);
     }
 
     /**
@@ -224,8 +220,6 @@ public class KafkaMessageAdapter<K, V> {
         Map<K, V> kv = decoder.batchDecode(map);
 
         messageListener.onMessage(kv);
-
-        messageAdapterForMonitor(consumerRecords);
     }
 
     /**
@@ -234,6 +228,7 @@ public class KafkaMessageAdapter<K, V> {
      * @param messageAndMetadata the message and metadata
      * @since 1.5.5
      */
+    @Deprecated
     protected void messageAdapterForMonitor(MessageAndMetadata<?, ?> messageAndMetadata) {
         // TODO: 2018/10/8
     }
@@ -244,6 +239,7 @@ public class KafkaMessageAdapter<K, V> {
      * @param consumerRecord the consumer record
      * @since 1.5.5
      */
+    @Deprecated
     protected void messageAdapterForMonitor(ConsumerRecord<?, ?> consumerRecord) {
         // TODO: 2018/10/8
     }
@@ -254,6 +250,7 @@ public class KafkaMessageAdapter<K, V> {
      * @param consumerRecords the consumer records
      * @since 1.5.5
      */
+    @Deprecated
     protected void messageAdapterForMonitor(ConsumerRecords<?, ?> consumerRecords) {
         // TODO: 2018/10/8
     }
