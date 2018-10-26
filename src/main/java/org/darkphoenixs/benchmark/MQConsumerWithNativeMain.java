@@ -20,9 +20,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
-import org.darkphoenixs.benchmark.demo.MQConsumerDemo;
 import org.darkphoenixs.benchmark.utils.Counter;
-import org.darkphoenixs.mq.exception.MQException;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -36,11 +34,8 @@ public class MQConsumerWithNativeMain {
         final int counts = args.length > 1 ? Integer.valueOf(args[1]) : 1000000;
 
         Counter counter = new Counter(counts);
-        MQConsumerDemo consumerDemo = new MQConsumerDemo();
-        consumerDemo.setCounter(counter);
-
         for (int i = 0; i < theads; i++) {
-            KafkaConsumerRunner consumerRunner = new KafkaConsumerRunner(getProperties(), consumerDemo);
+            KafkaConsumerRunner consumerRunner = new KafkaConsumerRunner(getProperties(), counter);
             Runtime.getRuntime().addShutdownHook(new Thread(() -> consumerRunner.shutdown()));
             Thread thread = new Thread(consumerRunner);
             thread.start();
@@ -52,10 +47,10 @@ public class MQConsumerWithNativeMain {
     public static class KafkaConsumerRunner implements Runnable {
         private final AtomicBoolean closed = new AtomicBoolean(false);
         private final KafkaConsumer consumer;
-        private final MQConsumerDemo consumerDemo;
+        private final Counter counter;
 
-        public KafkaConsumerRunner(Properties props, MQConsumerDemo consumerDemo) {
-            this.consumerDemo = consumerDemo;
+        public KafkaConsumerRunner(Properties props, Counter counter) {
+            this.counter = counter;
             this.consumer = new KafkaConsumer(props);
         }
 
@@ -65,14 +60,23 @@ public class MQConsumerWithNativeMain {
                 while (!closed.get()) {
                     ConsumerRecords<byte[], byte[]> records = consumer.poll(10000);
                     for (ConsumerRecord<byte[], byte[]> record : records) {
-                        consumerDemo.receive(new String(record.value()));
+                        new String(record.value());
+                        if (counter.add() % counter.getCount() == 1) {
+                            counter.setBegin(System.currentTimeMillis());
+                        }
+                        if (counter.get() % 10000 == 0) {
+                            System.err.println("receive count 10000.");
+                        }
+                        if (counter.get() % counter.getCount() == 0) {
+                            counter.setEnd(System.currentTimeMillis());
+                            System.err.println("receive time " + counter.getTime()
+                                    + " s. average receive " + counter.getAverage() + "/s.");
+                        }
                     }
                 }
             } catch (WakeupException e) {
                 // Ignore exception if closing
                 if (!closed.get()) throw e;
-            } catch (MQException e) {
-                e.printStackTrace();
             } finally {
                 consumer.close();
             }
@@ -90,7 +94,7 @@ public class MQConsumerWithNativeMain {
         Properties properties = new Properties();
         properties.setProperty("bootstrap.servers", "localhost:9092");
         properties.setProperty("client.id", "client_testWithNative");
-        properties.setProperty("group.id", "client_testWithNative");
+        properties.setProperty("group.id", "group_testWithNative");
         properties.setProperty("key.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         properties.setProperty("value.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         return properties;

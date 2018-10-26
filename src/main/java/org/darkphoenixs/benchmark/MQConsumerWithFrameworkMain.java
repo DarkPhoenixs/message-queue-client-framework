@@ -41,7 +41,7 @@ public class MQConsumerWithFrameworkMain {
         listenerAdapter.setConsumerAdapter(consumerDemo);
         listenerAdapter.setType("KAFKA");
         KafkaMessageNewReceiverPool receiverPool = new KafkaMessageNewReceiverPool();
-        receiverPool.setDestination(new KafkaDestination("TEST"));
+        receiverPool.setDestination(new KafkaDestination("TEST1"));
         receiverPool.setMessageAdapter(listenerAdapter.getKafkaMessageAdapter());
         receiverPool.setProps(getProperties());
         receiverPool.setPoolSize(theads);
@@ -54,7 +54,7 @@ public class MQConsumerWithFrameworkMain {
         Properties properties = new Properties();
         properties.setProperty("bootstrap.servers", "localhost:9092");
         properties.setProperty("client.id", "client_testWithFramework");
-        properties.setProperty("group.id", "client_testWithFramework");
+        properties.setProperty("group.id", "group_testWithFramework");
         properties.setProperty("key.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         properties.setProperty("value.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         return properties;

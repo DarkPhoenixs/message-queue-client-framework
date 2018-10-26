@@ -40,7 +40,7 @@ public class MQProducerWithFrameworkMain {
         MQProducerDemo producerDemo = new MQProducerDemo();
         producerDemo.setMessageEncoder(encoderDemo);
         producerDemo.setKafkaMessageSenderPool(senderPool);
-        producerDemo.setTopic("TEST");
+        producerDemo.setTopic("TEST1");
         producerDemo.setType("KAFKA");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> senderPool.destroy()));
 
