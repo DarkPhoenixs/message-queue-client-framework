@@ -33,7 +33,7 @@ public class MQMessageDecoderDemo implements MQMessageDecoder<String> {
     public List<String> batchDecode(List<byte[]> bytes) throws MQException {
         List<String> list = new ArrayList<String>();
         for (byte[] b : bytes)
-            list.add(new String(b));
+            list.add(decode(b));
         return list;
     }
 }

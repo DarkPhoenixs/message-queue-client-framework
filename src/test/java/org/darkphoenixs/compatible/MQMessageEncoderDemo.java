@@ -33,7 +33,7 @@ public class MQMessageEncoderDemo implements MQMessageEncoder<String> {
     public List<byte[]> batchEncode(List<String> message) throws MQException {
         List<byte[]> list = new ArrayList<byte[]>();
         for (String s : message)
-            list.add(s.getBytes());
+            list.add(encode(s));
         return list;
     }
 }
