@@ -1,5 +1,7 @@
 # message-queue-client-framework-benchmark
 
+![image](http://darkphoenixs.org/message-queue-client-framework/uml/benchmark.png)
+
 #### 2 x ECS (AliCloud VM) for Producer and Consumer test. 
 ```
 OS： CentOS 6.9 64-Bit
@@ -16,7 +18,7 @@ Producer Concurrency:  10
 Consumer Concurrency:  10
 ```
 
-#### Producer with Native.
+#### Producer with Kafka Native API.
 ```
 send time 12.113 s. average send 825559.316436886/s.
 send time 12.18 s. average send 821018.0623973728/s.
@@ -42,7 +44,7 @@ procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu-----
  0  0      0 7406876 143056 401584    0    0     0    17  200  366  0  0 100  0  0
 ```
 
-#### Consumer with Native.
+#### Consumer with Kafka Native API.
 ```
 receive time 12.515 s. average receive 799041.1506192569/s.
 ```
@@ -58,7 +60,7 @@ procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu-----
  0  0      0 6256916 143860 675972    0    0     0     7  566  777  0  0 99  0  0
 ```
 
-#### Producer with Client.
+#### Producer with Client Framework API.
 ```
 send time 13.472 s. average send 742280.2850356295/s.
 send time 13.511 s. average send 740137.6656058027/s.
@@ -84,7 +86,7 @@ procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu-----
  0  0      0 7407048 143056 401728    0    0     0     0 1424 1271  1  1 98  0  0
 ```
 
-#### Consumer with Client.
+#### Consumer with Client Framework API.
 ```
 receive time 14.089 s. average receive 709773.5822272695/s.
 ```
@@ -101,7 +103,7 @@ procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu-----
  0  0      0 6233008 143860 676120    0    0     0    11  529  752  0  0 100  0  0
 ```
 
-#### Producer with Spring.
+#### Producer with Spring Cloud API.
 ```
 send time 154.786 s. average send 64605.32606308064/s.
 send time 154.826 s. average send 64588.63498378826/s.
@@ -128,7 +130,7 @@ procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu-----
  0  0      0 6038476 143056 401924    0    0     0     0 14764 19787 61  7 32  0  0
 ```
 
-#### Consumer with Spring.
+#### Consumer with Spring Cloud API.
 ```
 receive time 301.986 s. average receive 33114.11787301398/s.
 ```
