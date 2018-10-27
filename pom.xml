@@ -13,6 +13,8 @@
         <module>mq-benchmark-native-consumer</module>
         <module>mq-benchmark-client-producer</module>
         <module>mq-benchmark-client-consumer</module>
+        <module>mq-benchmark-spring-producer</module>
+        <module>mq-benchmark-spring-consumer</module>
     </modules>
 
     <parent>
