@@ -11,7 +11,7 @@ TYPE： Optimal IO
 ```
 #### Test case scenarios
 ```
-Data Size:  62 byte
+Data Size:  62 bytes
 Data Count:  1000W
 Topic Partition:  10
 Producer Concurrency:  10
