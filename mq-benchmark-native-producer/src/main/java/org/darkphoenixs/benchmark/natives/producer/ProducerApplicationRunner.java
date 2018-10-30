@@ -62,7 +62,7 @@ public class ProducerApplicationRunner implements ApplicationRunner {
 
                 for (int l = 0; l < counter.getCount() / theads; l++) {
 
-                    kafkaProducer.send(new ProducerRecord<>(topic, String.valueOf(l).getBytes(), message.getBytes()));
+                    kafkaProducer.send(new ProducerRecord<>(topic, message.getBytes()));
                 }
                 counter.setEnd(System.currentTimeMillis());
 

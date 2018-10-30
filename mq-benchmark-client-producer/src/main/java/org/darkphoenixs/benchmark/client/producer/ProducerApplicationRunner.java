@@ -74,7 +74,7 @@ public class ProducerApplicationRunner implements ApplicationRunner {
                 for (int l = 0; l < counter.getCount() / theads; l++) {
 
                     try {
-                        producerDemo.sendWithKey(String.valueOf(l), message);
+                        producerDemo.send(message);
                     } catch (MQException e) {
                         e.printStackTrace();
                     }
