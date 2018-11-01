@@ -4,7 +4,7 @@
 
     <groupId>org.darkphoenixs</groupId>
     <artifactId>messagequeue-framework</artifactId>
-    <version>1.5.7-SNAPSHOT</version>
+    <version>1.5.7</version>
     <packaging>jar</packaging>
 
     <name>Message Queue Client Framework</name>
@@ -59,7 +59,7 @@
         <rocketmq.version>4.2.0</rocketmq.version>
         <spring.version>4.0.0.RELEASE</spring.version>
         <jdk.version>1.7</jdk.version>
-        <test.skip>false</test.skip>
+        <test.skip>true</test.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
