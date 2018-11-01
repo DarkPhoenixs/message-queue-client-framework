@@ -23,6 +23,7 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.mq.codec.MQMessageDecoder;
+import org.darkphoenixs.mq.codec.MQMessageDecoderAdapter;
 import org.darkphoenixs.mq.consumer.MQConsumerAdapter;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.util.MQ_BATCH;
@@ -45,18 +46,10 @@ public class MQMessageListenerAdapterTest {
         }
     };
 
-    MQMessageDecoder<String> mqMessageDecoder = new MQMessageDecoder<String>() {
+    MQMessageDecoder<String> mqMessageDecoder = new MQMessageDecoderAdapter<String>() {
         @Override
         public String decode(byte[] bytes) throws MQException {
             return new String();
-        }
-
-        @Override
-        public List<String> batchDecode(List<byte[]> bytes) throws MQException {
-            List<String> list = new ArrayList<String>();
-            for (byte[] b : bytes)
-                list.add(new String(b));
-            return list;
         }
     };
 

@@ -26,7 +26,7 @@ public class MessageDecoderTest {
         Assert.assertEquals("哈哈", decoder.batchDecode(bytes).get(1));
     }
 
-    private class MessageDecoderImpl implements MQMessageDecoder<String> {
+    private class MessageDecoderImpl extends MQMessageDecoderAdapter<String> {
 
         @Override
         public String decode(byte[] bytes) throws MQException {
@@ -38,19 +38,5 @@ public class MessageDecoderTest {
             }
             return null;
         }
-
-        @Override
-        public List<String> batchDecode(List<byte[]> bytes) throws MQException {
-
-            List<String> list = new ArrayList<String>();
-
-            for (byte[] bs : bytes) {
-
-                list.add(decode(bs));
-            }
-
-            return list;
-        }
-
     }
 }

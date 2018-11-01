@@ -16,13 +16,12 @@
 package org.darkphoenixs.kafka.codec;
 
 import org.darkphoenixs.mq.codec.MQMessageEncoder;
+import org.darkphoenixs.mq.codec.MQMessageEncoderAdapter;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>Title: MessageEncoderImpl</p>
@@ -33,7 +32,7 @@ import java.util.List;
  * @see MQMessageEncoder
  * @since 2015-06-01
  */
-public class MessageEncoderImpl implements MQMessageEncoder<MessageBeanImpl> {
+public class MessageEncoderImpl extends MQMessageEncoderAdapter<MessageBeanImpl> {
 
     @Override
     public byte[] encode(MessageBeanImpl message) throws MQException {
@@ -72,19 +71,6 @@ public class MessageEncoderImpl implements MQMessageEncoder<MessageBeanImpl> {
         }
 
         return bytes;
-    }
-
-    @Override
-    public List<byte[]> batchEncode(List<MessageBeanImpl> message)
-            throws MQException {
-
-        List<byte[]> list = new ArrayList<byte[]>();
-
-        for (MessageBeanImpl messageBean : message)
-
-            list.add(this.encode(messageBean));
-
-        return list;
     }
 
 }

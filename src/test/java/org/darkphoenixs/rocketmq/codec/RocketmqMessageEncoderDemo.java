@@ -26,15 +26,4 @@ public class RocketmqMessageEncoderDemo extends RocketmqMessageEncoder<String> {
     public byte[] encode(String message) throws MQException {
         return message.getBytes();
     }
-
-    public List<byte[]> batchEncode(List<String> message) throws MQException {
-
-        List<byte[]> bytes = new ArrayList<byte[]>();
-
-        for (String string : message)
-
-            bytes.add(string.getBytes());
-
-        return bytes;
-    }
 }

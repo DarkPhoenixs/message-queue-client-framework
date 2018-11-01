@@ -26,7 +26,7 @@ public class MessageEncoderTest {
         Assert.assertArrayEquals("哈哈".getBytes("UTF-8"), encoder.batchEncode(list).get(1));
     }
 
-    private class MessageEncoderImpl implements MQMessageEncoder<String> {
+    private class MessageEncoderImpl extends MQMessageEncoderAdapter<String> {
 
         @Override
         public byte[] encode(String message) throws MQException {
@@ -37,20 +37,6 @@ public class MessageEncoderTest {
                 e.printStackTrace();
             }
             return null;
-        }
-
-        @Override
-        public List<byte[]> batchEncode(List<String> message)
-                throws MQException {
-
-            List<byte[]> bytes = new ArrayList<byte[]>();
-
-            for (String string : message) {
-
-                bytes.add(encode(string));
-            }
-
-            return bytes;
         }
     }
 }

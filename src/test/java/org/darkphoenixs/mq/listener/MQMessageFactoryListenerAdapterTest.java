@@ -19,6 +19,7 @@ package org.darkphoenixs.mq.listener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.darkphoenixs.kafka.core.KafkaMessageAdapter;
 import org.darkphoenixs.mq.codec.MQMessageDecoder;
+import org.darkphoenixs.mq.codec.MQMessageDecoderAdapter;
 import org.darkphoenixs.mq.common.MQMessageConsumerFactory;
 import org.darkphoenixs.mq.consumer.MQConsumerAdapter;
 import org.darkphoenixs.mq.exception.MQException;
@@ -38,21 +39,13 @@ public class MQMessageFactoryListenerAdapterTest {
         }
     };
 
-    MQMessageDecoder<Bean> mqMessageDecoder = new MQMessageDecoder<Bean>() {
+    MQMessageDecoder<Bean> mqMessageDecoder = new MQMessageDecoderAdapter<Bean>() {
         @Override
         public Bean decode(byte[] bytes) throws MQException {
             Bean bean = new Bean();
             bean.setField("test");
             bean.setMessage(new String(bytes));
             return bean;
-        }
-
-        @Override
-        public List<Bean> batchDecode(List<byte[]> bytes) throws MQException {
-            Bean bean = new Bean();
-            bean.setField("test");
-            bean.setMessage("message");
-            return Collections.singletonList(bean);
         }
     };
 

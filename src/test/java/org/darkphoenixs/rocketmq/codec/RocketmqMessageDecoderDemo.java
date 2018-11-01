@@ -26,15 +26,4 @@ public class RocketmqMessageDecoderDemo extends RocketmqMessageDecoder<String> {
     public String decode(byte[] bytes) throws MQException {
         return new String(bytes);
     }
-
-    public List<String> batchDecode(List<byte[]> bytes) throws MQException {
-
-        List<String> list = new ArrayList<String>();
-
-        for (byte[] b : bytes)
-
-            list.add(new String(b));
-
-        return list;
-    }
 }

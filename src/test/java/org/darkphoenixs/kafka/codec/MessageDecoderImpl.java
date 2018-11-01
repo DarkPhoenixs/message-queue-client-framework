@@ -16,13 +16,12 @@
 package org.darkphoenixs.kafka.codec;
 
 import org.darkphoenixs.mq.codec.MQMessageDecoder;
+import org.darkphoenixs.mq.codec.MQMessageDecoderAdapter;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.message.MessageBeanImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>Title: MessageDecoderImpl</p>
@@ -33,7 +32,7 @@ import java.util.List;
  * @see MQMessageDecoder
  * @since 2015-06-01
  */
-public class MessageDecoderImpl implements MQMessageDecoder<MessageBeanImpl> {
+public class MessageDecoderImpl extends MQMessageDecoderAdapter<MessageBeanImpl> {
 
     @Override
     public MessageBeanImpl decode(byte[] bytes) throws MQException {
@@ -70,19 +69,6 @@ public class MessageDecoderImpl implements MQMessageDecoder<MessageBeanImpl> {
         }
 
         return message;
-    }
-
-    @Override
-    public List<MessageBeanImpl> batchDecode(List<byte[]> bytes)
-            throws MQException {
-
-        List<MessageBeanImpl> list = new ArrayList<MessageBeanImpl>();
-
-        for (byte[] bs : bytes)
-
-            list.add(this.decode(bs));
-
-        return list;
     }
 
 }

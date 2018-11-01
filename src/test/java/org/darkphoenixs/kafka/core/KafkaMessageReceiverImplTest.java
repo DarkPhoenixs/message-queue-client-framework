@@ -38,68 +38,72 @@ public class KafkaMessageReceiverImplTest {
     @Before
     public void before() {
 
-        zkServer = new EmbeddedZookeeper();
-        zkConnect = String.format("localhost:%d", zkServer.port());
-        ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
-                JaasUtils.isZkSecurityEnabled());
-        zkClient = zkUtils.zkClient();
+        try {
 
-        final Option<File> noFile = scala.Option.apply(null);
-        final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option.apply(null);
-        final Option<Properties> noPropertiesOption = scala.Option.apply(null);
-        final Option<String> noStringOption = scala.Option.apply(null);
+            zkServer = new EmbeddedZookeeper();
+            zkConnect = String.format("localhost:%d", zkServer.port());
+            ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
+                    JaasUtils.isZkSecurityEnabled());
+            zkClient = zkUtils.zkClient();
 
-        kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
-                false, port, noInterBrokerSecurityProtocol, noFile, noPropertiesOption, true,
-                false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
-                false, TestUtils.RandomPort(), noStringOption, TestUtils.RandomPort());
+            final Option<File> noFile = scala.Option.apply(null);
+            final Option<SecurityProtocol> noInterBrokerSecurityProtocol = scala.Option.apply(null);
+            final Option<Properties> noPropertiesOption = scala.Option.apply(null);
+            final Option<String> noStringOption = scala.Option.apply(null);
 
-        kafkaProps.setProperty("auto.create.topics.enable", "true");
-        kafkaProps.setProperty("num.partitions", "1");
-        // We *must* override this to use the port we allocated (Kafka currently
-        // allocates one port
-        // that it always uses for ZK
-        kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
-        kafkaProps.setProperty("host.name", "localhost");
-        kafkaProps.setProperty("port", port + "");
+            kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
+                    false, port, noInterBrokerSecurityProtocol, noFile, noPropertiesOption, true,
+                    false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
+                    false, TestUtils.RandomPort(), noStringOption, TestUtils.RandomPort());
 
-        Properties kafkaProps2 = TestUtils.createBrokerConfig(brokerId + 1,
-                zkConnect, false, false, (port - 1),
-                noInterBrokerSecurityProtocol, noFile, noPropertiesOption, true, false,
-                TestUtils.RandomPort(), false, TestUtils.RandomPort(), false,
-                TestUtils.RandomPort(), noStringOption, TestUtils.RandomPort());
+            kafkaProps.setProperty("auto.create.topics.enable", "true");
+            kafkaProps.setProperty("num.partitions", "1");
+            // We *must* override this to use the port we allocated (Kafka currently
+            // allocates one port
+            // that it always uses for ZK
+            kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
+            kafkaProps.setProperty("host.name", "localhost");
+            kafkaProps.setProperty("port", port + "");
 
-        kafkaProps2.setProperty("auto.create.topics.enable", "true");
-        kafkaProps2.setProperty("num.partitions", "1");
-        // We *must* override this to use the port we allocated (Kafka currently
-        // allocates one port
-        // that it always uses for ZK
-        kafkaProps2.setProperty("zookeeper.connect", this.zkConnect);
-        kafkaProps2.setProperty("host.name", "localhost");
-        kafkaProps2.setProperty("port", (port - 1) + "");
+            Properties kafkaProps2 = TestUtils.createBrokerConfig(brokerId + 1,
+                    zkConnect, false, false, (port - 1),
+                    noInterBrokerSecurityProtocol, noFile, noPropertiesOption, true, false,
+                    TestUtils.RandomPort(), false, TestUtils.RandomPort(), false,
+                    TestUtils.RandomPort(), noStringOption, TestUtils.RandomPort());
 
-        KafkaConfig config = new KafkaConfig(kafkaProps);
-        KafkaConfig config2 = new KafkaConfig(kafkaProps2);
+            kafkaProps2.setProperty("auto.create.topics.enable", "true");
+            kafkaProps2.setProperty("num.partitions", "1");
+            // We *must* override this to use the port we allocated (Kafka currently
+            // allocates one port
+            // that it always uses for ZK
+            kafkaProps2.setProperty("zookeeper.connect", this.zkConnect);
+            kafkaProps2.setProperty("host.name", "localhost");
+            kafkaProps2.setProperty("port", (port - 1) + "");
 
-        Time mock = new SystemTime();
-        Time mock2 = new SystemTime();
+            KafkaConfig config = new KafkaConfig(kafkaProps);
+            KafkaConfig config2 = new KafkaConfig(kafkaProps2);
 
-        kafkaServer = TestUtils.createServer(config, mock);
-        KafkaServer kafkaServer2 = TestUtils.createServer(config2, mock2);
+            Time mock = new SystemTime();
+            Time mock2 = new SystemTime();
 
-        // create topic
-        TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
-                new String[]{"--create", "--topic", topic,
-                        "--replication-factor", "2", "--partitions", "2"});
+            kafkaServer = TestUtils.createServer(config, mock);
+            KafkaServer kafkaServer2 = TestUtils.createServer(config2, mock2);
 
-        TopicCommand.createTopic(zkUtils, options);
+            // create topic
+            TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
+                    new String[]{"--create", "--topic", topic,
+                            "--replication-factor", "2", "--partitions", "2"});
 
-        List<KafkaServer> servers = new ArrayList<KafkaServer>();
-        servers.add(kafkaServer);
-        servers.add(kafkaServer2);
-        TestUtils.waitUntilMetadataIsPropagated(
-                scala.collection.JavaConversions.asScalaBuffer(servers), topic,
-                0, 5000);
+            TopicCommand.createTopic(zkUtils, options);
+
+            List<KafkaServer> servers = new ArrayList<KafkaServer>();
+            servers.add(kafkaServer);
+            servers.add(kafkaServer2);
+            TestUtils.waitUntilMetadataIsPropagated(
+                    scala.collection.JavaConversions.asScalaBuffer(servers), topic,
+                    0, 5000);
+        } catch (Exception e) {
+        }
     }
 
     @After

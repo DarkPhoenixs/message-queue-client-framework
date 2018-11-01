@@ -63,6 +63,8 @@ public class KafkaMessageNewReceiverPoolTest_2 {
     @Before
     public void setUp() throws Exception {
 
+        try {
+
         zkServer = new EmbeddedZookeeper();
         zkConnect = String.format("localhost:%d", zkServer.port());
         ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
@@ -102,6 +104,8 @@ public class KafkaMessageNewReceiverPoolTest_2 {
         TestUtils.waitUntilMetadataIsPropagated(
                 scala.collection.JavaConversions.asScalaBuffer(servers), topic,
                 0, 5000);
+        } catch (Exception e) {
+        }
     }
 
     @After

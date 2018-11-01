@@ -67,45 +67,50 @@ public class KafkaMessageNewReceiverPoolTest_4 {
     @Before
     public void setUp() throws Exception {
 
-        zkServer = new EmbeddedZookeeper();
-        zkConnect = String.format("localhost:%d", zkServer.port());
-        ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
-                JaasUtils.isZkSecurityEnabled());
-        zkClient = zkUtils.zkClient();
+        try {
 
-        final Option<File> noFile = Option.apply(null);
-        final Option<SecurityProtocol> noInterBrokerSecurityProtocol = Option.apply(null);
-        final Option<Properties> noPropertiesOption = Option.apply(null);
-        final Option<String> noStringOption = Option.apply(null);
 
-        kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
-                false, port, noInterBrokerSecurityProtocol, noFile, noPropertiesOption, true,
-                false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
-                false, TestUtils.RandomPort(), noStringOption, TestUtils.RandomPort());
+            zkServer = new EmbeddedZookeeper();
+            zkConnect = String.format("localhost:%d", zkServer.port());
+            ZkUtils zkUtils = ZkUtils.apply(zkConnect, 30000, 30000,
+                    JaasUtils.isZkSecurityEnabled());
+            zkClient = zkUtils.zkClient();
 
-        kafkaProps.setProperty("auto.create.topics.enable", "true");
-        kafkaProps.setProperty("num.partitions", "1");
-        // We *must* override this to use the port we allocated (Kafka currently
-        // allocates one port
-        // that it always uses for ZK
-        kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
+            final Option<File> noFile = Option.apply(null);
+            final Option<SecurityProtocol> noInterBrokerSecurityProtocol = Option.apply(null);
+            final Option<Properties> noPropertiesOption = Option.apply(null);
+            final Option<String> noStringOption = Option.apply(null);
 
-        KafkaConfig config = new KafkaConfig(kafkaProps);
-        Time mock = new SystemTime();
-        kafkaServer = TestUtils.createServer(config, mock);
+            kafkaProps = TestUtils.createBrokerConfig(brokerId, zkConnect, false,
+                    false, port, noInterBrokerSecurityProtocol, noFile, noPropertiesOption, true,
+                    false, TestUtils.RandomPort(), false, TestUtils.RandomPort(),
+                    false, TestUtils.RandomPort(), noStringOption, TestUtils.RandomPort());
 
-        // create topic
-        TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
-                new String[]{"--create", "--topic", topic,
-                        "--replication-factor", "1", "--partitions", "2"});
+            kafkaProps.setProperty("auto.create.topics.enable", "true");
+            kafkaProps.setProperty("num.partitions", "1");
+            // We *must* override this to use the port we allocated (Kafka currently
+            // allocates one port
+            // that it always uses for ZK
+            kafkaProps.setProperty("zookeeper.connect", this.zkConnect);
 
-        TopicCommand.createTopic(zkUtils, options);
+            KafkaConfig config = new KafkaConfig(kafkaProps);
+            Time mock = new SystemTime();
+            kafkaServer = TestUtils.createServer(config, mock);
 
-        List<KafkaServer> servers = new ArrayList<KafkaServer>();
-        servers.add(kafkaServer);
-        TestUtils.waitUntilMetadataIsPropagated(
-                scala.collection.JavaConversions.asScalaBuffer(servers), topic,
-                0, 5000);
+            // create topic
+            TopicCommand.TopicCommandOptions options = new TopicCommand.TopicCommandOptions(
+                    new String[]{"--create", "--topic", topic,
+                            "--replication-factor", "1", "--partitions", "2"});
+
+            TopicCommand.createTopic(zkUtils, options);
+
+            List<KafkaServer> servers = new ArrayList<KafkaServer>();
+            servers.add(kafkaServer);
+            TestUtils.waitUntilMetadataIsPropagated(
+                    scala.collection.JavaConversions.asScalaBuffer(servers), topic,
+                    0, 5000);
+        } catch (Exception e) {
+        }
     }
 
     @After

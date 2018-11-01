@@ -21,6 +21,7 @@ import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.TransactionMQProducer;
 import org.darkphoenixs.kafka.pool.KafkaMessageNewSenderPool;
 import org.darkphoenixs.mq.codec.MQMessageEncoder;
+import org.darkphoenixs.mq.codec.MQMessageEncoderAdapter;
 import org.darkphoenixs.mq.exception.MQException;
 import org.darkphoenixs.mq.util.MQ_TYPE;
 import org.junit.Assert;
@@ -39,20 +40,11 @@ public class MQProducerAdapterTest {
         }
     };
 
-    MQMessageEncoder<String> mqMessageEncoder = new MQMessageEncoder<String>() {
+    MQMessageEncoder<String> mqMessageEncoder = new MQMessageEncoderAdapter<String>() {
 
         @Override
         public byte[] encode(String message) throws MQException {
             return message.getBytes();
-        }
-
-        @Override
-        public List<byte[]> batchEncode(List<String> message) throws MQException {
-            List<byte[]> list = new ArrayList<byte[]>();
-            for (String str : message) {
-                list.add(str.getBytes());
-            }
-            return list;
         }
     };
 
