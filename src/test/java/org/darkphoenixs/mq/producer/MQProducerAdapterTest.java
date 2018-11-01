@@ -28,7 +28,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.jms.core.JmsTemplate;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MQProducerAdapterTest {
 
@@ -144,7 +146,8 @@ public class MQProducerAdapterTest {
     @Test
     public void getProducerKey() {
         Assert.assertNull(mqProducerAdapter.getProducerKey());
-
+        mqProducerAdapter.setProducerKey("test");
+        Assert.assertNotNull(mqProducerAdapter.getProducerKey());
     }
 
     @Test
@@ -238,6 +241,12 @@ public class MQProducerAdapterTest {
 
         try {
             kafkaMessageEncoder.batchEncode(Collections.singletonMap("key", "test"));
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            kafkaMessageEncoder.batchEncode(Collections.singletonList("key"));
         } catch (MQException e) {
             e.printStackTrace();
         }

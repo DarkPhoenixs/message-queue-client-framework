@@ -32,9 +32,7 @@ import org.darkphoenixs.mq.util.MQ_TYPE;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 public class MQMessageListenerAdapterTest {
@@ -160,6 +158,12 @@ public class MQMessageListenerAdapterTest {
         Map<byte[], byte[]> map = null;
         try {
             kafkaMessageAdapter.getDecoder().batchDecode(map);
+        } catch (MQException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            kafkaMessageAdapter.getDecoder().batchDecode(Collections.singletonList(new byte[0]));
         } catch (MQException e) {
             e.printStackTrace();
         }
