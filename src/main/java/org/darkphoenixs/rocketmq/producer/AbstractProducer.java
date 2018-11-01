@@ -184,13 +184,11 @@ public abstract class AbstractProducer<T> implements MQProducer<T> {
         try {
             List<T> objs = doSend(messages);
 
-            List<byte[]> objBytes = messageEncoder.batchEncode(objs);
-
             List<Message> batchMessage = new ArrayList<Message>();
 
-            for (byte[] bytes : objBytes)
+            for (T t : objs)
 
-                batchMessage.add(new Message(topic, bytes));
+                batchMessage.add(new Message(topic, messageEncoder.encode(t)));
 
             SendResult sendResult = defaultMQProducer.send(batchMessage);
 

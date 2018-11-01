@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -249,6 +250,11 @@ public class MQMessageListenerAdapter<T> implements MQMessageListener<T> {
                     @Override
                     public T decodeVal(byte[] bytes) throws MQException {
                         return messageDecoder.decode(bytes);
+                    }
+
+                    @Override
+                    public List<T> batchDecode(List<byte[]> bytes) throws MQException {
+                        return messageDecoder.batchDecode(bytes);
                     }
 
                     @Override

@@ -16,7 +16,7 @@
 
 package org.darkphoenixs.rocketmq.codec;
 
-import org.darkphoenixs.mq.codec.MQMessageDecoder;
+import org.darkphoenixs.mq.codec.MQMessageDecoderAdapter;
 
 /**
  * <p>Title: RocketmqMessageDecoder</p>
@@ -24,8 +24,8 @@ import org.darkphoenixs.mq.codec.MQMessageDecoder;
  *
  * @author Victor
  * @version 1.0
- * @see MQMessageDecoder
+ * @see MQMessageDecoderAdapter
  * @since 2017/12/10
  */
-public abstract class RocketmqMessageDecoder<T> implements MQMessageDecoder<T> {
+public abstract class RocketmqMessageDecoder<T> extends MQMessageDecoderAdapter<T> {
 }

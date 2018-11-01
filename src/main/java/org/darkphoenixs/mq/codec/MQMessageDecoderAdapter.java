@@ -13,16 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.darkphoenixs.mq.codec;
 
-package org.darkphoenixs.compatible;
-
-import org.darkphoenixs.mq.codec.MQMessageEncoderAdapter;
 import org.darkphoenixs.mq.exception.MQException;
 
-public class MQMessageEncoderDemo extends MQMessageEncoderAdapter<String> {
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * The type Mq message decoder adapter.
+ *
+ * @param <T> the type parameter
+ * @author Victor.Zxy
+ * @since 1.5.7
+ */
+public abstract class MQMessageDecoderAdapter<T> implements MQMessageDecoder<T> {
 
     @Override
-    public byte[] encode(String message) throws MQException {
-        return message.getBytes();
+    public List<T> batchDecode(List<byte[]> bytes) throws MQException {
+
+        List<T> list = new ArrayList<T>();
+
+        for (byte[] b : bytes)
+
+            list.add(decode(b));
+
+        return list;
     }
 }

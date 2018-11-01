@@ -347,6 +347,11 @@ public abstract class MQProducerAdapter<T> implements MQProducer<T> {
                     }
 
                     @Override
+                    public List<byte[]> batchEncode(List<T> message) throws MQException {
+                        return messageEncoder.batchEncode(message);
+                    }
+
+                    @Override
                     public Map<byte[], byte[]> batchEncode(Map<String, T> messages) throws MQException {
                         Map<byte[], byte[]> map = new IdentityHashMap<byte[], byte[]>();
                         if (messages != null)

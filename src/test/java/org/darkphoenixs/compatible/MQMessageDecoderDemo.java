@@ -16,24 +16,13 @@
 
 package org.darkphoenixs.compatible;
 
-import org.darkphoenixs.mq.codec.MQMessageDecoder;
+import org.darkphoenixs.mq.codec.MQMessageDecoderAdapter;
 import org.darkphoenixs.mq.exception.MQException;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MQMessageDecoderDemo implements MQMessageDecoder<String> {
+public class MQMessageDecoderDemo extends MQMessageDecoderAdapter<String> {
 
     @Override
     public String decode(byte[] bytes) throws MQException {
         return new String(bytes);
-    }
-
-    @Override
-    public List<String> batchDecode(List<byte[]> bytes) throws MQException {
-        List<String> list = new ArrayList<String>();
-        for (byte[] b : bytes)
-            list.add(decode(b));
-        return list;
     }
 }
