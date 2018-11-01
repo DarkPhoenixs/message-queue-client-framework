@@ -5,9 +5,9 @@
 #### 2 x ECS (AliCloud VM) for Producer and Consumer test. 
 ```
 OS： CentOS 6.9 64-Bit
-CPU： 4 Core
+CPU： 4 Core 2.5 GHz
 MEM： 8 GB
-TYPE： Optimal IO
+Network:  1.5 Gbps
 ```
 #### Test case scenarios
 ```
