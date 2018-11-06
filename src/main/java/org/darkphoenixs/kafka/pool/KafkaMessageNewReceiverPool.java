@@ -164,6 +164,20 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
     private long pollTimeout = 2000;
 
     /**
+     * The Blocking queue monitor interval(ms).
+     * <p>
+     * Default 30000ms.
+     */
+    private long monitorIntervalTime = 30 * 1000;
+
+    /**
+     * The Blocking queue monitor percentage(%).
+     * <p>
+     * Default 50%.
+     */
+    private int monitorPercentage = 50;
+
+    /**
      * messageAdapter
      */
     private KafkaMessageAdapter<?, ?> messageAdapter;
@@ -177,6 +191,11 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      * receiverRetry
      */
     private KafkaMessageReceiverRetry<ConsumerRecord<K, V>> receiverRetry;
+
+    /**
+     * receiverMonitor
+     */
+    private KafkaMessageReceiverMonitor<ConsumerRecords<K, V>> receiverMonitor;
 
     /**
      * Gets props.
@@ -302,6 +321,42 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
      */
     public void setPollTimeout(long pollTimeout) {
         this.pollTimeout = pollTimeout;
+    }
+
+    /**
+     * Gets monitor interval time.
+     *
+     * @return the monitor interval time
+     */
+    public long getMonitorIntervalTime() {
+        return monitorIntervalTime;
+    }
+
+    /**
+     * Sets monitor interval time.
+     *
+     * @param monitorIntervalTime the monitor interval time
+     */
+    public void setMonitorIntervalTime(long monitorIntervalTime) {
+        this.monitorIntervalTime = monitorIntervalTime;
+    }
+
+    /**
+     * Gets monitor percentage.
+     *
+     * @return the monitor percentage
+     */
+    public int getMonitorPercentage() {
+        return monitorPercentage;
+    }
+
+    /**
+     * Sets monitor percentage.
+     *
+     * @param monitorPercentage the monitor percentage
+     */
+    public void setMonitorPercentage(int monitorPercentage) {
+        this.monitorPercentage = monitorPercentage;
     }
 
     /**
@@ -490,10 +545,6 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
         returnReceiver(receiver);
 
-        if (retryCount > 0 && batch.equals(MQ_BATCH.NON_BATCH))
-            // retry count > 0 and batch is NON_BATCH
-            receiverRetry = new KafkaMessageReceiverRetry<ConsumerRecord<K, V>>(topic, retryCount, messageAdapter);
-
         switch (model) {
 
             case MODEL_1: // MODEL_1
@@ -525,6 +576,14 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
                 break;
         }
+
+        if (retryCount > 0 && batch.equals(MQ_BATCH.NON_BATCH))
+            // retry count > 0 and batch is NON_BATCH
+            receiverRetry = new KafkaMessageReceiverRetry<ConsumerRecord<K, V>>(topic, retryCount, messageAdapter);
+
+        if (monitorPercentage > 0 && model.equals(MQ_MODEL.MODEL_2))
+            // monitor percentage > 0 and model is MODEL_2
+            receiverMonitor = new KafkaMessageReceiverMonitor<ConsumerRecords<K, V>>(topic, monitorIntervalTime, monitorPercentage, blockingQueue);
 
         for (int i = 0; i < poolSize; i++) {
 
@@ -577,6 +636,10 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             receiverRetry.destroy();
         }
+
+        if (receiverMonitor != null)
+
+            receiverMonitor.destroy();
 
         running.set(false);
     }

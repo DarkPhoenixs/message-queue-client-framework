@@ -171,6 +171,14 @@ public class KafkaMessageNewReceiverPoolTest {
 
         pool.setRetryCount(1);
 
+        Assert.assertEquals(pool.getMonitorIntervalTime(), 30 * 1000);
+
+        pool.setMonitorIntervalTime(1000);
+
+        Assert.assertEquals(pool.getMonitorPercentage(), 50);
+
+        pool.setMonitorPercentage(30);
+
         Assert.assertEquals(pool.getHandleMultiple(), 2);
 
         pool.setHandleMultiple(1);
@@ -396,6 +404,8 @@ public class KafkaMessageNewReceiverPoolTest {
         recePool.setPoolSize(4);
 
         recePool.setRetryCount(1);
+
+        recePool.setMonitorPercentage(0);
 
         recePool.setMessageAdapter(getAdapterWishErr());
 
