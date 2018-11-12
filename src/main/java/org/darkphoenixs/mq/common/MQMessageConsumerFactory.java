@@ -65,7 +65,7 @@ public final class MQMessageConsumerFactory implements MQConsumerFactory {
     public synchronized static MQConsumerFactory getInstance() {
 
         if (instance.get() == null)
-            instance.set(new MQMessageConsumerFactory());
+            instance.compareAndSet(null, new MQMessageConsumerFactory());
         return instance.get();
     }
 

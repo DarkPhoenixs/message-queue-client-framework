@@ -65,7 +65,7 @@ public final class MQMessageProducerFactory implements MQProducerFactory {
     public synchronized static MQProducerFactory getInstance() {
 
         if (instance.get() == null)
-            instance.set(new MQMessageProducerFactory());
+            instance.compareAndSet(null, new MQMessageProducerFactory());
         return instance.get();
     }
 

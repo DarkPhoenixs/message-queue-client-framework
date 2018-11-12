@@ -443,7 +443,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
             Integer leadPort = metadata.leader().port();
             String clientName = pool.getClientId();
 
-            consumer.set(new SimpleConsumer(leadHost, leadPort,
+            consumer.compareAndSet(null, new SimpleConsumer(leadHost, leadPort,
                     KafkaConstants.SO_TIMEOUT, KafkaConstants.BUFFER_SIZE,
                     clientName));
         }
