@@ -33,6 +33,7 @@ import org.darkphoenixs.mq.util.RefleTool;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -296,7 +297,7 @@ public class KafkaMessageReceiverImpl<K, V> implements
             }
             if (goToSleep) {
                 try {
-                    Thread.sleep(1000);
+                    TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (InterruptedException ie) {
                 }
             }

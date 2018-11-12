@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -136,7 +137,7 @@ public class KafkaMessageReceiverMonitor<T> {
                     logger.warn("BlockingQueue usage rate: {}%. usage size: {}. free size: {}.", usageRate, usageSize, freeSize);
 
                 try {
-                    Thread.sleep(monitorIntervalTime);
+                    TimeUnit.MILLISECONDS.sleep(monitorIntervalTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
