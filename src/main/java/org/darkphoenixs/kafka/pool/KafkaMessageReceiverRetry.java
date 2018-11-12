@@ -269,58 +269,79 @@ public class KafkaMessageReceiverRetry<T> {
 
                     logger.error("BlockingQueue take failed.", e);
                 }
+                // retry error count
+                int retries = receiveMessageCount(record);
 
-                if (record instanceof ConsumerRecord) {
+                try {
+                    logger.warn("Retry receive message. Number of retries: " + retries);
+                    // retry message handle
+                    receiveMessageAdapter(record);
+                    // clean retry count
+                    receiveMessageClean(record);
 
-                    ConsumerRecord<?, ?> consumerRecord = (ConsumerRecord) record;
-
-                    int retries = receiveMessageCount(record);
-
-                    try {
-                        logger.warn("Retry receive message. Number of retries: " + retries);
-
-                        adapter.messageAdapter(consumerRecord);
-
-                        receiveMessageClean(record);
-
-                    } catch (MQException e) {
-
-                        receiveMessageRetry(record);
-
-                        logger.error("Receive message failed."
-                                + " retries: " + retries
-                                + " topic: " + consumerRecord.topic()
-                                + " offset: " + consumerRecord.offset()
-                                + " partition: " + consumerRecord.partition(), e);
-                    }
-
-                } else if (record instanceof MessageAndMetadata) {
-
-                    MessageAndMetadata<?, ?> messageAndMetadata = (MessageAndMetadata) record;
-
-                    int retries = receiveMessageCount(record);
-
-                    try {
-                        logger.warn("Retry receive message. Number of retries: " + retries);
-
-                        adapter.messageAdapter(messageAndMetadata);
-
-                        receiveMessageClean(record);
-
-                    } catch (MQException e) {
-
-                        receiveMessageRetry(record);
-
-                        logger.error("Receive message failed."
-                                + " retries: " + retries
-                                + " topic: " + messageAndMetadata.topic()
-                                + " offset: " + messageAndMetadata.offset()
-                                + " partition: " + messageAndMetadata.partition(), e);
-                    }
+                } catch (MQException e) {
+                    // message retry again
+                    receiveMessageRetry(record);
+                    // exception info
+                    receiveMessageError(record, retries, e);
                 }
-
             }
+
             logger.info(Thread.currentThread().getName() + " end.");
+        }
+
+
+        /**
+         * Receive message adapter.
+         *
+         * @param record the record
+         * @throws MQException the mq exception
+         */
+        public void receiveMessageAdapter(T record) throws MQException {
+
+            if (record instanceof ConsumerRecord) {
+
+                ConsumerRecord<?, ?> consumerRecord = (ConsumerRecord) record;
+
+                adapter.messageAdapter(consumerRecord);
+
+            } else if (record instanceof MessageAndMetadata) {
+
+                MessageAndMetadata<?, ?> messageAndMetadata = (MessageAndMetadata) record;
+
+                adapter.messageAdapter(messageAndMetadata);
+            }
+        }
+
+        /**
+         * Receive message error.
+         *
+         * @param record  the record
+         * @param retries the retries
+         * @param e       the e
+         */
+        public void receiveMessageError(T record, int retries, MQException e) {
+
+            if (record instanceof ConsumerRecord) {
+
+                ConsumerRecord<?, ?> consumerRecord = (ConsumerRecord) record;
+
+                logger.error("Receive message failed."
+                        + " retries: " + retries
+                        + " topic: " + consumerRecord.topic()
+                        + " offset: " + consumerRecord.offset()
+                        + " partition: " + consumerRecord.partition(), e);
+
+            } else if (record instanceof MessageAndMetadata) {
+
+                MessageAndMetadata<?, ?> messageAndMetadata = (MessageAndMetadata) record;
+
+                logger.error("Receive message failed."
+                        + " retries: " + retries
+                        + " topic: " + messageAndMetadata.topic()
+                        + " offset: " + messageAndMetadata.offset()
+                        + " partition: " + messageAndMetadata.partition(), e);
+            }
         }
 
         /**
