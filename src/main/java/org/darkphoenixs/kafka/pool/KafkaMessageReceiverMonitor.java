@@ -19,13 +19,10 @@ package org.darkphoenixs.kafka.pool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The type Kafka message receiver monitor.
@@ -38,19 +35,12 @@ public class KafkaMessageReceiverMonitor<T> {
 
     private final int monitorPoolSize = 1;
 
-    private final long monitorIntervalTime;
-
     private final int monitorPercentage;
 
     /**
      * The Monitor pool.
      */
-    protected final ExecutorService monitorPool;
-
-    /**
-     * The Monitor threads.
-     */
-    protected final List<MonitorThread> monitorThreads;
+    protected final ScheduledExecutorService monitorPool;
 
     /**
      * Instantiates a new Kafka message receiver monitor.
@@ -62,29 +52,17 @@ public class KafkaMessageReceiverMonitor<T> {
      */
     public KafkaMessageReceiverMonitor(String topic, long monitorIntervalTime, int monitorPercentage, BlockingQueue<T> blockingQueue) {
 
-        this.monitorIntervalTime = monitorIntervalTime;
-
         this.monitorPercentage = monitorPercentage;
 
-        this.monitorThreads = new ArrayList<MonitorThread>(monitorPoolSize);
+        this.monitorPool = Executors.newScheduledThreadPool(monitorPoolSize, new KafkaPoolThreadFactory(MonitorThread.tagger + "-" + topic));
 
-        this.monitorPool = Executors.newFixedThreadPool(monitorPoolSize, new KafkaPoolThreadFactory(MonitorThread.tagger + "-" + topic));
-
-        MonitorThread monitorThread = new MonitorThread(blockingQueue);
-
-        this.monitorThreads.add(monitorThread);
-
-        this.monitorPool.submit(monitorThread);
+        this.monitorPool.scheduleAtFixedRate(new MonitorThread(blockingQueue), 0, monitorIntervalTime, TimeUnit.MILLISECONDS);
     }
 
     /**
      * Destroy.
      */
     public void destroy() {
-
-        for (MonitorThread thread : monitorThreads)
-
-            thread.shutdown();
 
         if (monitorPool != null) {
 
@@ -104,8 +82,6 @@ public class KafkaMessageReceiverMonitor<T> {
          */
         public static final String tagger = "MonitorThread";
 
-        private final AtomicBoolean closed = new AtomicBoolean(false);
-
         private final BlockingQueue<T> blockingQueue;
 
         /**
@@ -121,38 +97,21 @@ public class KafkaMessageReceiverMonitor<T> {
         @Override
         public void run() {
 
-            logger.info(Thread.currentThread().getName() + " start.");
+            // queue usage size
+            int usageSize = blockingQueue.size();
 
-            while (!closed.get()) {
+            // queue free size
+            int freeSize = blockingQueue.remainingCapacity();
 
-                // queue usage size
-                int usageSize = blockingQueue.size();
-                // queue free size
-                int freeSize = blockingQueue.remainingCapacity();
-                // queue usage rate (%)
-                double usageRate = (usageSize * 1.0) / ((usageSize + freeSize) * 1.0) * 100;
-                // usageRate > monitorPercentage
-                if (usageRate > monitorPercentage)
+            // queue usage rate (%)
+            double usageRate = (usageSize * 1.0) / ((usageSize + freeSize) * 1.0) * 100;
 
-                    logger.warn("BlockingQueue usage rate: {}%. usage size: {}. free size: {}.", usageRate, usageSize, freeSize);
+            // usageRate > monitorPercentage
+            if (usageRate > monitorPercentage)
 
-                try {
-                    TimeUnit.MILLISECONDS.sleep(monitorIntervalTime);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            logger.info(Thread.currentThread().getName() + " end.");
+                logger.warn("BlockingQueue usage rate: {}%. usage size: {}. free size: {}.", usageRate, usageSize, freeSize);
         }
 
-        /**
-         * Shutdown.
-         */
-        public void shutdown() {
-
-            closed.set(true);
-        }
     }
 
 }
