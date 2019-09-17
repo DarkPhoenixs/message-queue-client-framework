@@ -3,8 +3,7 @@ jdk:
   - oraclejdk8
   - oraclejdk9
   - openjdk8
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-#before_install:
-#  - pip install --user codecov
-#after_success:
-#  - codecov
+before_install:
+  - pip install --user codecov
+after_success:
+  - codecov
