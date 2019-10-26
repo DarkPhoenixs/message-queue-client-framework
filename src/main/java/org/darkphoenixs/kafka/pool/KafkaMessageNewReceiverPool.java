@@ -611,6 +611,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             receivPool.shutdown();
 
+            while (!receivPool.isTerminated()) ;
+
             logger.info("Message Receiver pool closed.");
         }
 
@@ -625,6 +627,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
         if (handlePool != null) {
 
             handlePool.shutdown();
+
+            while (!handlePool.isTerminated()) ;
 
             logger.info("Message Handler pool closed.");
         }

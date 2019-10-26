@@ -181,6 +181,8 @@ public class KafkaMessageReceiverRetry<T> {
 
             errorMessagePool.shutdown();
 
+            while (!errorMessagePool.isTerminated()) ;
+
             logger.info("Message Error pool closed.");
         }
     }
