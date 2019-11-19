@@ -607,6 +607,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
 
             thread.shutdown();
 
+        receivThreads.clear();
+
         if (receivPool != null) {
 
             receivPool.shutdown();
@@ -623,6 +625,8 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
         for (HandlerThread thread : handleThreads)
 
             thread.shutdown();
+
+        handleThreads.clear();
 
         if (handlePool != null) {
 
@@ -752,7 +756,7 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
                             try {
                                 if (!records.isEmpty())
 
-                                    blockingQueue.put(records);
+                                    blockingQueue.put(records); // 阻塞方法 如果blockingQueue已满
 
                             } catch (InterruptedException e) {
 
@@ -824,45 +828,48 @@ public class KafkaMessageNewReceiverPool<K, V> implements MessageReceiverPool<K,
                 ConsumerRecords<K, V> records = null;
 
                 try {
-                    records = blockingQueue.take();
+                    records = blockingQueue.poll(pollTimeout, TimeUnit.MILLISECONDS);
 
                 } catch (InterruptedException e) {
 
                     logger.error("BlockingQueue take failed.", e);
                 }
 
-                switch (batch) {
+                if (records != null) {
 
-                    case BATCH:
+                    switch (batch) {
 
-                        try {
-                            adapter.messageAdapter(records);
-
-                        } catch (MQException e) {
-
-                            logger.error("Receive message failed. failSize: " + records.count(), e);
-                        }
-
-                        break;
-
-                    case NON_BATCH:
-
-                        for (ConsumerRecord<K, V> record : records)
+                        case BATCH:
 
                             try {
-                                adapter.messageAdapter(record);
+                                adapter.messageAdapter(records);
 
                             } catch (MQException e) {
 
-                                messageReceiveRetry(record);
-
-                                logger.error("Receive message failed."
-                                        + " topic: " + record.topic()
-                                        + " offset: " + record.offset()
-                                        + " partition: " + record.partition(), e);
+                                logger.error("Receive message failed. failSize: " + records.count(), e);
                             }
 
-                        break;
+                            break;
+
+                        case NON_BATCH:
+
+                            for (ConsumerRecord<K, V> record : records)
+
+                                try {
+                                    adapter.messageAdapter(record);
+
+                                } catch (MQException e) {
+
+                                    messageReceiveRetry(record);
+
+                                    logger.error("Receive message failed."
+                                            + " topic: " + record.topic()
+                                            + " offset: " + record.offset()
+                                            + " partition: " + record.partition(), e);
+                                }
+
+                            break;
+                    }
                 }
 
                 waitAmoment(threadSleep);

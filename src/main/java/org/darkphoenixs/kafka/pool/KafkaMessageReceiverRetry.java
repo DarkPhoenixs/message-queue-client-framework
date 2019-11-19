@@ -95,27 +95,22 @@ public class KafkaMessageReceiverRetry<T> {
      */
     public void receiveMessageRetry(T record) {
 
-        try {
-            if (record instanceof MessageAndMetadata) {
+        if (record instanceof MessageAndMetadata) {
 
-                MessageAndMetadata messageAndMetadata = (MessageAndMetadata) record;
+            MessageAndMetadata messageAndMetadata = (MessageAndMetadata) record;
 
-                if (0 < errorMessageCount(messageAndMetadata.topic(), messageAndMetadata.partition(), messageAndMetadata.offset())) {
+            if (0 < errorMessageCount(messageAndMetadata.topic(), messageAndMetadata.partition(), messageAndMetadata.offset())) {
 
-                    errorMessageQueue.put(record);
-                }
-            } else if (record instanceof ConsumerRecord) {
-
-                ConsumerRecord consumerRecord = (ConsumerRecord) record;
-
-                if (0 < errorMessageCount(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset())) {
-
-                    errorMessageQueue.put(record);
-                }
+                errorMessageQueue.offer(record);
             }
-        } catch (InterruptedException e) {
+        } else if (record instanceof ConsumerRecord) {
 
-            logger.error("BlockingQueue put failed.", e);
+            ConsumerRecord consumerRecord = (ConsumerRecord) record;
+
+            if (0 < errorMessageCount(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset())) {
+
+                errorMessageQueue.offer(record);
+            }
         }
     }
 
@@ -177,14 +172,16 @@ public class KafkaMessageReceiverRetry<T> {
 
             thread.shutdown();
 
+        errorRetryThreads.clear();
+
         if (errorMessagePool != null) {
 
             errorMessagePool.shutdown();
 
             while (!errorMessagePool.isTerminated()) ;
-
-            logger.info("Message Error pool closed.");
         }
+
+        logger.info("Message Error pool closed.");
     }
 
     private String errorMessageKey(final String _topic, final int _partition, final long _offset) {
@@ -262,30 +259,24 @@ public class KafkaMessageReceiverRetry<T> {
 
             while (!closed.get()) {
 
-                T record = null;
+                T record = errorMessageQueue.poll();
 
-                try {
-                    record = errorMessageQueue.take();
+                if (record != null) {
+                    // retry error count
+                    int retries = receiveMessageCount(record);
+                    try {
+                        logger.warn("Retry receive message. Number of retries: " + retries);
+                        // retry message handle
+                        receiveMessageAdapter(record);
+                        // clean retry count
+                        receiveMessageClean(record);
 
-                } catch (InterruptedException e) {
-
-                    logger.error("BlockingQueue take failed.", e);
-                }
-                // retry error count
-                int retries = receiveMessageCount(record);
-
-                try {
-                    logger.warn("Retry receive message. Number of retries: " + retries);
-                    // retry message handle
-                    receiveMessageAdapter(record);
-                    // clean retry count
-                    receiveMessageClean(record);
-
-                } catch (MQException e) {
-                    // message retry again
-                    receiveMessageRetry(record);
-                    // exception info
-                    receiveMessageError(record, retries, e);
+                    } catch (MQException e) {
+                        // message retry again
+                        receiveMessageRetry(record);
+                        // exception info
+                        receiveMessageError(record, retries, e);
+                    }
                 }
             }
 
