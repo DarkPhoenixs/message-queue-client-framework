@@ -190,7 +190,7 @@ public class KafkaMessageReceiverRetry<T> {
             while (!errorMessagePool.isTerminated()) ;
         }
 
-        logger.info("Message Error pool closed.");
+        logger.info("Message Retry pool closed.");
     }
 
     private String errorMessageKey(final String _topic, final int _partition, final long _offset) {
