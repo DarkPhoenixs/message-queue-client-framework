@@ -38,6 +38,10 @@ public class KafkaMessageReceiverRetry<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaMessageReceiverRetry.class);
 
+    private final int errorTimeout = 3000;
+
+    private final int errorQueueSize = 10000;
+
     private final int errorPoolSize = 1;
 
     private final int retryCount;
@@ -73,7 +77,7 @@ public class KafkaMessageReceiverRetry<T> {
 
         this.retryCount = retryCount;
 
-        this.errorMessageQueue = new LinkedBlockingQueue<T>();
+        this.errorMessageQueue = new LinkedBlockingQueue<T>(errorQueueSize);
 
         this.errorRetryThreads = new ArrayList<RetryThread>(errorPoolSize);
 
@@ -95,22 +99,27 @@ public class KafkaMessageReceiverRetry<T> {
      */
     public void receiveMessageRetry(T record) {
 
-        if (record instanceof MessageAndMetadata) {
+        try {
+            if (record instanceof MessageAndMetadata) {
 
-            MessageAndMetadata messageAndMetadata = (MessageAndMetadata) record;
+                MessageAndMetadata messageAndMetadata = (MessageAndMetadata) record;
 
-            if (0 < errorMessageCount(messageAndMetadata.topic(), messageAndMetadata.partition(), messageAndMetadata.offset())) {
+                if (0 < errorMessageCount(messageAndMetadata.topic(), messageAndMetadata.partition(), messageAndMetadata.offset())) {
 
-                errorMessageQueue.offer(record);
+                    errorMessageQueue.offer(record, errorTimeout, TimeUnit.MILLISECONDS);
+                }
+            } else if (record instanceof ConsumerRecord) {
+
+                ConsumerRecord consumerRecord = (ConsumerRecord) record;
+
+                if (0 < errorMessageCount(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset())) {
+
+                    errorMessageQueue.offer(record, errorTimeout, TimeUnit.MILLISECONDS);
+                }
             }
-        } else if (record instanceof ConsumerRecord) {
+        } catch (InterruptedException e) {
 
-            ConsumerRecord consumerRecord = (ConsumerRecord) record;
-
-            if (0 < errorMessageCount(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset())) {
-
-                errorMessageQueue.offer(record);
-            }
+            logger.error("BlockingQueue offer failed.", e);
         }
     }
 
@@ -259,7 +268,15 @@ public class KafkaMessageReceiverRetry<T> {
 
             while (!closed.get()) {
 
-                T record = errorMessageQueue.poll();
+                T record = null;
+
+                try {
+                    record = errorMessageQueue.poll(errorTimeout, TimeUnit.MILLISECONDS);
+
+                } catch (InterruptedException e) {
+
+                    logger.error("BlockingQueue poll failed.", e);
+                }
 
                 if (record != null) {
                     // retry error count
